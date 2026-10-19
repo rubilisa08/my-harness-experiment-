@@ -1,0 +1,921 @@
+
+
+===== Saju_Tarot/backend/tools/add_sample.py =====
+"""말투 샘플을 명령 한 줄로 넣고 빼는 도구 (PRD §11.5 · Q7).
+
+메모장으로 직접 고치다가 인코딩이 어긋나 파일이 통째로 무시되는 사고를 막는다.
+파일은 항상 UTF-8(BOM 없음)로 저장한다.
+
+사용법
+  # 넣기 (주제 있음)
+  python tools/add_sample.py add 재회운 "지금 먼저 연락하시는 건 권하지 않습니다."
+
+  # 넣기 (주제 없이)
+  python tools/add_sample.py add - "마지막으로 한 말씀 드리면, 조급함이 제일 큰 적입니다."
+
+  # 지금까지 넣은 것 보기
+  python tools/add_sample.py list
+
+  # 번호로 지우기
+  python tools/add_sample.py remove 3
+
+  # 예시 5건을 지우고 처음부터 다시 (내 문장만 남기고 싶을 때)
+  python tools/add_sample.py clear
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from app.tone_samples import (  # noqa: E402
+    MIN_SAMPLES,
+    SAMPLES_PATH,
+    ToneSample,
+    parse,
+)
+
+TOPICS = ("재회운", "상대방속마음", "연애", "재물", "대인관계")
+HEADER = "# 내 상담 말투 샘플\n"
+
+
+def read_samples() -> list[ToneSample]:
+    if not SAMPLES_PATH.exists():
+        return []
+    try:
+        return parse(SAMPLES_PATH.read_text(encoding="utf-8-sig"))
+    except UnicodeDecodeError:
+        print("⚠️ 기존 파일이 UTF-8 이 아닙니다. 내용을 읽을 수 없어 빈 목록에서 시작합니다.")
+        print("   (기존 파일을 백업하려면 지금 중단하고 파일을 다른 곳에 복사해 두세요)")
+        return []
+
+
+def write_samples(samples: list[ToneSample]) -> None:
+    lines = [HEADER]
+    for i, s in enumerate(samples, 1):
+        lines.append(f"\n## 사례 {i}\n")
+        if s.topic:
+            lines.append(f"주제: {s.topic}\n")
+        lines.append(f"문장: {s.text}\n")
+    SAMPLES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    SAMPLES_PATH.write_text("".join(lines), encoding="utf-8", newline="\n")
+
+
+def show(samples: list[ToneSample]) -> None:
+    if not samples:
+        print("아직 넣은 문장이 없습니다.")
+    for i, s in enumerate(samples, 1):
+        topic = s.topic or "(주제 없음)"
+        print(f"  {i:2}. [{topic}] {s.text}")
+
+    print()
+    n = len(samples)
+    if n >= MIN_SAMPLES:
+        print(f"총 {n}건 — ✅ 적용됩니다 (서버를 다시 켜면 반영)")
+    else:
+        print(f"총 {n}건 — ⏳ {MIN_SAMPLES - n}건 더 넣으면 적용됩니다")
+
+    by_topic: dict[str, int] = {}
+    for s in samples:
+        by_topic[s.topic or "(주제 없음)"] = by_topic.get(s.topic or "(주제 없음)", 0) + 1
+    if by_topic:
+        print("주제별: " + " · ".join(f"{k} {v}건" for k, v in by_topic.items()))
+    missing = [t for t in TOPICS if t not in by_topic]
+    if missing:
+        print(f"아직 없는 주제: {' · '.join(missing)}  ← 넣으면 그 주제 어조가 더 정확해집니다")
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="상담 말투 샘플 관리")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+
+    p_add = sub.add_parser("add", help="문장 하나 넣기")
+    p_add.add_argument("topic", help=f"{' | '.join(TOPICS)} 또는 - (주제 없음)")
+    p_add.add_argument("text", help="실제로 손님에게 보낸 문장")
+
+    sub.add_parser("list", help="넣은 문장 보기")
+
+    p_rm = sub.add_parser("remove", help="번호로 지우기")
+    p_rm.add_argument("index", type=int)
+
+    sub.add_parser("clear", help="전부 지우기")
+
+    args = ap.parse_args()
+    samples = read_samples()
+
+    if args.cmd == "list":
+        show(samples)
+        return 0
+
+    if args.cmd == "clear":
+        write_samples([])
+        print(f"전부 지웠습니다 → {SAMPLES_PATH}")
+        return 0
+
+    if args.cmd == "remove":
+        if not 1 <= args.index <= len(samples):
+            print(f"1 ~ {len(samples)} 사이 번호를 넣으세요.")
+            return 1
+        removed = samples.pop(args.index - 1)
+        write_samples(samples)
+        print(f"지웠습니다: {removed.text[:40]}")
+        print()
+        show(samples)
+        return 0
+
+    # add
+    topic = None if args.topic == "-" else args.topic
+    if topic is not None and topic not in TOPICS:
+        print(f"주제는 {' | '.join(TOPICS)} 또는 - 여야 합니다. 받은 값: {topic}")
+        return 1
+
+    text = args.text.strip()
+    if not text:
+        print("문장이 비어 있습니다.")
+        return 1
+    if any(s.text == text for s in samples):
+        print("이미 같은 문장이 있습니다.")
+        return 1
+
+    samples.append(ToneSample(topic=topic, text=text))
+    write_samples(samples)
+    print(f"넣었습니다 → {SAMPLES_PATH}")
+    print()
+    show(samples)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+
+===== Saju_Tarot/backend/tools/backup.py =====
+"""리포트 DB 백업·복원 (PRD §12.17).
+
+백업은 "했다"가 아니라 **"복구된다"** 가 중요하다. 그래서 이 도구는
+백업을 만든 뒤 **그 자리에서 열어 검사**하고, 복원 기능을 함께 제공한다.
+(픽사·GitLab 둘 다 "백업이 있다고 믿었지만 고장 나 있었다.")
+
+지키는 것
+  · **서버가 돌고 있어도 안전하게** 뜬다 — 파일 복사가 아니라 SQLite 백업 API 를 쓴다.
+    돌아가는 DB 를 그냥 cp 하면 쓰기 중간 상태가 찍혀 깨진 사본이 나온다.
+  · 백업 파일에도 개인정보가 있다 → **AES-256-GCM 으로 암호화**해서 보관한다.
+  · 보관 기간이 지난 백업은 지운다(기본 4주).
+
+쓰는 법
+    python tools/backup.py                    백업 만들기
+    python tools/backup.py --목록              백업 목록 보기
+    python tools/backup.py --검증 <파일>       열어서 멀쩡한지만 확인
+    python tools/backup.py --복원 <파일>       복원 (덮어쓰지 않고 새 파일로)
+
+암호는 환경변수 BACKUP_PASSPHRASE 로 주거나, 없으면 물어본다.
+**이 암호는 이 컴퓨터에 저장하지 않는다.** 비밀번호 관리자에 넣어 둘 것.
+"""
+
+from __future__ import annotations
+
+import argparse
+import getpass
+import io
+import json
+import os
+import sqlite3
+import sys
+import tarfile
+import tempfile
+from datetime import datetime, timedelta
+from pathlib import Path
+
+from cryptography.exceptions import InvalidTag
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
+
+BACKEND = Path(__file__).resolve().parents[1]
+DATA = BACKEND / "data"
+DB_PATH = Path(os.environ.get("DB_PATH") or (DATA / "readings.db"))
+KEY_PATH = DATA / "field_key.txt"
+BACKUP_DIR = Path(os.environ.get("BACKUP_DIR") or (BACKEND.parent / "backups"))
+
+MAGIC = b"SAJUBAK1"
+SALT_LEN, NONCE_LEN = 16, 12
+KEEP_DAYS = int(os.environ.get("BACKUP_KEEP_DAYS") or 28)   # 4주 (PRD §12.17)
+
+
+# ── 암호화 ───────────────────────────────────────────────────
+
+def _derive(passphrase: str, salt: bytes) -> bytes:
+    """암호 → 키. scrypt 는 일부러 느리다 — 대입 공격을 어렵게 한다."""
+    return Scrypt(salt=salt, length=32, n=2**15, r=8, p=1).derive(passphrase.encode())
+
+
+def encrypt(plain: bytes, passphrase: str) -> bytes:
+    salt, nonce = os.urandom(SALT_LEN), os.urandom(NONCE_LEN)
+    blob = AESGCM(_derive(passphrase, salt)).encrypt(nonce, plain, MAGIC)
+    return MAGIC + salt + nonce + blob
+
+
+def decrypt(data: bytes, passphrase: str) -> bytes:
+    if not data.startswith(MAGIC):
+        raise ValueError("이 도구가 만든 백업 파일이 아닙니다.")
+    head = len(MAGIC)
+    salt = data[head:head + SALT_LEN]
+    nonce = data[head + SALT_LEN:head + SALT_LEN + NONCE_LEN]
+    blob = data[head + SALT_LEN + NONCE_LEN:]
+    try:
+        return AESGCM(_derive(passphrase, salt)).decrypt(nonce, blob, MAGIC)
+    except InvalidTag:
+        # 암호가 틀렸거나 파일이 손상됐다. 둘을 구분할 방법은 없다 —
+        # 구분하려면 암호 확인용 값을 따로 저장해야 하는데 그게 공격 단서가 된다.
+        raise SystemExit(
+            "  ✗ 열지 못했습니다.\n"
+            "    암호가 틀렸거나, 파일이 손상됐습니다.\n"
+            "    암호를 다시 확인하고, 맞다면 다른 백업 파일을 시도하세요."
+        ) from None
+
+
+def ask_passphrase(confirm: bool = False) -> str:
+    env = os.environ.get("BACKUP_PASSPHRASE")
+    if env:
+        return env
+    if not sys.stdin.isatty():
+        raise SystemExit("암호가 필요합니다. BACKUP_PASSPHRASE 환경변수로 주세요.")
+    pw = getpass.getpass("  백업 암호: ")
+    if not pw:
+        raise SystemExit("암호가 비어 있습니다.")
+    if confirm and pw != getpass.getpass("  한 번 더: "):
+        raise SystemExit("두 번 입력한 암호가 다릅니다.")
+    return pw
+
+
+# ── 사본 뜨기 ────────────────────────────────────────────────
+
+def snapshot(dest: Path) -> None:
+    """돌아가는 DB 에서 안전하게 사본을 뜬다.
+
+    파일 복사가 아니라 SQLite 의 백업 API 를 쓴다. 서버가 쓰는 중이어도
+    일관된 시점의 사본이 나온다.
+    """
+    src = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+    try:
+        out = sqlite3.connect(dest)
+        try:
+            src.backup(out)
+        finally:
+            out.close()
+    finally:
+        src.close()
+
+
+def inspect(path: Path) -> dict:
+    """사본이 진짜 멀쩡한지 열어서 확인한다."""
+    con = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    try:
+        ok = con.execute("PRAGMA integrity_check").fetchone()[0]
+        if ok != "ok":
+            raise RuntimeError(f"백업 파일이 깨졌습니다: {ok}")
+        counts = {}
+        for table in ("readings", "share_links"):
+            counts[table] = con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+        return counts
+    finally:
+        con.close()
+
+
+# ── 백업 ─────────────────────────────────────────────────────
+
+def make_backup(include_key: bool) -> Path:
+    if not DB_PATH.exists():
+        raise SystemExit(f"DB 가 없습니다: {DB_PATH}")
+
+    passphrase = ask_passphrase(confirm=True)
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now().strftime("%Y%m%d-%H%M")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        copy = Path(tmp) / "readings.db"
+        snapshot(copy)
+        counts = inspect(copy)                       # 뜨자마자 검사한다
+
+        meta = {
+            "만든시각": datetime.now().isoformat(timespec="seconds"),
+            "원본": str(DB_PATH),
+            "건수": counts,
+            "필드키포함": include_key,
+        }
+
+        bundle = io.BytesIO()
+        with tarfile.open(fileobj=bundle, mode="w:gz") as tar:
+            tar.add(copy, arcname="readings.db")
+            info = tarfile.TarInfo("meta.json")
+            raw = json.dumps(meta, ensure_ascii=False, indent=2).encode()
+            info.size = len(raw)
+            tar.addfile(info, io.BytesIO(raw))
+            if include_key and KEY_PATH.exists():
+                tar.add(KEY_PATH, arcname="field_key.txt")
+
+        out = BACKUP_DIR / f"saju-{stamp}.saju.enc"
+        out.write_bytes(encrypt(bundle.getvalue(), passphrase))
+
+    print(f"  ✓ 백업 완료  {out}")
+    print(f"    리포트 {counts['readings']}건 · 공유링크 {counts['share_links']}건 "
+          f"· {out.stat().st_size / 1024:.0f}KB")
+    if include_key:
+        print("    필드 암호화 키를 함께 넣었습니다 — 이 파일 하나로 복원됩니다.")
+    else:
+        print("    ! 필드 키는 넣지 않았습니다. field_key.txt 를 따로 보관해야 복원됩니다.")
+    return out
+
+
+def prune() -> int:
+    """보관 기간이 지난 백업을 지운다."""
+    if not BACKUP_DIR.exists():
+        return 0
+    cutoff = datetime.now() - timedelta(days=KEEP_DAYS)
+    removed = 0
+    for f in BACKUP_DIR.glob("saju-*.saju.enc"):
+        if datetime.fromtimestamp(f.stat().st_mtime) < cutoff:
+            f.unlink()
+            removed += 1
+    if removed:
+        print(f"  {KEEP_DAYS}일이 지난 백업 {removed}개를 지웠습니다.")
+    return removed
+
+
+# ── 검증·복원 ────────────────────────────────────────────────
+
+def _open_archive(path: Path, passphrase: str):
+    if not path.is_file():
+        raise SystemExit(
+            f"  ✗ 그런 파일이 없습니다: {path}\n"
+            "    --목록 으로 백업 목록을 확인하세요."
+        )
+    bundle = decrypt(path.read_bytes(), passphrase)
+    return tarfile.open(fileobj=io.BytesIO(bundle), mode="r:gz")
+
+
+def verify(path: Path) -> None:
+    """복원하지 않고 '진짜 열리는지'만 확인한다 (PRD §12.17 복구 테스트)."""
+    passphrase = ask_passphrase()
+    with tempfile.TemporaryDirectory() as tmp, _open_archive(path, passphrase) as tar:
+        meta = json.loads(tar.extractfile("meta.json").read().decode())
+        tar.extract("readings.db", tmp, filter="data")
+        counts = inspect(Path(tmp) / "readings.db")
+
+    print(f"  ✓ 열립니다  {path.name}")
+    print(f"    만든 때  : {meta['만든시각']}")
+    print(f"    담긴 것  : 리포트 {counts['readings']}건 · 공유링크 {counts['share_links']}건")
+    print(f"    필드 키  : {'포함' if meta.get('필드키포함') else '없음 (따로 보관 필요)'}")
+    if counts != meta["건수"]:
+        print("    ! 기록된 건수와 실제가 다릅니다. 확인이 필요합니다.")
+
+
+def restore(path: Path) -> None:
+    """복원한다. **덮어쓰지 않는다** — 새 파일로 꺼내고 사람이 옮긴다."""
+    passphrase = ask_passphrase()
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    out_dir = BACKUP_DIR / f"복원-{stamp}"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    with _open_archive(path, passphrase) as tar:
+        tar.extractall(out_dir, filter="data")
+    counts = inspect(out_dir / "readings.db")
+
+    print(f"  ✓ 복원 완료  {out_dir}")
+    print(f"    리포트 {counts['readings']}건 · 공유링크 {counts['share_links']}건")
+    print()
+    print("  운영에 반영하려면 서버를 끄고 아래를 직접 옮기세요 (덮어쓰기라 자동으로 하지 않습니다):")
+    print(f"    {out_dir / 'readings.db'}")
+    print(f"      → {DB_PATH}")
+    if (out_dir / "field_key.txt").exists():
+        print(f"    {out_dir / 'field_key.txt'}")
+        print(f"      → {KEY_PATH}")
+        print("    (필드 키가 다르면 이름·생년월일을 복호화하지 못합니다)")
+
+
+def show_list() -> None:
+    files = sorted(BACKUP_DIR.glob("saju-*.saju.enc"), reverse=True) if BACKUP_DIR.exists() else []
+    if not files:
+        print(f"  백업이 없습니다. ({BACKUP_DIR})")
+        return
+    print(f"  {BACKUP_DIR}")
+    for f in files:
+        age = (datetime.now() - datetime.fromtimestamp(f.stat().st_mtime)).days
+        print(f"    {f.name:<28} {f.stat().st_size/1024:>7.0f}KB   {age}일 전")
+    print(f"\n  총 {len(files)}개 · {KEEP_DAYS}일이 지나면 자동으로 지워집니다.")
+
+
+def main() -> None:
+    # 에러 메시지도 사람이 읽을 수 있어야 한다. stderr 까지 맞춰 두지 않으면
+    # 윈도우 콘솔(cp949)에서 한글이 깨지고 기호가 ✗ 처럼 나온다.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+
+    ap = argparse.ArgumentParser(description="리포트 DB 백업·복원 (PRD §12.17)")
+    ap.add_argument("--목록", action="store_true", help="백업 목록 보기")
+    ap.add_argument("--검증", metavar="파일", help="열어서 멀쩡한지 확인")
+    ap.add_argument("--복원", metavar="파일", help="새 폴더로 꺼내기")
+    ap.add_argument("--키제외", action="store_true",
+                    help="필드 암호화 키를 백업에 넣지 않는다 (따로 보관할 때)")
+    args = ap.parse_args()
+
+    print()
+    if args.목록:
+        return show_list()
+    if args.검증:
+        return verify(Path(args.검증))
+    if args.복원:
+        return restore(Path(args.복원))
+
+    make_backup(include_key=not args.키제외)
+    prune()
+    print()
+    print("  3-2-1 규칙 — 이 파일을 다른 매체와 다른 장소에도 한 벌 두세요.")
+    print("  분기에 한 번은 --검증 으로 진짜 열리는지 확인하세요.")
+
+
+if __name__ == "__main__":
+    main()
+
+
+===== Saju_Tarot/backend/tools/check_keys.py =====
+"""환경변수에 넣은 키가 제대로 읽히고 살아있는지 확인한다.
+
+키 값을 절대 전체 출력하지 않는다 — 앞 12자만 보이고 나머지는 마스킹한다 (PRD §12.15).
+로그·터미널 캡처에 비밀값이 남지 않게 하려는 것이다.
+
+실행
+  ./.venv/Scripts/python.exe tools/check_keys.py
+  ./.venv/Scripts/python.exe tools/check_keys.py --live   # 실제 API 1회 호출까지
+"""
+
+from __future__ import annotations
+
+import argparse
+import os
+import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+ENV_PATH = Path(__file__).resolve().parents[1] / ".env"
+
+KEYS = [
+    ("ANTHROPIC_API_KEY", "sk-ant-", "리포트 문장 생성 (런타임 필수)"),
+    ("KASI_SERVICE_KEY", "", "절기 대조 (검증 스크립트에서만)"),
+    ("SUPABASE_URL", "https://", "DB (7단계 이후)"),
+    ("SUPABASE_SERVICE_ROLE_KEY", "", "DB 서버 전용 (7단계 이후)"),
+]
+
+
+def mask(value: str) -> str:
+    if len(value) <= 12:
+        return "*" * len(value)
+    return f"{value[:12]}{'*' * 8} (총 {len(value)}자)"
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--live", action="store_true", help="Anthropic API 실제 호출 1회")
+    args = ap.parse_args()
+
+    load_dotenv(ENV_PATH, override=False)
+    print(f"읽은 파일: {ENV_PATH} {'(있음)' if ENV_PATH.exists() else '(없음)'}")
+    print()
+
+    ok = True
+    for name, prefix, purpose in KEYS:
+        raw = os.environ.get(name, "").strip()
+        if not raw or raw == "CHANGE_ME":
+            print(f"  ✗ {name:32} 없음        — {purpose}")
+            if name == "ANTHROPIC_API_KEY":
+                ok = False
+            continue
+        shape = "" if not prefix else ("" if raw.startswith(prefix) else f"  ⚠️ {prefix} 로 시작해야 합니다")
+        print(f"  ✓ {name:32} {mask(raw)}{shape}")
+
+    if not args.live:
+        print()
+        print("실제 호출까지 확인하려면:  --live 옵션을 붙여 다시 실행")
+        return 0 if ok else 1
+
+    print()
+    if not ok:
+        print("ANTHROPIC_API_KEY 가 없어 호출을 건너뜁니다.")
+        return 1
+
+    print("Anthropic API 호출 중…")
+    try:
+        import anthropic
+    except ImportError:
+        print("  anthropic 패키지가 없습니다:  pip install anthropic")
+        return 1
+
+    try:
+        client = anthropic.Anthropic()
+        res = client.messages.create(
+            model="claude-opus-5",
+            max_tokens=16,
+            messages=[{"role": "user", "content": "'준비됨' 이라고만 답하세요."}],
+        )
+        text = next((b.text for b in res.content if b.type == "text"), "")
+        print(f"  ✓ 응답: {text.strip()!r}")
+        print(f"  ✓ 토큰: 입력 {res.usage.input_tokens} / 출력 {res.usage.output_tokens}")
+        print(f"  ✓ 모델: {res.model}")
+        return 0
+    except anthropic.AuthenticationError:
+        print("  ✗ 인증 실패 — 키가 잘못되었거나 폐기되었습니다.")
+    except anthropic.PermissionDeniedError:
+        print("  ✗ 권한 없음 — 크레딧 충전 여부와 워크스페이스 권한을 확인하세요.")
+    except anthropic.RateLimitError:
+        print("  ✗ 레이트리밋 — 키는 유효합니다. 잠시 후 다시 시도하세요.")
+    except Exception as e:  # noqa: BLE001
+        print(f"  ✗ 실패: {type(e).__name__}: {e}")
+    return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+
+===== Saju_Tarot/backend/tools/fetch_cards.py =====
+"""타로 카드 이미지 받아오기 (PRD §18.1 Q5).
+
+라이더-웨이트 1909년판 **퍼블릭 도메인** 스캔본을 위키미디어 공용에서 받아
+frontend/public/cards/ 에 저장한다. 현대 리메이크판·앱 이미지는 저작권이
+살아 있으므로 절대 쓰지 않는다.
+
+  원화: Pamela Colman Smith (1878~1951) · 1909년 발행
+  사후 70년(2021년) 경과 + 1909년 발행으로 퍼블릭 도메인
+
+한 번만 실행하면 되고, 받은 파일은 저장소에 커밋한다(외부 의존 제거).
+
+실행
+  ./.venv/Scripts/python.exe tools/fetch_cards.py
+  ./.venv/Scripts/python.exe tools/fetch_cards.py --force   # 이미 있어도 다시 받기
+"""
+
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from app.tarot_service import DECK  # noqa: E402
+
+OUT_DIR = Path(__file__).resolve().parents[2] / "frontend" / "public" / "cards"
+BASE = "https://commons.wikimedia.org/wiki/Special:FilePath/"
+WIDTH = 500
+
+# 위키미디어는 설명이 있는 User-Agent 를 요구한다. 없으면 429/403 이 난다.
+UA = "saju-tarot-asset-fetch/1.0 (public-domain RWS deck; contact: local dev)"
+
+_MAJOR_FILES = {
+    "The Fool": "RWS_Tarot_00_Fool.jpg",
+    "The Magician": "RWS_Tarot_01_Magician.jpg",
+    "The High Priestess": "RWS_Tarot_02_High_Priestess.jpg",
+    "The Empress": "RWS_Tarot_03_Empress.jpg",
+    "The Emperor": "RWS_Tarot_04_Emperor.jpg",
+    "The Hierophant": "RWS_Tarot_05_Hierophant.jpg",
+    "The Lovers": "RWS_Tarot_06_Lovers.jpg",
+    "The Chariot": "RWS_Tarot_07_Chariot.jpg",
+    "Strength": "RWS_Tarot_08_Strength.jpg",
+    "The Hermit": "RWS_Tarot_09_Hermit.jpg",
+    "Wheel of Fortune": "RWS_Tarot_10_Wheel_of_Fortune.jpg",
+    "Justice": "RWS_Tarot_11_Justice.jpg",
+    "The Hanged Man": "RWS_Tarot_12_Hanged_Man.jpg",
+    "Death": "RWS_Tarot_13_Death.jpg",
+    "Temperance": "RWS_Tarot_14_Temperance.jpg",
+    "The Devil": "RWS_Tarot_15_Devil.jpg",
+    "The Tower": "RWS_Tarot_16_Tower.jpg",
+    "The Star": "RWS_Tarot_17_Star.jpg",
+    "The Moon": "RWS_Tarot_18_Moon.jpg",
+    "The Sun": "RWS_Tarot_19_Sun.jpg",
+    "Judgement": "RWS_Tarot_20_Judgement.jpg",
+    "The World": "RWS_Tarot_21_World.jpg",
+}
+
+_SUIT_DIR = {"Wands": "Wands", "Cups": "Cups", "Swords": "Swords", "Pentacles": "Pents"}
+_RANK_NUM = {
+    "Ace": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5, "Six": 6, "Seven": 7,
+    "Eight": 8, "Nine": 9, "Ten": 10, "Page": 11, "Knight": 12, "Queen": 13, "King": 14,
+}
+
+
+def slug(name: str) -> str:
+    """'Eight of Pentacles' → 'eight-of-pentacles' (프론트에서 쓰는 파일명)."""
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
+def commons_filename(card_name: str) -> str | None:
+    if card_name in _MAJOR_FILES:
+        return _MAJOR_FILES[card_name]
+    m = re.match(r"^(\w+) of (\w+)$", card_name)
+    if not m:
+        return None
+    rank, suit = m.group(1), m.group(2)
+    if rank not in _RANK_NUM or suit not in _SUIT_DIR:
+        return None
+    return f"{_SUIT_DIR[suit]}{_RANK_NUM[rank]:02d}.jpg"
+
+
+def download(filename: str, dest: Path, tries: int = 4) -> tuple[bool, str]:
+    url = f"{BASE}{urllib.parse.quote(filename)}?width={WIDTH}"
+    delay = 2.0
+    for attempt in range(1, tries + 1):
+        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as res:
+                data = res.read()
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 503) and attempt < tries:
+                time.sleep(delay)
+                delay *= 2
+                continue
+            return False, f"HTTP {e.code}"
+        except Exception as e:  # noqa: BLE001
+            if attempt < tries:
+                time.sleep(delay)
+                delay *= 2
+                continue
+            return False, type(e).__name__
+
+        # 오류 페이지를 이미지로 저장하지 않는다
+        if len(data) < 10_000 or not data.startswith(b"\xff\xd8"):
+            if attempt < tries:
+                time.sleep(delay)
+                delay *= 2
+                continue
+            return False, f"이미지 아님 ({len(data)}바이트)"
+
+        dest.write_bytes(data)
+        return True, f"{len(data) // 1024}KB"
+    return False, "재시도 초과"
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--force", action="store_true")
+    ap.add_argument("--delay", type=float, default=1.2, help="요청 간 간격(초)")
+    args = ap.parse_args()
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    failures: list[tuple[str, str]] = []
+    got = skipped = 0
+
+    for card in DECK:
+        filename = commons_filename(card.name)
+        if filename is None:
+            failures.append((card.name, "파일명 규칙에 없음"))
+            continue
+        dest = OUT_DIR / f"{slug(card.name)}.jpg"
+        if dest.exists() and not args.force:
+            skipped += 1
+            continue
+
+        ok, info = download(filename, dest)
+        if ok:
+            got += 1
+            print(f"  ✓ {card.name_ko:14} {dest.name:26} {info}")
+        else:
+            failures.append((card.name, info))
+            print(f"  ✗ {card.name_ko:14} {filename:26} {info}")
+        time.sleep(args.delay)
+
+    print()
+    print(f"받음 {got} · 건너뜀 {skipped} · 실패 {len(failures)} → {OUT_DIR}")
+    if failures:
+        print("실패 목록:")
+        for name, why in failures:
+            print(f"  {name}: {why}")
+    return 0 if not failures else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+
+===== Saju_Tarot/backend/tools/solar_term_diff.json =====
+[]
+
+===== Saju_Tarot/backend/tools/verify_solar_terms.py =====
+"""KASI 절기 전수 대조 (PRD §16.1).
+
+사람이 골든테스트 100건을 만드는 대신, 한국천문연구원(KASI) 24절기 API 와
+라이브러리 계산값을 **연도 범위 전체**에 걸쳐 자동 대조한다.
+1900~2050년이면 약 3,600건 — 커버리지가 36배 넓고 사람 손이 안 간다.
+
+무엇을 확인하는가
+  라이브러리는 절기를 베이징 기준으로 계산한다. 여기에 1시간을 더한 값이
+  KASI 가 발표한 한국 기준 시각과 **분 단위로 일치**해야 한다.
+  어긋나는 절기만 목록으로 뽑아 보정 테이블에 넣는다.
+
+키를 넣는 곳 (둘 중 하나, PRD §12.1)
+  ① backend/.env 에  KASI_SERVICE_KEY=발급받은키   ← 이 파일은 .gitignore 로 막혀 있다
+  ② 셸 환경변수      $env:KASI_SERVICE_KEY="..."   ← 그 셸에서만 유효
+
+실행
+  python tools/verify_solar_terms.py --from 1950 --to 2050
+
+키를 코드·저장소에 넣지 않는다. pre-commit 훅이 실수로 커밋되는 것도 막는다.
+결과는 tools/solar_term_diff.json 에 저장된다.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+import urllib.parse
+import urllib.request
+from datetime import datetime
+from pathlib import Path
+from xml.etree import ElementTree
+
+from dotenv import load_dotenv
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from app.saju_service import solar_term_table  # noqa: E402
+
+KASI_URL = "https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/get24DivisionsInfo"
+OUT_PATH = Path(__file__).parent / "solar_term_diff.json"
+ENV_PATH = Path(__file__).resolve().parents[1] / ".env"
+
+# KASI 응답의 절기 이름(한글) → 라이브러리 키(간체자). 라이브러리가 간체를 쓴다.
+NAME_MAP = {
+    "소한": "小寒", "대한": "大寒", "입춘": "立春", "우수": "雨水",
+    "경칩": "惊蛰", "춘분": "春分", "청명": "清明", "곡우": "谷雨",
+    "입하": "立夏", "소만": "小满", "망종": "芒种", "하지": "夏至",
+    "소서": "小暑", "대서": "大暑", "입추": "立秋", "처서": "处暑",
+    "백로": "白露", "추분": "秋分", "한로": "寒露", "상강": "霜降",
+    "입동": "立冬", "소설": "小雪", "대설": "大雪", "동지": "冬至",
+}
+
+
+def fetch_kasi_month(year: int, month: int, key: str) -> dict[str, tuple[datetime, bool]]:
+    """KASI 에서 그 달 절기를 가져온다.
+
+    ⚠️ `solMonth` 는 **필수 파라미터**다(공식 문서 확인). 연 단위로 한 번 부르면 안 되고
+       달마다 호출해야 한다.
+
+    ⚠️ 공식 문서의 출력 항목에는 시각(`kst`)이 없고 날짜(`locdate`)만 있다.
+       실제 응답에 kst 가 오는 경우가 있어 **있으면 쓰고 없으면 날짜만 비교**한다.
+       돌려주는 bool 이 '시각까지 있었는지' 여부다.
+    """
+    params = urllib.parse.urlencode(
+        {
+            "serviceKey": key,
+            "solYear": year,
+            "solMonth": f"{month:02d}",
+            "numOfRows": 10,
+            "pageNo": 1,
+        },
+        safe="",
+    )
+    with urllib.request.urlopen(f"{KASI_URL}?{params}", timeout=20) as res:
+        root = ElementTree.fromstring(res.read())
+
+    code = root.findtext(".//resultCode")
+    if code not in (None, "00", "0"):
+        raise RuntimeError(f"KASI 오류 resultCode={code} {root.findtext('.//resultMsg')}")
+
+    out: dict[str, tuple[datetime, bool]] = {}
+    for item in root.iter("item"):
+        name = (item.findtext("dateName") or "").strip()
+        ymd = (item.findtext("locdate") or "").strip()
+        if not (name and len(ymd) == 8):
+            continue
+        hm = (item.findtext("kst") or "").strip()
+        has_time = len(hm) == 4 and hm.isdigit()
+        out[name] = (
+            datetime(
+                int(ymd[:4]), int(ymd[4:6]), int(ymd[6:8]),
+                int(hm[:2]) if has_time else 0,
+                int(hm[2:]) if has_time else 0,
+            ),
+            has_time,
+        )
+    return out
+
+
+def fetch_kasi_year(year: int, key: str) -> dict[str, tuple[datetime, bool]]:
+    out: dict[str, tuple[datetime, bool]] = {}
+    for month in range(1, 13):
+        out.update(fetch_kasi_month(year, month, key))
+    return out
+
+
+def compare_year(year: int, key: str) -> tuple[list[dict[str, object]], int, int]:
+    """(불일치 목록, 대조 건수, 시각까지 비교한 건수)"""
+    kasi = fetch_kasi_year(year, key)
+    lib = solar_term_table(year)
+    diffs: list[dict[str, object]] = []
+    compared = 0
+    with_time = 0
+
+    for ko_name, (kasi_time, has_time) in kasi.items():
+        hanja = NAME_MAP.get(ko_name)
+        if hanja is None:
+            continue  # 절기 외 항목(잡절 등)이 섞여 오면 건너뛴다
+        if hanja not in lib:
+            diffs.append({"year": year, "term": ko_name, "issue": "라이브러리에 없는 절기"})
+            continue
+
+        lib_time = datetime.fromisoformat(lib[hanja])
+        compared += 1
+
+        if has_time:
+            with_time += 1
+            delta_min = round((lib_time - kasi_time).total_seconds() / 60)
+            if delta_min != 0:
+                diffs.append(
+                    {
+                        "year": year, "term": ko_name,
+                        "kasi": kasi_time.isoformat(sep=" "),
+                        "library": lib_time.isoformat(sep=" "),
+                        "delta_minutes": delta_min,
+                    }
+                )
+        elif lib_time.date() != kasi_time.date():
+            # 시각이 없으면 날짜만 비교한다. 날짜가 다르면 그 날 출생자의 월주가 통째로 틀린다
+            diffs.append(
+                {
+                    "year": year, "term": ko_name,
+                    "kasi_date": kasi_time.date().isoformat(),
+                    "library_date": lib_time.date().isoformat(),
+                    "note": "KASI 응답에 시각이 없어 날짜만 비교",
+                }
+            )
+    return diffs, compared, with_time
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--from", dest="start", type=int, default=1950)
+    ap.add_argument("--to", dest="end", type=int, default=2050)
+    args = ap.parse_args()
+
+    # backend/.env 를 읽는다. 셸 환경변수가 이미 있으면 그쪽이 이긴다.
+    load_dotenv(ENV_PATH, override=False)
+
+    key = os.environ.get("KASI_SERVICE_KEY", "").strip()
+    if not key or key == "CHANGE_ME":
+        print("KASI_SERVICE_KEY 가 없습니다. 둘 중 하나로 넣으세요.")
+        print()
+        print(f"  ① 파일 (권장):  {ENV_PATH}")
+        print("     KASI_SERVICE_KEY=발급받은키          ← 이 한 줄만 추가")
+        print()
+        print("  ② 이 셸에서만:  $env:KASI_SERVICE_KEY=\"발급받은키\"")
+        print()
+        print("공공데이터포털 → 한국천문연구원_특일 정보 → 활용신청(자동승인)")
+        print("→ 마이페이지 → 개발계정 → 일반 인증키(Decoding) 값을 씁니다.")
+        return 2
+
+    all_diffs: list[dict[str, object]] = []
+    checked = 0
+    timed = 0
+    years = range(args.start, args.end + 1)
+    print(f"{len(years)}개 연도 × 12개월 = 요청 {len(years) * 12}건 (개발계정 한도 10,000건/일)")
+    print()
+
+    for year in years:
+        try:
+            diffs, compared, with_time = compare_year(year, key)
+        except Exception as e:  # 네트워크·응답 형식 문제는 그 해만 건너뛴다
+            print(f"  {year}: 조회 실패 ({type(e).__name__}: {e})")
+            continue
+        checked += compared
+        timed += with_time
+        all_diffs.extend(diffs)
+        mark = "OK" if not diffs else f"차이 {len(diffs)}건"
+        print(f"  {year}: 절기 {compared}개 대조 · {mark}")
+
+    OUT_PATH.write_text(
+        json.dumps(all_diffs, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
+    print()
+    print(f"대조 {checked}건 (시각까지 비교 {timed}건) · 불일치 {len(all_diffs)}건 → {OUT_PATH.name}")
+    if checked and timed == 0:
+        print("⚠️ KASI 응답에 시각(kst)이 없어 날짜만 대조했습니다.")
+        print("   절기 경계 당일 출생자의 연·월주 검증에는 시각이 필요합니다 — PRD §16.1 후속 과제.")
+    return 0 if not all_diffs else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

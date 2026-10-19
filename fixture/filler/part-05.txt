@@ -1,0 +1,2085 @@
+
+
+===== Saju_Tarot/docs/saju-terms.html =====
+<title>세권사주타로 기술 용어집</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    /* 바탕 — 쪽빛으로 살짝 기울인 회색 */
+    --bg:        #F4F5F9;
+    --surface:   #FFFFFF;
+    --surface-2: #ECEDF4;
+    --ink:       #1A1C24;
+    --ink-2:     #4E5364;
+    --ink-3:     #767C8E;
+    --line:      #DCDCE7;
+    --line-2:    #C6C7D6;
+    --accent:    #35478C;   /* 청람 */
+    --accent-2:  #E5E8F6;
+
+    /* 분류색 — 오행에서 가져왔다 */
+    --mok:  #256E5C;  /* 목 · 도메인 */
+    --hwa:  #A83A31;  /* 화 · 보안 */
+    --to:   #96690F;  /* 토 · 운영 */
+    --geum: #6E748A;  /* 금 · 웹 */
+    --su:   #2C3C6B;  /* 수 · AI */
+    --mok-bg:  #E4EFEB; --hwa-bg: #F6E7E5; --to-bg: #F4EBDA;
+    --geum-bg: #EBECF1; --su-bg:  #E6E9F3;
+
+    --shadow: 0 1px 2px rgba(26,28,36,.05), 0 8px 24px -16px rgba(26,28,36,.28);
+    --sans: "IBM Plex Sans KR", -apple-system, "Malgun Gothic", sans-serif;
+    --serif: "Gowun Batang", "Batang", Georgia, serif;
+    --mono: "IBM Plex Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #14151C;
+      --surface:   #1C1E28;
+      --surface-2: #242734;
+      --ink:       #E9EAF2;
+      --ink-2:     #A9AEC0;
+      --ink-3:     #838999;
+      --line:      #2C2F3D;
+      --line-2:    #3A3E50;
+      --accent:    #94A4E8;
+      --accent-2:  #262B44;
+      --mok:  #6FC0A8; --hwa: #E2887E; --to: #D6A845;
+      --geum: #A5AABE; --su:  #8C9CD8;
+      --mok-bg: #1B2C29; --hwa-bg: #2E2020; --to-bg: #2C2618;
+      --geum-bg: #23262F; --su-bg: #1E2338;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        #14151C;
+    --surface:   #1C1E28;
+    --surface-2: #242734;
+    --ink:       #E9EAF2;
+    --ink-2:     #A9AEC0;
+    --ink-3:     #838999;
+    --line:      #2C2F3D;
+    --line-2:    #3A3E50;
+    --accent:    #94A4E8;
+    --accent-2:  #262B44;
+    --mok:  #6FC0A8; --hwa: #E2887E; --to: #D6A845;
+    --geum: #A5AABE; --su:  #8C9CD8;
+    --mok-bg: #1B2C29; --hwa-bg: #2E2020; --to-bg: #2C2618;
+    --geum-bg: #23262F; --su-bg: #1E2338;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.8);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 40px 24px 96px; }
+
+  /* ── 머리 ─────────────────────────────── */
+  .masthead { display: grid; gap: 18px; padding-bottom: 26px; border-bottom: 2px solid var(--ink); }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 500;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 700;
+    font-size: clamp(34px, 5.4vw, 54px); line-height: 1.15; margin: 0;
+    text-wrap: balance; letter-spacing: -.01em;
+  }
+  .lede { margin: 0; max-width: 62ch; color: var(--ink-2); font-size: 16px; }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  .facts { display: flex; flex-wrap: wrap; gap: 10px 34px; margin-top: 4px; }
+  .fact { display: grid; gap: 1px; }
+  .fact .n {
+    font-family: var(--serif); font-size: 27px; font-weight: 700; line-height: 1.1;
+    font-variant-numeric: tabular-nums; color: var(--ink);
+  }
+  .fact .l { font-size: 12.5px; color: var(--ink-3); letter-spacing: .02em; }
+
+  /* ── 공통 섹션 ─────────────────────────── */
+  section { margin-top: 54px; }
+  h2 {
+    font-family: var(--serif); font-size: 25px; font-weight: 700; margin: 0 0 6px;
+    letter-spacing: -.01em;
+  }
+  .sub { margin: 0 0 22px; color: var(--ink-2); font-size: 14.5px; max-width: 66ch; }
+
+  /* ── 여정 ─────────────────────────────── */
+  .journey { display: grid; gap: 12px; }
+  .leg {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+    padding: 16px 18px; display: grid; gap: 12px;
+  }
+  .leg-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+  .leg-head .tag {
+    font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: .04em;
+    background: var(--accent-2); color: var(--accent); padding: 3px 8px; border-radius: 3px;
+  }
+  .leg-head .name { font-weight: 600; font-size: 15px; }
+  .leg-head .ms {
+    margin-left: auto; font-family: var(--mono); font-size: 13px;
+    color: var(--ink-2); font-variant-numeric: tabular-nums;
+  }
+  .steps { display: flex; flex-wrap: wrap; gap: 6px; }
+  .step {
+    font-size: 13px; color: var(--ink-2);
+    background: var(--surface-2); padding: 5px 11px; border-radius: 3px;
+    border: 1px solid transparent;
+  }
+  .step.hot { border-color: var(--line-2); color: var(--ink); font-weight: 500; }
+  .step .arw { color: var(--ink-3); }
+  .leg-note { font-size: 13.5px; color: var(--ink-3); margin: 0; }
+  .leg-note code { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); }
+
+  /* ── 도구 ─────────────────────────────── */
+  .stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(228px, 1fr)); gap: 1px;
+           background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .stack > div { background: var(--surface); padding: 15px 17px; display: grid; gap: 7px; align-content: start; }
+  .stack h3 {
+    margin: 0; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600;
+  }
+  .stack ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; }
+  .stack li { font-size: 13.5px; color: var(--ink-2); display: flex; gap: 8px; }
+  .stack li b { color: var(--ink); font-weight: 500; font-family: var(--mono); font-size: 12.5px;
+                white-space: nowrap; }
+
+  /* ── 용어집 ───────────────────────────── */
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    position: sticky; top: 0; z-index: 5;
+    padding: 12px 0; background: var(--bg);
+    border-bottom: 1px solid var(--line); margin-bottom: 20px;
+  }
+  #q {
+    flex: 1 1 210px; min-width: 0;
+    font-family: var(--sans); font-size: 14px; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line-2); border-radius: 3px;
+    padding: 8px 12px;
+  }
+  #q::placeholder { color: var(--ink-3); }
+  #q:focus-visible, .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chip {
+    font-family: var(--sans); font-size: 13px; color: var(--ink-2); cursor: pointer;
+    background: var(--surface); border: 1px solid var(--line-2); border-radius: 999px;
+    padding: 6px 13px; display: inline-flex; align-items: center; gap: 7px;
+  }
+  .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .count { font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; margin-left: auto; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 14px; }
+  .term {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+    padding: 15px 17px 16px; display: grid; gap: 8px; align-content: start;
+    border-left: 3px solid var(--cat, var(--line-2));
+  }
+  .term.hit { box-shadow: var(--shadow); }
+  .term h3 {
+    margin: 0; font-size: 15.5px; font-weight: 600; line-height: 1.35;
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px;
+  }
+  .term h3 .hanja { font-family: var(--serif); font-size: 13px; color: var(--ink-3); font-weight: 400; }
+  .term h3 .en { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); font-weight: 400; }
+  .term p { margin: 0; font-size: 13.6px; line-height: 1.65; color: var(--ink-2); }
+  .term p.def { color: var(--ink); }
+  .term p b {
+    display: inline-block; min-width: 4.6em; font-weight: 600; font-size: 11px;
+    letter-spacing: .08em; color: var(--cat); vertical-align: 1px;
+  }
+  .term code, .stack code, .issue code {
+    font-family: var(--mono); font-size: 12px; color: var(--ink);
+    background: var(--surface-2); padding: 1px 4px; border-radius: 2px;
+  }
+  .cat-도메인 { --cat: var(--mok); }
+  .cat-보안   { --cat: var(--hwa); }
+  .cat-운영   { --cat: var(--to); }
+  .cat-웹     { --cat: var(--geum); }
+  .cat-AI     { --cat: var(--su); }
+  .c-도메인 { color: var(--mok); } .c-보안 { color: var(--hwa); } .c-운영 { color: var(--to); }
+  .c-웹 { color: var(--geum); }   .c-AI { color: var(--su); }
+  .chip[aria-pressed="true"] .dot { background: currentColor; }
+  .empty { color: var(--ink-3); font-size: 14px; padding: 24px 2px; }
+
+  /* ── 쟁점 ─────────────────────────────── */
+  .issues { display: grid; gap: 12px; }
+  .issue {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+    display: grid; grid-template-columns: 34px 1fr; gap: 0 16px; padding: 16px 18px;
+  }
+  .issue .no {
+    font-family: var(--serif); font-size: 21px; font-weight: 700; color: var(--hwa);
+    line-height: 1.2; font-variant-numeric: tabular-nums;
+  }
+  .issue h3 { margin: 0 0 8px; font-size: 15.5px; font-weight: 600; line-height: 1.4; }
+  .issue dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 5px 12px; }
+  .issue dt {
+    font-size: 11px; letter-spacing: .08em; font-weight: 600; color: var(--ink-3);
+    padding-top: 3px; white-space: nowrap;
+  }
+  .issue dd { margin: 0; font-size: 13.6px; color: var(--ink-2); line-height: 1.6; }
+
+  footer {
+    margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--ink-3); display: grid; gap: 6px;
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 28px 16px 64px; }
+    .count { margin-left: 0; width: 100%; }
+    .issue { grid-template-columns: 1fr; gap: 6px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .term, .chip, #q { transition: box-shadow .15s ease, background .15s ease, color .15s ease; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">발표 · 토론 자료 · 2026-09-09</p>
+    <h1>세권사주타로 기술 용어집</h1>
+    <p class="lede">
+      FastAPI + React로 만든 사주·타로 리포트 서비스에서 실제로 쓴 말들을,
+      <b>정의 → 비유 → 이 프로젝트에서는</b> 순서로 풀었습니다.
+      분류 색은 오행(목·화·토·금·수)에서 가져왔습니다.
+    </p>
+    <div class="facts">
+      <div class="fact"><span class="n">1,807</span><span class="l">PRD 줄 수</span></div>
+      <div class="fact"><span class="n">155</span><span class="l">테스트</span></div>
+      <div class="fact"><span class="n">11</span><span class="l">API 엔드포인트</span></div>
+      <div class="fact"><span class="n">3,600</span><span class="l">절기 대조 건수</span></div>
+      <div class="fact"><span class="n">78</span><span class="l">타로 카드</span></div>
+      <div class="fact"><span class="n">4</span><span class="l">비밀값 방어선</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>요청 한 번의 여정</h2>
+    <p class="sub">
+      원래 요청 하나로 끝냈다가 v3.0에서 <b>둘로 갈랐습니다.</b>
+      계산은 즉시 끝나는데 LLM 문장 생성이 14초라, 한 요청에 묶으면 손님이 빈 화면을 14초 봅니다.
+    </p>
+    <div class="journey">
+      <div class="leg">
+        <div class="leg-head">
+          <span class="tag">POST /readings</span>
+          <span class="name">계산 — 공짜, 즉시</span>
+          <span class="ms">약 0.2초</span>
+        </div>
+        <div class="steps">
+          <span class="step">입력 검증 <span class="arw">→</span></span>
+          <span class="step">음↔양 변환 <span class="arw">→</span></span>
+          <span class="step hot">한국 시간 보정 <span class="arw">→</span></span>
+          <span class="step">사주 4주·오행 <span class="arw">→</span></span>
+          <span class="step">타로 3장 <span class="arw">→</span></span>
+          <span class="step">암호화 저장</span>
+        </div>
+        <p class="leg-note">이 단계까지는 LLM이 전혀 개입하지 않습니다. 전부 계산으로 확정된 <b>사실</b>입니다.</p>
+      </div>
+      <div class="leg">
+        <div class="leg-head">
+          <span class="tag">POST /readings/{id}/report</span>
+          <span class="name">풀이 — 돈이 드는 쪽</span>
+          <span class="ms">약 14초</span>
+        </div>
+        <div class="steps">
+          <span class="step">레이트리밋 검사 <span class="arw">→</span></span>
+          <span class="step">사실 + 말투 샘플로 프롬프트 <span class="arw">→</span></span>
+          <span class="step hot">LLM 호출</span>
+          <span class="step"><span class="arw">→</span> 스키마 검증 <span class="arw">→</span></span>
+          <span class="step">저장</span>
+        </div>
+        <p class="leg-note">건당 약 50원. 실패해도 <code>500</code>이 아니라 <code>report=null</code>로 계산 결과만 돌려줍니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>무엇으로 만들었나</h2>
+    <p class="sub">버전을 고정해 두었습니다. 백엔드는 취약점 때문에 올린 것마다 이유를 주석으로 남겼습니다.</p>
+    <div class="stack">
+      <div>
+        <h3>화면</h3>
+        <ul>
+          <li><b>React 19</b><span>화면 조각(컴포넌트)</span></li>
+          <li><b>TypeScript 5.7</b><span>타입 검사</span></li>
+          <li><b>Vite 6</b><span>개발 서버·빌드</span></li>
+          <li><b>Tailwind 4</b><span>스타일</span></li>
+          <li><b>TanStack Query</b><span>서버 상태</span></li>
+          <li><b>zod</b><span>계약 단일 출처</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>서버</h3>
+        <ul>
+          <li><b>FastAPI</b><span>웹 프레임워크</span></li>
+          <li><b>uvicorn</b><span>실행기(ASGI)</span></li>
+          <li><b>pydantic 2</b><span>입력 검증</span></li>
+          <li><b>SQLite</b><span>저장소 파일 하나</span></li>
+          <li><b>cryptography</b><span>필드 암호화</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>사주 엔진</h3>
+        <ul>
+          <li><b>lunar-python</b><span>절기·60갑자</span></li>
+          <li><b>korean-lunar</b><span>음↔양 변환</span></li>
+          <li><b>korea_time.py</b><span>직접 짠 보정층</span></li>
+          <li><b>KASI API</b><span>절기 전수 대조</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>운영</h3>
+        <ul>
+          <li><b>Docker</b><span>멀티스테이지</span></li>
+          <li><b>Render</b><span>클라우드 배포</span></li>
+          <li><b>Cloudflare</b><span>터널(로컬 공개)</span></li>
+          <li><b>PowerShell</b><span>실행·백업 4종</span></li>
+          <li><b>pytest / pip-audit</b><span>테스트·취약점</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>용어 풀이</h2>
+    <p class="sub">토론 중에 말이 막히면 여기서 찾으세요. 검색창에 한글·영문 아무거나 넣으면 걸립니다.</p>
+
+    <div class="controls">
+      <input id="q" type="search" placeholder="용어 검색 — 절기, CORS, 어댑터, 논스…" aria-label="용어 검색">
+      <button class="chip c-웹" data-cat="웹" aria-pressed="false"><span class="dot"></span>웹</button>
+      <button class="chip c-도메인" data-cat="도메인" aria-pressed="false"><span class="dot"></span>사주</button>
+      <button class="chip c-AI" data-cat="AI" aria-pressed="false"><span class="dot"></span>AI</button>
+      <button class="chip c-보안" data-cat="보안" aria-pressed="false"><span class="dot"></span>보안</button>
+      <button class="chip c-운영" data-cat="운영" aria-pressed="false"><span class="dot"></span>운영</button>
+      <span class="count" id="count"></span>
+    </div>
+
+    <div class="grid" id="grid">
+
+      <!-- ── 웹 ── -->
+      <article class="term cat-웹" data-cat="웹">
+        <h3>REST API <span class="en">Representational State Transfer</span></h3>
+        <p class="def">주소(URL)와 동사(GET·POST)를 정해 두고 정해진 모양의 데이터를 주고받는 약속.</p>
+        <p><b>비유</b> 식당 메뉴판. 무엇을 어떤 이름으로 주문할 수 있는지 미리 적혀 있다.</p>
+        <p><b>이 프로젝트</b> GraphQL 대신 REST. 화면이 3개고 응답 모양이 고정이라 "필드 골라 받기"가 필요 없었다.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>엔드포인트 <span class="en">endpoint</span></h3>
+        <p class="def">서버가 열어 둔 창구 하나. 주소 + 방식(GET/POST)의 조합.</p>
+        <p><b>비유</b> 은행 창구 번호. 입금 창구와 대출 창구가 다르다.</p>
+        <p><b>이 프로젝트</b> 11개. 계산·풀이·조회·삭제·공유·달력 변환·헬스체크·상담자 목록.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>FastAPI</h3>
+        <p class="def">파이썬 웹 프레임워크. 함수에 붙인 타입을 그대로 입력 검증과 API 문서로 바꿔 준다.</p>
+        <p><b>비유</b> 주문서 양식을 만들면 접수 담당과 안내문이 같이 딸려 오는 것.</p>
+        <p><b>이 프로젝트</b> 타입 힌트가 곧 계약이라, 프론트의 <code>zod</code> 스키마와 짝이 맞는지 눈으로 대조할 수 있다.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>ASGI / uvicorn</h3>
+        <p class="def">파이썬 웹 앱을 실제로 실행해 요청을 받아 주는 프로그램(과 그 규격).</p>
+        <p><b>비유</b> FastAPI가 요리사라면 uvicorn은 가게 문을 열고 손님을 받는 사람.</p>
+        <p><b>이 프로젝트</b> 배포 이미지에서 <code>--no-server-header</code>로 실행 — 서버 종류를 숨긴다.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>pydantic</h3>
+        <p class="def">들어온 값이 정해진 모양인지 검사하고, 아니면 거절하는 라이브러리.</p>
+        <p><b>비유</b> 서류 접수대. 칸이 비었거나 형식이 틀리면 접수 자체를 안 받는다.</p>
+        <p><b>이 프로젝트</b> 설정에도 쓴다 — 필수 환경변수가 없으면 <b>서버가 아예 부팅되지 않는다.</b></p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>OpenAPI / <code>/docs</code></h3>
+        <p class="def">API의 모든 창구와 데이터 모양을 기계가 읽는 형식으로 적어 둔 명세서.</p>
+        <p><b>비유</b> 건물 도면. 편리하지만 침입자에게도 편리하다.</p>
+        <p><b>이 프로젝트</b> 운영에서는 <code>/docs</code>와 <code>/openapi.json</code>을 <b>둘 다</b> 닫는다. docs만 닫으면 json으로 그대로 샌다.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>미들웨어 <span class="en">middleware</span></h3>
+        <p class="def">모든 요청이 반드시 통과하는 중간 관문. 본 처리 전후에 공통 작업을 한다.</p>
+        <p><b>비유</b> 건물 정문의 보안 검색대. 어느 사무실을 가든 여기를 지난다.</p>
+        <p><b>이 프로젝트</b> 4겹 — 요청 크기 제한 → 보안 헤더 → 레이트리밋 → 추적 ID·로그.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>CORS</h3>
+        <p class="def">브라우저가 "다른 주소의 서버를 부르는 것"을 막는 규칙. 서버가 허락 목록을 준다.</p>
+        <p><b>비유</b> 옆 건물 사람을 들일지 정문에서 명단으로 확인하는 것.</p>
+        <p><b>이 프로젝트</b> 화면과 API가 <b>같은 주소</b>라 사실상 필요 없다. 그래도 와일드카드 금지 규칙은 지켜 실제 주소를 적어 뒀다.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>단일 오리진 <span class="en">same origin</span></h3>
+        <p class="def">화면(HTML)과 API를 한 서버가 같은 주소로 함께 내보내는 구조.</p>
+        <p><b>비유</b> 주방과 홀이 한 건물. 배달 계약이 필요 없다.</p>
+        <p><b>이 프로젝트</b> 원래 프론트·백·DB 3분할 계획이었는데 이걸로 바꾸면서 CORS·터널·배포가 모두 단순해졌다.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>HTTP 상태 코드</h3>
+        <p class="def">응답 첫 줄에 붙는 세 자리 숫자. 성공·실패의 종류를 알린다.</p>
+        <p><b>비유</b> 병원 접수 결과 도장. "완료" "서류 미비" "그런 과 없음".</p>
+        <p><b>이 프로젝트</b> 400 형식 오류 · 404 없음(또는 숨김) · 413 본문 과대 · 422 달력상 불가능한 날짜 · 429 한도 초과.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>SQLite</h3>
+        <p class="def">서버 프로그램 없이 <b>파일 하나</b>가 곧 데이터베이스인 방식.</p>
+        <p><b>비유</b> 창고를 따로 빌리지 않고 튼튼한 서랍 하나를 쓰는 것.</p>
+        <p><b>이 프로젝트</b> Supabase(PostgreSQL) 계획을 접고 이걸로. 외부 서비스도 키도 없고 백업이 파일 복사 한 번.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>React / 컴포넌트</h3>
+        <p class="def">화면을 재사용 가능한 조각으로 쪼개 조립하는 방식.</p>
+        <p><b>비유</b> 레고 블록. 카드 한 장을 만들어 78번 쓴다.</p>
+        <p><b>이 프로젝트</b> 21개 파일. 타로 부채꼴·오행 막대·기둥 표가 각각 독립 조각.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>TypeScript</h3>
+        <p class="def">자바스크립트에 "이 값은 숫자" 같은 타입을 붙여, 실행 전에 오류를 잡는 언어.</p>
+        <p><b>비유</b> 맞춤법 검사기. 보내기 전에 빨간 줄이 뜬다.</p>
+        <p><b>이 프로젝트</b> <code>tsc -b</code>가 빌드 전에 돈다. 타입이 안 맞으면 배포 이미지가 만들어지지 않는다.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>번들 <span class="en">bundle</span></h3>
+        <p class="def">여러 소스 파일을 브라우저가 받기 좋게 하나로 묶어 압축한 결과물.</p>
+        <p><b>비유</b> 이삿짐을 상자 몇 개로 합치는 것. 열어 보면 안에 다 들어 있다.</p>
+        <p><b>이 프로젝트</b> <b>여기에 비밀값이 섞이면 그대로 공개된다.</b> 그래서 빌드 직후 정규식 7종으로 번들을 스캔한다.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>TanStack Query</h3>
+        <p class="def">서버에서 받아 온 데이터의 로딩·오류·캐시를 대신 관리해 주는 라이브러리.</p>
+        <p><b>비유</b> 주문 현황판. 조리 중인지, 나왔는지, 취소됐는지를 화면이 알아서 안다.</p>
+        <p><b>이 프로젝트</b> 14초짜리 풀이 요청의 "기다리는 중" 상태를 화면 곳곳에서 일관되게 쓰기 위해.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>zod / 스키마</h3>
+        <p class="def">데이터의 모양을 코드로 적어 두고, 그 정의로 검사·타입 생성까지 하는 도구.</p>
+        <p><b>비유</b> 서류 양식 원본. 접수처·복사본·검토자가 전부 같은 양식을 본다.</p>
+        <p><b>이 프로젝트</b> "계약 단일 출처". 스키마 <b>하나</b>가 폼 검증 + 목업 데이터 + 서버 응답 파싱을 전부 담당한다.</p>
+      </article>
+      <article class="term cat-웹" data-cat="웹">
+        <h3>목업 <span class="en">mock</span></h3>
+        <p class="def">아직 없는(또는 느린) 진짜 대신 끼워 넣는 가짜 데이터·가짜 응답.</p>
+        <p><b>비유</b> 모델하우스. 사람은 못 살지만 구조는 그대로다.</p>
+        <p><b>이 프로젝트</b> 서버보다 화면을 먼저 만들었다. 위험은 <b>기본값이 "목업 켬"</b>이라는 것 — 배포 시 끄는 줄이 빠지면 가짜 리포트가 나간다.</p>
+      </article>
+
+      <!-- ── 도메인 ── -->
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>만세력 <span class="hanja">萬歲曆</span></h3>
+        <p class="def">양력·음력·절기·간지를 한데 묶어 놓은 날짜 표. 사주 계산의 원재료.</p>
+        <p><b>비유</b> 천문·역법 사전. 사주는 이 사전을 찾는 일에서 시작한다.</p>
+        <p><b>이 프로젝트</b> 표를 직접 만들지 않고 라이브러리 둘을 쓰되, <b>둘 다 그대로는 틀려서</b> 보정층을 얹었다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>원국 / 사주 4주 <span class="hanja">四柱</span></h3>
+        <p class="def">태어난 연·월·일·시를 각각 두 글자로 바꾼 여덟 글자. 사주팔자의 그 팔자.</p>
+        <p><b>비유</b> 태어난 순간의 좌표 네 쌍.</p>
+        <p><b>이 프로젝트</b> 계산 결과는 확정된 <b>사실</b>로 취급하고, LLM은 그것을 문장으로 옮기기만 한다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>천간·지지 / 60갑자 <span class="hanja">干支</span></h3>
+        <p class="def">천간 10글자와 지지 12글자를 짝지어 만든 60개의 순환 이름표.</p>
+        <p><b>비유</b> 톱니 두 개(10칸·12칸)를 맞물려 돌리면 60번 만에 처음으로 돌아온다.</p>
+        <p><b>이 프로젝트</b> 라이브러리가 계산하고, 우리는 <b>어떤 시각을 넣을지</b>만 정확히 정한다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>절기 <span class="hanja">節氣</span></h3>
+        <p class="def">태양의 위치로 나눈 24개의 계절 마디. 사주의 <b>달</b>은 음력이 아니라 절기로 바뀐다.</p>
+        <p><b>비유</b> 달력의 1일이 아니라 입춘·경칩 같은 자연의 눈금이 월을 가른다.</p>
+        <p><b>이 프로젝트</b> 라이브러리는 절기를 <b>베이징 기준</b>으로 계산한다. 그대로 쓰면 경계 근처 출생자의 연주·월주가 틀린다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>진태양시 <span class="hanja">眞太陽時</span></h3>
+        <p class="def">시계가 아니라 <b>그 자리에서 해가 실제로 남중하는</b> 시각 기준의 시간.</p>
+        <p><b>비유</b> 손목시계 대신 해시계를 보는 것.</p>
+        <p><b>이 프로젝트</b> 시주(자시 23~01시)는 태양 기준이라 경도가 결과를 바꾼다. 그래서 일·시주는 진태양시로 계산한다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>표준자오선 <span class="hanja">標準子午線</span></h3>
+        <p class="def">한 나라의 시계를 맞추는 기준 경도선.</p>
+        <p><b>비유</b> 전국이 같은 시각을 쓰려고 정한 대표 지점.</p>
+        <p><b>이 프로젝트</b> 한국은 역사적으로 동경 135°↔127.5°를 오갔다. 태어난 시기에 따라 환산이 달라진다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>서머타임 <span class="en">DST</span></h3>
+        <p class="def">여름에 시계를 한 시간 앞당기던 제도. 한국도 몇 차례 시행했다.</p>
+        <p><b>비유</b> 온 나라가 한 시간 일찍 출근하기로 약속한 기간.</p>
+        <p><b>이 프로젝트</b> 보정 1단계가 이것 — 시행 구간 출생이면 시계 시각에서 1시간을 뺀다. <b>표는 아직 잠정값</b>이라 릴리스 전 검증이 숙제.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>조자시 · 야자시 <span class="hanja">朝子時 夜子時</span></h3>
+        <p class="def">밤 23~24시를 그날로 볼지 다음 날로 볼지 — 유파마다 다른 판정.</p>
+        <p><b>비유</b> 자정 직전 손님을 오늘 예약으로 칠지 내일로 칠지의 규칙 차이.</p>
+        <p><b>이 프로젝트</b> 기본값은 조자시. 코드에서 바꿀 수 있게 열어 뒀다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>지장간 <span class="hanja">支藏干</span></h3>
+        <p class="def">지지 한 글자 안에 숨어 있는 천간들. 오행을 셀 때 가중치를 어떻게 줄지가 쟁점.</p>
+        <p><b>비유</b> 겉으로 한 명이지만 안에 여러 지분이 섞여 있는 것.</p>
+        <p><b>이 프로젝트</b> 가중치 정책은 <b>우리가 정한 결정</b>이라고 PRD에 명시했다. 라이브러리가 준 값이 아니다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>오행 <span class="hanja">五行</span></h3>
+        <p class="def">목·화·토·금·수 다섯 기운. 여덟 글자를 이 다섯으로 집계해 균형을 본다.</p>
+        <p><b>비유</b> 영양 성분표. 무엇이 넘치고 무엇이 모자란지.</p>
+        <p><b>이 프로젝트</b> 화면의 막대그래프가 이 집계다. 이 페이지의 분류 색도 여기서 가져왔다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>일간 · 십성 <span class="hanja">日干 十星</span></h3>
+        <p class="def">일간은 사주에서 '나'에 해당하는 글자, 십성은 나머지 글자와 나의 관계.</p>
+        <p><b>비유</b> 가족 관계도에서 '나'를 정하고 나머지를 부모·형제로 부르는 것.</p>
+        <p><b>이 프로젝트</b> "무진 병진"만 보여주면 손님이 못 읽는다. 그 사이를 메우려고 만든 계산.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>신강 · 신약 <span class="hanja">身强 身弱</span></h3>
+        <p class="def">일간의 힘이 센지 약한지 판정. 사주 해석의 큰 갈래.</p>
+        <p><b>비유</b> 같은 지표라도 학교마다 합격선이 다른 것.</p>
+        <p><b>이 프로젝트</b> <b>일부러 빼놨다.</b> 득령·득지·득세를 보는 법이 유파마다 달라 한쪽을 고르면 그 자체가 오답이 된다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>윤달 <span class="hanja">閏月</span></h3>
+        <p class="def">음력에서 계절이 밀리지 않도록 몇 년에 한 번 끼워 넣는 여벌 달.</p>
+        <p><b>비유</b> 양력의 2월 29일을 한 달 통째로 하는 것.</p>
+        <p><b>이 프로젝트</b> 라이브러리가 <b>없는 윤달에도 "있다"고 답한다.</b> 조용히 틀린 결과가 나오는 최악의 종류.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>왕복 검증 <span class="en">round-trip</span></h3>
+        <p class="def">변환한 값을 되돌려 원본과 같은지 확인하는 방법.</p>
+        <p><b>비유</b> 번역문을 다시 원어로 옮겨 보고 뜻이 맞는지 확인하는 것.</p>
+        <p><b>이 프로젝트</b> 음→양→음. 되돌린 날짜가 다르면 그 윤달은 존재하지 않는 것으로 판정한다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>골든 테스트 <span class="en">golden test</span></h3>
+        <p class="def">정답을 미리 확정해 두고 결과가 그것과 같은지 보는 시험.</p>
+        <p><b>비유</b> 모범 답안지와 대조 채점.</p>
+        <p><b>이 프로젝트</b> 사람이 100건 만드는 대신 <b>KASI 절기 API와 1900~2050년 약 3,600건을 자동 전수 대조</b>했다.</p>
+      </article>
+      <article class="term cat-도메인" data-cat="도메인">
+        <h3>대운 · 세운 <span class="hanja">大運 歲運</span></h3>
+        <p class="def">10년 단위(대운)와 그 해(세운)의 흐름.</p>
+        <p><b>비유</b> 원국이 지형이라면 이쪽은 계절과 날씨.</p>
+        <p><b>이 프로젝트</b> 리포트의 "이번 달 흐름"이 여기서 나온다. 화면 순서를 사주 풀이 바로 다음으로 옮겼다.</p>
+      </article>
+
+      <!-- ── AI ── -->
+      <article class="term cat-AI" data-cat="AI">
+        <h3>LLM <span class="en">Large Language Model</span></h3>
+        <p class="def">엄청난 양의 글을 학습해 다음에 올 말을 확률로 고르는 모델.</p>
+        <p><b>비유</b> 말솜씨는 뛰어나지만 계산은 못 미더운 작가.</p>
+        <p><b>이 프로젝트</b> <b>계산은 절대 안 시킨다.</b> 확정된 사실을 넘기고 문장만 쓰게 한다.</p>
+      </article>
+      <article class="term cat-AI" data-cat="AI">
+        <h3>프롬프트 <span class="en">prompt</span></h3>
+        <p class="def">모델에게 주는 지시문 전체. 규칙·자료·출력 형식이 다 들어간다.</p>
+        <p><b>비유</b> 작가에게 넘기는 취재 자료 + 원고 청탁서.</p>
+        <p><b>이 프로젝트</b> 템플릿을 PRD §11.4에 문서로 박아 뒀다. 코드에만 두면 아무도 못 본다.</p>
+      </article>
+      <article class="term cat-AI" data-cat="AI">
+        <h3>few-shot</h3>
+        <p class="def">원하는 결과의 <b>예시 몇 개</b>를 프롬프트에 함께 넣어 흉내 내게 하는 방법.</p>
+        <p><b>비유</b> "이런 느낌으로 써 주세요" 하며 샘플 원고를 보여주는 것.</p>
+        <p><b>이 프로젝트</b> 실제 상담 말투 샘플을 넣되 <b>5건 미만이면 적용 안 함</b> — 표본이 적으면 문장을 통째로 베낀다.</p>
+      </article>
+      <article class="term cat-AI" data-cat="AI">
+        <h3>구조화 출력 <span class="en">structured output</span></h3>
+        <p class="def">자유 문장이 아니라 정해진 항목·형식(JSON)으로만 답하게 강제하는 것.</p>
+        <p><b>비유</b> 서술형 대신 빈칸 채우기 답안지를 주는 것.</p>
+        <p><b>이 프로젝트</b> 출력 스키마를 고정. 형식이 어긋나면 받아들이지 않고 부분 성공으로 처리한다.</p>
+      </article>
+      <article class="term cat-AI" data-cat="AI">
+        <h3>enum <span class="en">열거형</span></h3>
+        <p class="def">허용되는 값을 목록으로 못 박는 타입.</p>
+        <p><b>비유</b> 객관식. 보기 밖의 답은 쓸 수 없다.</p>
+        <p><b>이 프로젝트</b> 프롬프트로 "주제 5개만" 부탁했더니 모델이 <b>요청하지 않은 "종합" 항목을 지어냈다.</b> 그래서 enum으로 막았다.</p>
+      </article>
+      <article class="term cat-AI" data-cat="AI">
+        <h3>환각 <span class="en">hallucination</span></h3>
+        <p class="def">모델이 사실이 아닌 것을 자신 있게 지어내는 현상.</p>
+        <p><b>비유</b> 모르는 걸 모른다고 안 하고 그럴듯하게 말하는 사람.</p>
+        <p><b>이 프로젝트</b> 카드 뜻을 코드 표에 두고 <b>키워드만</b> 넘긴다. 카드 의미를 스스로 짓지 못하게.</p>
+      </article>
+      <article class="term cat-AI" data-cat="AI">
+        <h3>어댑터 / 프로토콜 <span class="en">adapter</span></h3>
+        <p class="def">바깥 서비스를 우리가 정한 인터페이스 뒤에 숨겨, 갈아 끼울 수 있게 하는 설계.</p>
+        <p><b>비유</b> 해외여행용 콘센트 어댑터. 벽면 규격이 바뀌어도 기기는 그대로.</p>
+        <p><b>이 프로젝트</b> <code>ReportGenerator</code> 하나. 지금은 OpenAI지만 Claude로 바꿔도 고칠 곳이 한 군데다.</p>
+      </article>
+      <article class="term cat-AI" data-cat="AI">
+        <h3>부분 성공 <span class="en">graceful degradation</span></h3>
+        <p class="def">일부가 실패해도 전체를 실패로 만들지 않고, 되는 만큼 돌려주는 처리.</p>
+        <p><b>비유</b> 디저트가 품절이면 주문 전체를 취소하지 않고 본식은 낸다.</p>
+        <p><b>이 프로젝트</b> LLM이 죽어도 <code>500</code>이 아니다. 계산 결과는 이미 유효하므로 그것만 보낸다.</p>
+      </article>
+      <article class="term cat-AI" data-cat="AI">
+        <h3>seed / 재현성</h3>
+        <p class="def">난수의 출발점을 저장해 두면 같은 입력에 항상 같은 결과가 나오게 만드는 것.</p>
+        <p><b>비유</b> 카드를 섞은 순서를 적어 두는 것. 언제 다시 펼쳐도 그 순서다.</p>
+        <p><b>이 프로젝트</b> 요구사항이다 — 공유 링크를 다시 열었을 때 카드가 바뀌면 상담이 성립하지 않는다.</p>
+      </article>
+      <article class="term cat-AI" data-cat="AI">
+        <h3>비복원 추출</h3>
+        <p class="def">한 번 뽑은 것은 다시 넣지 않고 뽑는 방식.</p>
+        <p><b>비유</b> 로또. 같은 번호가 두 번 나오지 않는다.</p>
+        <p><b>이 프로젝트</b> 78장에서 3장. 세 자리(현재·조언·방향)에 같은 카드가 겹치면 안 된다.</p>
+      </article>
+
+      <!-- ── 보안 ── -->
+      <article class="term cat-보안" data-cat="보안">
+        <h3>AES-256-GCM</h3>
+        <p class="def">널리 쓰이는 대칭키 암호. 내용을 가리는 동시에 <b>변조 여부까지</b> 검출한다.</p>
+        <p><b>비유</b> 잠금장치 + 봉인 스티커. 열렸는지도 알 수 있다.</p>
+        <p><b>이 프로젝트</b> 이름·생년월일·시각에 적용. DB 파일이 통째로 새도 이 값들은 안 읽힌다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>논스 <span class="en">nonce</span></h3>
+        <p class="def">암호화할 때마다 새로 쓰는 일회용 값. 재사용하면 암호가 깨진다.</p>
+        <p><b>비유</b> 일회용 비밀번호. 같은 걸 두 번 쓰면 의미가 없다.</p>
+        <p><b>이 프로젝트</b> <b>필드마다</b> 새 nonce. 저장 형식은 base64(nonce + 암호문).</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>필드 암호화</h3>
+        <p class="def">DB 전체가 아니라 민감한 <b>칸만</b> 골라 암호화하는 것.</p>
+        <p><b>비유</b> 서류철 전체가 아니라 주민번호 칸만 검게 덮는 것.</p>
+        <p><b>이 프로젝트</b> 키를 잃으면 복호화 불가. 그래서 자동 백업은 <b>키를 백업에 넣지 않고</b>, 키는 비밀번호 관리자에 따로 둔다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>인증 vs 인가 <span class="en">401 / 403</span></h3>
+        <p class="def">인증은 "누구인가", 인가는 "그걸 할 권한이 있는가".</p>
+        <p><b>비유</b> 신분증 확인(인증)과 출입 등급 확인(인가)은 다른 절차다.</p>
+        <p><b>이 프로젝트</b> 로그인 자체가 없어 인증은 없다. 상담자 전용 창구만 토큰으로 <b>인가</b>를 건다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>404로 숨기기</h3>
+        <p class="def">권한이 없을 때 "권한 없음(401)" 대신 "그런 것 없음(404)"으로 답하는 방식.</p>
+        <p><b>비유</b> 잠긴 문에 "관계자 외 출입금지" 팻말을 붙이지 않는 것. 문이 있는 줄도 모르게.</p>
+        <p><b>이 프로젝트</b> 상담자 목록 창구에 적용. 다만 이건 <b>보조 수단</b>이지 잠금장치 자체가 아니라는 반론이 있다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>CSP <span class="en">Content Security Policy</span></h3>
+        <p class="def">이 페이지가 어디서 온 스크립트·글꼴·이미지를 실행해도 되는지 브라우저에 알리는 목록.</p>
+        <p><b>비유</b> 출입 허가 업체 명단. 명단에 없으면 로비에서 막힌다.</p>
+        <p><b>이 프로젝트</b> 지시자 9개. <code>frame-ancestors 'none'</code>으로 다른 사이트가 우리를 iframe에 못 넣게 막는다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>레이트리밋 <span class="en">rate limit</span></h3>
+        <p class="def">같은 사람이 정해진 시간에 부를 수 있는 횟수를 제한하는 것.</p>
+        <p><b>비유</b> 1인당 구매 수량 제한.</p>
+        <p><b>이 프로젝트</b> 2층 — <b>돈 드는 풀이</b>는 빡빡하게, <b>공짜지만 디스크를 채우는 계산</b>은 느슨하게, 조회는 안 센다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>환경변수 / <code>.env</code></h3>
+        <p class="def">API 키처럼 코드에 적으면 안 되는 값을 실행 환경에 따로 넣어 주는 방식.</p>
+        <p><b>비유</b> 금고 비밀번호를 설명서에 적지 않고 따로 전달하는 것.</p>
+        <p><b>이 프로젝트</b> 절대경로로 읽는다. 상대경로면 서버를 어디서 띄웠느냐에 따라 <b>키가 조용히 비어</b> 문장 생성이 통째로 빠진다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>pre-commit 훅</h3>
+        <p class="def">커밋이 만들어지기 직전에 자동 실행되는 검사. 걸리면 커밋을 거부한다.</p>
+        <p><b>비유</b> 출국 심사. 통과 못 하면 비행기를 못 탄다.</p>
+        <p><b>이 프로젝트</b> 유출 차단 1차 방어. <code>.env</code>·<code>*.key</code>·<code>*.pem</code>은 스테이징 자체가 거부된다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>CVE / pip-audit</h3>
+        <p class="def">공개된 취약점 번호와, 설치된 패키지가 거기 걸리는지 검사하는 도구.</p>
+        <p><b>비유</b> 리콜 대상 부품 목록과 대조 점검.</p>
+        <p><b>이 프로젝트</b> 버전을 고정하고 <b>올린 이유를 주석으로</b> 남겼다 — starlette 9건, python-dotenv, pytest.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>최소 권한 <span class="en">least privilege</span></h3>
+        <p class="def">필요한 만큼만 권한을 주는 원칙.</p>
+        <p><b>비유</b> 청소 담당에게 금고 열쇠까지 주지 않는 것.</p>
+        <p><b>이 프로젝트</b> 컨테이너를 <b>루트가 아닌</b> 사용자로 돌린다. 뚫려도 할 수 있는 일이 줄어든다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>로그 마스킹</h3>
+        <p class="def">기록에 남기면 안 되는 값을 별표로 가리거나 아예 안 남기는 것.</p>
+        <p><b>비유</b> CCTV는 돌리되 비밀번호 누르는 손은 안 찍히게.</p>
+        <p><b>이 프로젝트</b> 남기는 것은 방식·경로·상태·소요시간·추적ID뿐. 이름·생년월일·토큰·키는 걸러진다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>하드 삭제 <span class="en">hard delete</span></h3>
+        <p class="def">"삭제됨" 표시만 남기는 게 아니라 데이터를 실제로 지우는 것.</p>
+        <p><b>비유</b> 휴지통에 넣는 것과 파쇄기에 넣는 것의 차이.</p>
+        <p><b>이 프로젝트</b> 보관 기간이 지나면 진짜로 지운다. 개인정보는 "가지고 있지 않은 것"이 가장 안전하다.</p>
+      </article>
+      <article class="term cat-보안" data-cat="보안">
+        <h3>DPAPI</h3>
+        <p class="def">윈도우가 제공하는 암호 보관 기능. <b>같은 PC·같은 사용자</b>에서만 풀린다.</p>
+        <p><b>비유</b> 그 집 문에서만 열리는 열쇠. 훔쳐 가도 다른 집에서는 안 열린다.</p>
+        <p><b>이 프로젝트</b> 자동 백업이 무인으로 돌려면 암호가 필요해서 쓴다. 대신 백업에 암호화 키는 넣지 않는다.</p>
+      </article>
+
+      <!-- ── 운영 ── -->
+      <article class="term cat-운영" data-cat="운영">
+        <h3>Docker / 이미지</h3>
+        <p class="def">프로그램과 실행에 필요한 것 전부를 한 덩어리로 묶어, 어디서든 같게 돌아가게 만드는 방식.</p>
+        <p><b>비유</b> 주방을 통째로 담은 컨테이너. 어느 항구에 내려도 같은 음식이 나온다.</p>
+        <p><b>이 프로젝트</b> "내 PC에서는 되는데요"를 없애기 위해. 화면 빌드와 서버 실행이 한 이미지에 들어간다.</p>
+      </article>
+      <article class="term cat-운영" data-cat="운영">
+        <h3>멀티스테이지 빌드</h3>
+        <p class="def">빌드용 도구는 앞 단계에서만 쓰고, 최종 이미지에는 결과물만 담는 방식.</p>
+        <p><b>비유</b> 공사 후 비계를 철거하고 건물만 남기는 것.</p>
+        <p><b>이 프로젝트</b> 1단계 Node로 화면 빌드 → 2단계 Python 서버에 <b>결과물만</b> 복사. 이미지가 작고 공격면도 줄어든다.</p>
+      </article>
+      <article class="term cat-운영" data-cat="운영">
+        <h3>Blueprint <span class="en">render.yaml</span></h3>
+        <p class="def">배포 설정을 클릭이 아니라 <b>파일</b>로 적어 저장소에 두는 것.</p>
+        <p><b>비유</b> 조립 설명서를 상자에 같이 넣는 것.</p>
+        <p><b>이 프로젝트</b> 비밀값만 <code>sync: false</code>로 빼고 나머지는 파일에. 다시 배포해도 같은 구성이 재현된다.</p>
+      </article>
+      <article class="term cat-운영" data-cat="운영">
+        <h3>영구 디스크 <span class="en">persistent disk</span></h3>
+        <p class="def">컨테이너가 재시작해도 남아 있는 저장 공간.</p>
+        <p><b>비유</b> 호텔 방은 매번 바뀌지만 짐은 보관함에 두는 것.</p>
+        <p><b>이 프로젝트</b> <b>무료 플랜에는 없다.</b> 재배포하면 SQLite 파일이 사라진다 — 유료 전환 시 풀 주석이 대기 중.</p>
+      </article>
+      <article class="term cat-운영" data-cat="운영">
+        <h3>헬스체크 / 콜드 스타트</h3>
+        <p class="def">서버가 살아 있는지 묻는 창구, 그리고 잠들었던 서버가 첫 요청에 느리게 깨는 현상.</p>
+        <p><b>비유</b> 셔터를 내렸다 다시 올리는 데 걸리는 시간.</p>
+        <p><b>이 프로젝트</b> <code>/api/v1/health</code>를 예열용으로 둔다. 무료 플랜은 잠들기 때문에 첫 손님이 느리다.</p>
+      </article>
+      <article class="term cat-운영" data-cat="운영">
+        <h3>터널 <span class="en">tunnel</span></h3>
+        <p class="def">공인 IP나 포트 개방 없이, 바깥에서 내 PC의 서버에 닿게 해 주는 중계.</p>
+        <p><b>비유</b> 우리 집 주소를 알리지 않고 사서함으로 손님을 받는 것.</p>
+        <p><b>이 프로젝트</b> Cloudflare 터널. 무료라 재연결마다 주소가 바뀌어서, 바뀐 주소를 파일에 자동으로 적는다.</p>
+      </article>
+      <article class="term cat-운영" data-cat="운영">
+        <h3>백업 검증</h3>
+        <p class="def">백업을 만든 뒤 <b>실제로 열어서</b> 복구 가능한지 확인하는 절차.</p>
+        <p><b>비유</b> 소화기를 사 두는 것과, 정말 분사되는지 시험해 보는 것의 차이.</p>
+        <p><b>이 프로젝트</b> 만든 자리에서 바로 열어 검사한다. 파일 복사가 아니라 SQLite 백업 API를 써 서버가 돌아도 안전하다.</p>
+      </article>
+      <article class="term cat-운영" data-cat="운영">
+        <h3>회귀 테스트 <span class="en">pytest</span></h3>
+        <p class="def">고친 곳 말고 <b>멀쩡하던 곳</b>이 망가지지 않았는지 자동으로 확인하는 시험.</p>
+        <p><b>비유</b> 한 군데 수리한 뒤 차 전체를 점검하는 것.</p>
+        <p><b>이 프로젝트</b> 155개. 절기·저장·레이트리밋·리포트 형식이 각각 잠겨 있다.</p>
+      </article>
+
+    </div>
+    <p class="empty" id="empty" hidden>해당하는 용어가 없습니다. 다른 말로 찾아보세요.</p>
+  </section>
+
+  <section>
+    <h2>토론 쟁점 일곱 가지</h2>
+    <p class="sub">질문받을 만한 곳을 미리 정리했습니다. 우리 입장과 예상 반론을 나란히 뒀습니다.</p>
+    <div class="issues">
+
+      <article class="issue">
+        <span class="no">1</span>
+        <div>
+          <h3>무료 플랜에는 디스크가 없다 — 리포트가 재배포마다 사라진다</h3>
+          <dl>
+            <dt>우리 입장</dt><dd>과제 단계에서는 데이터 영속성보다 배포가 되는 것이 우선. 설정은 <code>render.yaml</code>에 주석으로 준비돼 있어 유료 전환 시 두 블록만 풀면 된다.</dd>
+            <dt>예상 반론</dt><dd>개인정보를 암호화까지 하면서 저장은 휘발된다면, 애초에 저장이 필요한 설계였나?</dd>
+          </dl>
+        </div>
+      </article>
+
+      <article class="issue">
+        <span class="no">2</span>
+        <div>
+          <h3>로그인이 없다 — 링크를 아는 사람은 누구나 본다</h3>
+          <dl>
+            <dt>우리 입장</dt><dd>혼자 운영하는 상담 서비스라 계정 체계의 비용이 이득보다 크다. 대신 id와 공유 토큰을 32자 난수로 두고, 공유 응답에서 개인 식별 값을 뺀다.</dd>
+            <dt>예상 반론</dt><dd>난수 URL은 카톡·메일로 전달되는 순간 통제를 벗어난다. 만료·1회용 링크가 있어야 하지 않나?</dd>
+          </dl>
+        </div>
+      </article>
+
+      <article class="issue">
+        <span class="no">3</span>
+        <div>
+          <h3>레이트리밋이 서버 메모리에만 있다</h3>
+          <dl>
+            <dt>우리 입장</dt><dd>서버가 한 대인 구성에서는 이것으로 충분하고, 외부 저장소를 하나 더 두는 비용이 없다. 코드 주석에 한계를 명시해 뒀다.</dd>
+            <dt>예상 반론</dt><dd>확장하는 순간 조용히 무력화된다. 요금이 걸린 방어선을 이렇게 두는 게 맞나?</dd>
+          </dl>
+        </div>
+      </article>
+
+      <article class="issue">
+        <span class="no">4</span>
+        <div>
+          <h3>표준시·서머타임 표가 잠정값이다</h3>
+          <dl>
+            <dt>우리 입장</dt><dd>절기 계산은 KASI와 3,600건 대조로 검증했다. 남은 것은 역사적 표준시 표이고, PRD에 미검증 항목으로 명시해 릴리스 조건으로 걸어 뒀다.</dd>
+            <dt>예상 반론</dt><dd>경계 하루가 틀리면 그날 태어난 <b>모든 사람</b>의 시주가 틀린다. 검증 전 공개가 맞나?</dd>
+          </dl>
+        </div>
+      </article>
+
+      <article class="issue">
+        <span class="no">5</span>
+        <div>
+          <h3>PRD는 Claude로 적었는데 구현은 OpenAI다</h3>
+          <dl>
+            <dt>우리 입장</dt><dd>어댑터로 갈라놔서 교체 지점이 한 곳이고, PRD에 정정 이력을 남겼다. 같은 입력으로 두 공급자를 비교할 수 있는 구조다.</dd>
+            <dt>예상 반론</dt><dd>비교할 수 있다면 왜 안 했나. 문서와 구현이 갈린 채 남아 있는 것 자체가 관리 부채 아닌가?</dd>
+          </dl>
+        </div>
+      </article>
+
+      <article class="issue">
+        <span class="no">6</span>
+        <div>
+          <h3>목업의 기본값이 "켬"이다</h3>
+          <dl>
+            <dt>우리 입장</dt><dd>화면을 서버보다 먼저 만드는 전략의 결과다. 배포 이미지에서 <code>VITE_USE_MOCK=false</code>로 끄고, 그 이유를 Dockerfile에 적어 뒀다.</dd>
+            <dt>예상 반론</dt><dd>안전한 기본값 원칙 위반이다. 한 줄이 빠지면 가짜 리포트가 손님에게 나가는데, 기본값을 뒤집는 게 맞다.</dd>
+          </dl>
+        </div>
+      </article>
+
+      <article class="issue">
+        <span class="no">7</span>
+        <div>
+          <h3>유료 전환을 전제로 라이선스를 미리 골랐다</h3>
+          <dl>
+            <dt>우리 입장</dt><dd>타로 이미지는 1909년판 퍼블릭 도메인만, 호스팅은 상업적 이용이 허용된 곳으로. 나중에 바꾸면 더 비싸다.</dd>
+            <dt>예상 반론</dt><dd>아직 수익이 없는 단계에서 선택지를 좁힌 것 아닌가. 사주 해석 자체의 책임·면책은 어떻게 다룰 것인가?</dd>
+          </dl>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <footer>
+    <div>세권사주타로 · FastAPI + React · 2026-09-02 ~ 09-08 작업 · 저장소 <code>SeGwonKIM/Saju_Tarot</code></div>
+    <div>이 페이지의 수치는 저장소를 직접 읽어 센 값입니다. 명세는 <code>docs/PRD.md</code>가 원본입니다.</div>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var grid = document.getElementById('grid');
+    var terms = Array.prototype.slice.call(grid.querySelectorAll('.term'));
+    var q = document.getElementById('q');
+    var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+    var count = document.getElementById('count');
+    var empty = document.getElementById('empty');
+    var active = null;
+
+    terms.forEach(function (t) { t.dataset.text = t.textContent.toLowerCase(); });
+
+    function apply() {
+      var needle = q.value.trim().toLowerCase();
+      var shown = 0;
+      terms.forEach(function (t) {
+        var okCat = !active || t.dataset.cat === active;
+        var okText = !needle || t.dataset.text.indexOf(needle) !== -1;
+        var show = okCat && okText;
+        t.hidden = !show;
+        t.classList.toggle('hit', show && !!needle);
+        if (show) shown++;
+      });
+      count.textContent = shown === terms.length
+        ? terms.length + '개 용어'
+        : shown + ' / ' + terms.length + '개';
+      empty.hidden = shown > 0;
+    }
+
+    q.addEventListener('input', apply);
+    chips.forEach(function (c) {
+      c.addEventListener('click', function () {
+        active = active === c.dataset.cat ? null : c.dataset.cat;
+        chips.forEach(function (o) {
+          o.setAttribute('aria-pressed', String(o.dataset.cat === active));
+        });
+        apply();
+      });
+    });
+
+    apply();
+  })();
+</script>
+
+
+===== Saju_Tarot/frontend/scripts/check-bundle.mjs =====
+/**
+ * 빌드 결과물에 비밀값이 섞여 들어갔는지 검사한다 (PRD §12.19).
+ *
+ * VITE_ 접두사가 붙은 환경변수는 번들에 그대로 박히므로,
+ * 실수로 비밀값을 VITE_ 로 만들면 브라우저에 공개된다.
+ *
+ * 실행: npm run check:secrets   (dist/ 가 있어야 함)
+ */
+import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { join } from 'node:path'
+
+const DIST = 'dist'
+
+const PATTERNS = [
+  { name: 'Anthropic API 키', re: /sk-ant-[A-Za-z0-9_-]{20,}/ },
+  { name: '일반 LLM API 키', re: /\bsk-[A-Za-z0-9]{32,}/ },
+  { name: 'Supabase service_role', re: /"role"\s*:\s*"service_role"/ },
+  { name: 'service_role 문자열', re: /service_role/ },
+  { name: 'AWS Access Key', re: /AKIA[0-9A-Z]{16}/ },
+  { name: '개인키', re: /-----BEGIN [A-Z ]*PRIVATE KEY-----/ },
+  { name: 'DB 접속 문자열', re: /postgres(ql)?:\/\/[^:]+:[^@]+@/ },
+]
+
+function walk(dir) {
+  const out = []
+  for (const entry of readdirSync(dir)) {
+    const p = join(dir, entry)
+    if (statSync(p).isDirectory()) out.push(...walk(p))
+    else out.push(p)
+  }
+  return out
+}
+
+let found = 0
+let scanned = 0
+
+try {
+  statSync(DIST)
+} catch {
+  console.error(`✖ ${DIST}/ 가 없습니다. 먼저 npm run build 를 실행하세요.`)
+  process.exit(1)
+}
+
+for (const file of walk(DIST)) {
+  if (!/\.(js|css|html|json|map|txt)$/.test(file)) continue
+  scanned++
+  const content = readFileSync(file, 'utf8')
+  for (const { name, re } of PATTERNS) {
+    if (re.test(content)) {
+      console.error(`✖ ${file} 안에서 ${name} 로 보이는 문자열이 발견됐습니다.`)
+      found++
+    }
+  }
+}
+
+if (found > 0) {
+  console.error('')
+  console.error('배포를 중단하세요. 비밀값을 VITE_ 환경변수에서 빼고 백엔드로 옮겨야 합니다. (PRD §12.1)')
+  process.exit(1)
+}
+
+console.log(`✓ 번들 검사 통과 — ${scanned}개 파일에서 비밀값 없음`)
+
+
+===== Saju_Tarot/frontend/src/App.tsx =====
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+import ResultPage from './pages/ResultPage'
+
+/** 라우팅 (PRD §5.3). /my 는 로그인이 붙을 때 추가한다. */
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/result/:id" element={<ResultPage />} />
+        <Route path="/share/:token" element={<ResultPage mode="shared" />} />
+        <Route path="*" element={<HomePage />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/api/calendar.ts =====
+/**
+ * 달력 변환 API (PRD §10.1).
+ *
+ * 3단계에서 목업(lib/calendar.ts 의 mockConvert·leapMonthsOf)을 이 호출로 교체했다.
+ * 서버가 아직 안 떴거나 잠들어 있을 수 있으므로, 실패하면 **틀린 숫자를 보여주지 않고**
+ * 안전한 기본값(29일·윤달 없음)으로 폼을 굴리고 화면에 그 사실을 알린다.
+ */
+import { z } from 'zod'
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
+
+export const convertSchema = z.object({
+  solar_date: z.string(),
+  lunar_date: z.string(),
+  is_leap_month: z.boolean(),
+  ganji: z.string(),
+})
+export type Converted = z.infer<typeof convertSchema>
+
+export const lunarYearSchema = z.object({
+  year: z.number(),
+  months: z.array(
+    z.object({
+      month: z.number(),
+      days: z.number(),
+      has_leap: z.boolean(),
+      leap_days: z.number().nullable(),
+    }),
+  ),
+})
+export type LunarYear = z.infer<typeof lunarYearSchema>
+
+/** 없는 날짜(422)와 서버 장애를 구분한다 — 화면 문구가 달라야 한다 */
+export class DateNotFound extends Error {}
+
+export async function convertDate(input: {
+  calendar_type: 'solar' | 'lunar'
+  date: string
+  is_leap_month: boolean
+}): Promise<Converted> {
+  const res = await fetch(`${API_BASE}/calendar/convert`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  })
+  if (res.status === 422) {
+    const body = await res.json().catch(() => null)
+    throw new DateNotFound(body?.error?.message ?? '없는 날짜입니다.')
+  }
+  if (!res.ok) throw new Error('변환에 실패했습니다.')
+  return convertSchema.parse(await res.json())
+}
+
+export async function fetchLunarYear(year: number): Promise<LunarYear> {
+  const res = await fetch(`${API_BASE}/calendar/lunar-year/${year}`)
+  if (!res.ok) throw new Error('음력 정보를 가져오지 못했습니다.')
+  return lunarYearSchema.parse(await res.json())
+}
+
+
+===== Saju_Tarot/frontend/src/api/mockData.ts =====
+/**
+ * 목업 데이터 (PRD §7).
+ *
+ * 규칙
+ *  - 컴포넌트 안에 데이터를 두지 않는다. 전부 이 파일에 모은다.
+ *  - 모양은 PRD §10.2 응답 예시와 **똑같이** 맞춘다. 모양이 다르면 그 자체가 계약 불일치다.
+ *  - 정상 / 시간 모름 / 오행 0 / LLM 실패 / 429 / 500 케이스를 모두 담는다 (§7.3).
+ */
+import { SPREAD, type Reading, type ReadingRequest, type Topic } from '../schemas/reading'
+
+const GAN = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계']
+const GAN_H = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
+const JI = ['자', '축', '인', '묘', '진', '사', '오', '미', '신', '유', '술', '해']
+const JI_H = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
+
+function pillar(ganIdx: number, jiIdx: number) {
+  const g = ((ganIdx % 10) + 10) % 10
+  const j = ((jiIdx % 12) + 12) % 12
+  return { gan: GAN_H[g], ji: JI_H[j], ko: `${GAN[g]}${JI[j]}` }
+}
+
+const TAROT_POOL = [
+  { card: 'The Star', card_ko: '별', keywords: ['희망', '회복', '치유'] },
+  { card: 'The Sun', card_ko: '태양', keywords: ['성취', '활력', '명료'] },
+  { card: 'Wheel of Fortune', card_ko: '운명의 수레바퀴', keywords: ['전환점', '순환', '기회'] },
+  { card: 'Eight of Pentacles', card_ko: '펜타클 8', keywords: ['숙련', '반복', '축적'] },
+  { card: 'Two of Cups', card_ko: '컵 2', keywords: ['교류', '균형', '약속'] },
+  { card: 'The Hermit', card_ko: '은둔자', keywords: ['성찰', '거리두기', '준비'] },
+  { card: 'Three of Wands', card_ko: '완드 3', keywords: ['확장', '전망', '기다림'] },
+  { card: 'The Empress', card_ko: '여황제', keywords: ['풍요', '돌봄', '결실'] },
+  { card: 'The Moon', card_ko: '달', keywords: ['혼란', '오해', '불안'] },
+  { card: 'Three of Cups', card_ko: '컵 3', keywords: ['교류', '축하', '연결'] },
+  { card: 'The Lovers', card_ko: '연인', keywords: ['선택', '이끌림', '조화'] },
+  { card: 'Six of Cups', card_ko: '컵 6', keywords: ['추억', '재회', '되돌아봄'] },
+  { card: 'Ten of Pentacles', card_ko: '펜타클 10', keywords: ['안정', '축적', '가족'] },
+  { card: 'Justice', card_ko: '정의', keywords: ['균형', '판단', '책임'] },
+]
+
+/**
+ * 주제별 조언 문안 — 5분류 (PRD §3.4).
+ * 재회운은 시점을 단정하지 않고, 상대방속마음은 한계를 문장에 담는다 (§11.4 규칙 6·7).
+ */
+const ADVICE: Record<Topic, string> = {
+  재회운:
+    '먼저 연락하기보다 한 박자 기다리는 편이 나은 흐름입니다. 조급함이 앞서면 되던 일도 어긋납니다.',
+  '상대방속마음':
+    '상대의 생년월일 없이 카드 흐름으로 읽으면, 마음을 정리하는 중이라 표현이 늦는 모습입니다.',
+  연애: '먼저 다가가기보다 상대의 속도를 한 번 확인해 보시는 편이 좋습니다.',
+  재물: '큰 지출은 다음 달로 미루고 고정비를 한 번 정리해 보시면 좋습니다.',
+  대인관계: '한 사람과의 문제로 보이지만, 자리와 역할이 겹쳐 생긴 마찰인 흐름입니다.',
+}
+
+/** 입력값으로부터 결정론적으로 목업 리포트를 만든다 (같은 입력 → 같은 결과) */
+export function mockReading(input: ReadingRequest): Reading {
+  const [y, m, d] = input.birth_date.split('-').map(Number)
+  const seed = y * 372 + m * 31 + d + (input.birth_time ? Number(input.birth_time.slice(0, 2)) : 0)
+
+  const hourKnown = input.birth_time !== null
+  const counts: Record<'목' | '화' | '토' | '금' | '수', number> = {
+    목: 0, 화: 0, 토: 0, 금: 0, 수: 0,
+  }
+  const order = ['목', '화', '토', '금', '수'] as const
+  const total = hourKnown ? 8 : 6
+  for (let i = 0; i < total; i++) counts[order[(seed + i * 3) % 5]]++
+
+  const verdict: string[] = []
+  for (const k of order) {
+    const ratio = counts[k] / total
+    if (counts[k] === 0) verdict.push(`${k} 없음`)
+    else if (ratio >= 0.4) verdict.push(`${k} 과다`)
+    else if (ratio <= 0.05) verdict.push(`${k} 부족`)
+  }
+  if (verdict.length === 0) verdict.push('오행이 고르게 분포')
+
+  // 3장 고정 스프레드. 주제 수와 무관하며, 세 장은 서로 겹치지 않는다 (PRD §8.6)
+  const deck = [...TAROT_POOL]
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = (seed + i * 7) % (i + 1)
+    ;[deck[i], deck[j]] = [deck[j], deck[i]]
+  }
+  const tarot = SPREAD.map((slot, i) => ({
+    position: slot.key,
+    position_ko: slot.label,
+    ...deck[i],
+    reversed: (seed + i) % 3 === 0,
+  }))
+
+  return {
+    id: `mock-${seed}`,
+    input_echo: {
+      solar_datetime: `${input.birth_date}T${input.birth_time ?? '12:00'}:00+09:00`,
+      true_solar_correction_min: -32,
+      dst_applied: false,
+      midnight_rule: '조자시',
+      standard_meridian: 135.0,
+    },
+    pillars: {
+      year: pillar(seed, seed + 4),
+      month: pillar(seed + 2, m + 1),
+      day: pillar(seed + 5, seed + 7),
+      hour: hourKnown ? pillar(seed + 8, Number(input.birth_time!.slice(0, 2)) / 2) : null,
+    },
+    interpretation: {
+      day_master_ko: '을목',
+      day_master_gan: '乙',
+      day_master_image: '휘어지며 뻗는 풀과 덩굴',
+      element: '목',
+      yin_yang: '음',
+      shishen: { 정재: 5, 상관: 3, 비견: 2, 편인: 2 },
+      dominant: ['정재'],
+    },
+    period: { year_ko: '병오', month_ko: '병신', label: '2026년 9월 · 병오년 병신월' },
+    elements: { ...counts, verdict },
+    tarot,
+    report: {
+      saju_reading: [
+        '휘어지되 꺾이지 않는 결을 타고나셨습니다.',
+        '성실하게 쌓아 올리는 힘이 강한 편입니다.',
+        '속도를 내기보다 오래 가는 쪽이 맞습니다.',
+      ],
+      monthly_flow: [
+        '큰 결정을 서두르기보다 흐름을 살피기 좋은 달입니다.',
+        '중순 무렵 미뤄둔 일에서 진척이 생기는 흐름입니다.',
+        '몸보다 마음이 먼저 지치기 쉬우니 쉬는 시간을 먼저 정해 두시면 좋습니다.',
+      ],
+      advice: Object.fromEntries(input.topics.map((t) => [t, ADVICE[t]])),
+      keywords: ['정리', '기다림', '회복'],
+      disclaimer: '이 리포트는 상담 참고용이며 의료·법률·투자 판단의 근거가 아닙니다.',
+    },
+    engine_version: 'mock-0.1.0',
+    tarot_seed: seed,
+    draft_before_tone_learning: true,
+  }
+}
+
+/** LLM 실패 — 계산 결과만 보여주는 부분 성공 케이스 (PRD §11.3) */
+export function mockReadingWithoutReport(input: ReadingRequest): Reading {
+  return { ...mockReading(input), report: null }
+}
+
+/** 화면 개발용 고정 샘플 3건 */
+export const MOCK_SAMPLES: Reading[] = [
+  mockReading({
+    name: '홍길동', gender: '여', calendar_type: 'lunar', birth_date: '1988-03-05',
+    is_leap_month: false, birth_time: '20:30', birth_place: '서울',
+    topics: ['재회운', '상대방속마음', '연애', '재물', '대인관계'], tarot_mode: 'auto',
+    tarot_picks: null,
+  }),
+  // 시간 모름 (PRD §8.3)
+  mockReading({
+    name: '김세권', gender: '남', calendar_type: 'solar', birth_date: '1975-11-20',
+    is_leap_month: false, birth_time: null, birth_place: '부산',
+    topics: ['재물', '대인관계'], tarot_mode: 'auto',
+    tarot_picks: null,
+  }),
+  // LLM 실패
+  mockReadingWithoutReport({
+    name: '이영희', gender: '여', calendar_type: 'solar', birth_date: '2001-07-14',
+    is_leap_month: false, birth_time: '03:10', birth_place: '대전',
+    topics: ['재회운', '상대방속마음'], tarot_mode: 'auto',
+    tarot_picks: null,
+  }),
+]
+
+
+===== Saju_Tarot/frontend/src/api/readings.ts =====
+/**
+ * 교체 지점 (PRD §7.1).
+ *
+ * 지금은 목업을 돌려주고, 4~5단계에서 백엔드가 붙으면 아래 fetch 쪽으로만 바뀐다.
+ * 컴포넌트는 이 함수만 호출하므로 컴포넌트 코드를 고칠 일이 없다.
+ */
+import { mockReading } from './mockData'
+import { readingSchema, type Reading, type ReadingRequest } from '../schemas/reading'
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
+
+export class ApiFailure extends Error {
+  constructor(
+    readonly status: number,
+    message: string,
+    readonly field?: string,
+    readonly traceId?: string,
+  ) {
+    super(message)
+  }
+}
+
+/** 상태 코드 → 사용자에게 보일 문구 (PRD §10.6) */
+export function messageFor(status: number, fallback?: string): string {
+  switch (status) {
+    case 400:
+    case 422:
+      return fallback ?? '입력값을 다시 확인해 주세요.'
+    case 401:
+      return '다시 로그인해 주세요.'
+    case 403:
+      return '권한이 없습니다.'
+    case 404:
+      return '링크가 만료되었거나 없는 페이지입니다.'
+    case 429:
+      return '요청이 많습니다. 잠시 후 다시 시도해 주세요.'
+    default:
+      return '잠시 후 다시 시도해 주세요.'
+  }
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...init,
+    headers: { 'Content-Type': 'application/json', ...init?.headers },
+  })
+  const traceId = res.headers.get('X-Trace-Id') ?? undefined
+  if (!res.ok) {
+    let detail: string | undefined
+    let field: string | undefined
+    try {
+      const body = await res.json()
+      detail = body?.error?.message
+      field = body?.error?.field
+    } catch {
+      /* 본문이 JSON이 아닐 수 있다 */
+    }
+    throw new ApiFailure(res.status, messageFor(res.status, detail), field, traceId)
+  }
+  return (await res.json()) as T
+}
+
+export async function createReading(input: ReadingRequest): Promise<Reading> {
+  if (USE_MOCK) {
+    // 실제 호출과 비슷한 체감을 주기 위한 지연 (로딩 화면 확인용)
+    await new Promise((r) => setTimeout(r, 1200))
+    return readingSchema.parse(mockReading(input))
+  }
+  const data = await request<unknown>('/readings', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+  return readingSchema.parse(data)
+}
+
+/**
+ * 풀이 문장을 채운다 (v3.0).
+ *
+ * 계산(`createReading`)은 즉시 끝나고 이 호출만 10초 넘게 걸린다.
+ * 그래서 화면을 먼저 띄운 뒤 이걸 부른다.
+ *
+ * 서버는 이미 만들어 둔 풀이가 있으면 다시 만들지 않으므로,
+ * 손님이 새로고침해도 요금이 두 번 나가지 않는다.
+ */
+export async function generateReport(id: string): Promise<Reading> {
+  if (USE_MOCK) {
+    await new Promise((r) => setTimeout(r, 1200))
+    throw new ApiFailure(501, '목업에서는 풀이를 만들지 않습니다.')
+  }
+  const data = await request<unknown>(
+    `/readings/${encodeURIComponent(id)}/report`,
+    { method: 'POST' },
+  )
+  return readingSchema.parse(data)
+}
+
+/** 저장된 리포트를 id 로 다시 불러온다 — 새로고침·링크 재방문 */
+export async function fetchReading(id: string): Promise<Reading> {
+  const data = await request<unknown>(`/readings/${encodeURIComponent(id)}`)
+  return readingSchema.parse(data)
+}
+
+/** 읽기 전용 공유 링크를 만든다 (PRD §12.3) */
+export async function createShareLink(id: string): Promise<string> {
+  const data = await request<{ token: string }>(
+    `/readings/${encodeURIComponent(id)}/share`,
+    { method: 'POST' },
+  )
+  return `${location.origin}/share/${data.token}`
+}
+
+/** 공유 링크로 열람 — 생년월일시는 빠진 형태로 온다 */
+export async function fetchShared(token: string): Promise<Reading> {
+  const data = await request<{ id: string; payload: unknown }>(
+    `/share/${encodeURIComponent(token)}`,
+  )
+  return readingSchema.parse({
+    ...(data.payload as object),
+    id: data.id,
+    input_echo: {
+      solar_datetime: '',
+      ...((data.payload as { input_echo?: object }).input_echo ?? {}),
+    },
+  })
+}
+
+export async function getHealth(): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/health`)
+    return res.ok
+  } catch {
+    return false
+  }
+}
+
+export const usingMock = USE_MOCK
+
+
+===== Saju_Tarot/frontend/src/components/CardBack.tsx =====
+/**
+ * 카드 뒷면 무늬 — **직접 그린다** (PRD §8.6.1).
+ *
+ * 남의 카드 그림을 가져오지 않는다. §18 Q5 가 "퍼블릭 도메인 스캔본만"으로 묶여
+ * 있고, 뒷면은 앞면 그림과 달리 격자 무늬 하나로 충분하다.
+ * 45도로 교차하는 금색 실선 두 겹 = 옛 카드 뒷면의 마름모 격자다.
+ *
+ * 부채꼴(TarotFan)과 결과 화면(TarotCard)이 **같은 무늬**를 써야 한다.
+ * 뒤집히기 전과 후가 다른 카드처럼 보이면 뽑은 것과 나온 것이 이어지지 않는다.
+ */
+
+/** 격자 — `gap` 은 실선 간격(px), `alpha` 는 금색 진하기 */
+export function lattice(gap: number, alpha: number) {
+  return {
+    backgroundImage:
+      `repeating-linear-gradient(45deg, rgba(223,187,86,${alpha}) 0 1px, transparent 1px ${gap}px),` +
+      `repeating-linear-gradient(-45deg, rgba(223,187,86,${alpha}) 0 1px, transparent 1px ${gap}px)`,
+  }
+}
+
+/** 뒷면 가운데 문양 — 여덟 갈래 별. 이것도 직접 그린 것이다 */
+export function Rosette({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" aria-hidden="true" className={className}>
+      <circle cx="20" cy="20" r="13" fill="none" stroke="currentColor" strokeWidth="0.8" />
+      <circle cx="20" cy="20" r="4.5" fill="none" stroke="currentColor" strokeWidth="0.8" />
+      {Array.from({ length: 8 }, (_, i) => {
+        const a = (i * Math.PI) / 4
+        return (
+          <line
+            key={i}
+            x1={20 + Math.cos(a) * 5}
+            y1={20 + Math.sin(a) * 5}
+            x2={20 + Math.cos(a) * 12.5}
+            y2={20 + Math.sin(a) * 12.5}
+            stroke="currentColor"
+            strokeWidth="0.8"
+          />
+        )
+      })}
+    </svg>
+  )
+}
+
+/** 엎어진 카드 한 장 — 격자 + 안쪽 선 + 문양. 번호가 있으면 아래에 얹는다 */
+export default function CardBack({
+  pick,
+  className = '',
+}: {
+  pick?: number | null
+  className?: string
+}) {
+  return (
+    <div
+      className={
+        'relative h-full w-full overflow-hidden rounded-xl border border-gold-400 bg-ink-600 ' +
+        className
+      }
+      style={lattice(9, 0.4)}
+    >
+      {/* 이중 테두리 — 옛 카드 뒷면의 안쪽 선 */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-1.5 rounded border border-gold-400/60"
+      />
+      <Rosette className="pointer-events-none absolute inset-x-0 top-[22%] mx-auto size-2/5 text-gold-300/80" />
+      {pick != null && (
+        // 카드 폭을 가로지르는 띠를 두면 카드가 두 동으로 잘려 보인다
+        <span className="absolute bottom-3 left-1/2 w-12 -translate-x-1/2 rounded-full border border-gold-500/40 bg-ink-950/85 py-0.5 text-center text-lg font-bold text-gold-300">
+          {pick}
+        </span>
+      )}
+    </div>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/components/MysticVisual.tsx =====
+/**
+ * 히어로 비주얼 — 동양의 사주와 서양의 타로를 한 화면에.
+ *
+ * 동양 쪽을 주인공으로 둔다. 세 겹의 고리와 중심의 태극이 뼈대이고,
+ * 타로 카드는 그 앞을 지나가는 손님처럼 아래쪽에 걸친다.
+ *
+ *   고리 1 (바깥) : 12지지 한자 — 사주가 시간을 나누는 단위
+ *   고리 2        : 팔괘 — 선으로 직접 그린다(글꼴에 없어도 깨지지 않게)
+ *   고리 3        : 오행 + 오방색
+ *   중심          : 태극
+ *
+ * 이미지가 없어도 도형만으로 성립한다. 회전은 아주 느리고,
+ * prefers-reduced-motion 이면 멈춘다.
+ */
+
+const JIJI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
+
+/**
+ * 오행과 오방색. 흑(수)은 어두운 배경에서 보이지 않으므로 남색으로 옮겼다 —
+ * 색이 정보를 전달하는 자리가 아니라 장식이라 허용되는 변형이다.
+ */
+const OHAENG = [
+  { ko: '木', color: '#34d399' }, // 청
+  { ko: '火', color: '#f87171' }, // 적
+  { ko: '土', color: '#fbbf24' }, // 황
+  { ko: '金', color: '#e2e8f0' }, // 백
+  { ko: '水', color: '#60a5fa' }, // 흑 → 남색
+]
+
+/** 팔괘 — 아래에서 위로 세 효(爻). true = 양(이어짐), false = 음(끊김) */
+const TRIGRAMS: [boolean, boolean, boolean][] = [
+  [true, true, true], // 건 ☰
+  [true, true, false], // 태 ☱
+  [true, false, true], // 리 ☲
+  [true, false, false], // 진 ☳
+  [false, true, true], // 손 ☴
+  [false, true, false], // 감 ☵
+  [false, false, true], // 간 ☶
+  [false, false, false], // 곤 ☷
+]
+
+/** 타로 3장 — 달(무의식) · 운명의 수레바퀴(순환) · 별(희망) */
+const CARDS = [
+  { file: 'the-moon', rotate: -15, x: -72, y: 108, z: 1 },
+  { file: 'wheel-of-fortune', rotate: 0, x: 0, y: 98, z: 3 },
+  { file: 'the-star', rotate: 15, x: 72, y: 108, z: 1 },
+]
+
+const GOLD = 'rgb(223 187 86)'
+const GOLD_TEXT = 'rgb(240 219 160)'
+
+function onCircle(index: number, total: number, radius: number) {
+  const angle = (index / total) * Math.PI * 2 - Math.PI / 2
+  return { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius, deg: (index / total) * 360 }
+}
+
+export default function MysticVisual() {
+  return (
+    <div
+      className="pointer-events-none relative mx-auto aspect-square w-full max-w-[27rem] select-none"
+      aria-hidden="true"
+    >
+      <svg viewBox="-200 -200 400 400" className="absolute inset-0 h-full w-full">
+        <defs>
+          <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="rgb(201 162 39)" stopOpacity="0.3" />
+            <stop offset="65%" stopColor="rgb(201 162 39)" stopOpacity="0.07" />
+            <stop offset="100%" stopColor="rgb(201 162 39)" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        <circle r="190" fill="url(#halo)" />
+
+        {/* ── 고리 1 · 12지지 ─────────────────────────────── */}
+        <g className="mystic-spin">
+          <circle r="180" fill="none" stroke={GOLD} strokeOpacity="0.5" />
+          <circle r="152" fill="none" stroke={GOLD} strokeOpacity="0.3" />
+          <circle
+            r="166"
+            fill="rgb(201 162 39)"
+            fillOpacity="0.06"
+            stroke="none"
+          />
+          {JIJI.map((_, i) => {
+            const a = (i / 12) * Math.PI * 2 - Math.PI / 2
+            return (
+              <line
+                key={`t${i}`}
+                x1={Math.cos(a) * 152}
+                y1={Math.sin(a) * 152}
+                x2={Math.cos(a) * 180}
+                y2={Math.sin(a) * 180}
+                stroke={GOLD}
+                strokeOpacity="0.45"
+              />
+            )
+          })}
+          {JIJI.map((ji, i) => {
+            const p = onCircle(i, 12, 166)
+            return (
+              <text
+                key={ji}
+                x={p.x}
+                y={p.y}
+                dy="6.5"
+                textAnchor="middle"
+                className="font-display"
+                fontSize="19"
+                fontWeight="700"
+                fill={GOLD_TEXT}
+              >
+                {ji}
+              </text>
+            )
+          })}
+        </g>
+
+        {/* ── 고리 2 · 팔괘 ──────────────────────────────── */}
+        <g className="mystic-spin-reverse">
+          <circle r="132" fill="none" stroke={GOLD} strokeOpacity="0.3" strokeDasharray="2 6" />
+          {TRIGRAMS.map((bars, i) => {
+            const p = onCircle(i, 8, 132)
+            return (
+              <g key={i} transform={`translate(${p.x} ${p.y}) rotate(${p.deg})`}>
+                {bars.map((yang, row) => {
+                  const y = (row - 1) * 6
+                  return yang ? (
+                    <rect
+                      key={row}
+                      x="-11"
+                      y={y - 1.6}
+                      width="22"
+                      height="3.2"
+                      rx="1"
+                      fill={GOLD_TEXT}
+                      fillOpacity="0.85"
+                    />
+                  ) : (
+                    <g key={row} fill={GOLD_TEXT} fillOpacity="0.85">
+                      <rect x="-11" y={y - 1.6} width="9" height="3.2" rx="1" />
+                      <rect x="2" y={y - 1.6} width="9" height="3.2" rx="1" />
+                    </g>
+                  )
+                })}
+              </g>
+            )
+          })}
+        </g>
+
+        {/* ── 고리 3 · 오행 (오방색) ──────────────────────── */}
+        <g className="mystic-spin">
+          <circle r="96" fill="none" stroke={GOLD} strokeOpacity="0.28" />
+          {OHAENG.map((el, i) => {
+            const p = onCircle(i, 5, 96)
+            return (
+              <g key={el.ko}>
+                <circle cx={p.x} cy={p.y} r="17" fill={el.color} fillOpacity="0.16" />
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="17"
+                  fill="none"
+                  stroke={el.color}
+                  strokeOpacity="0.5"
+                />
+                <text
+                  x={p.x}
+                  y={p.y}
+                  dy="7"
+                  textAnchor="middle"
+                  className="font-display"
+                  fontSize="20"
+                  fontWeight="700"
+                  fill={el.color}
+                  fillOpacity="0.95"
+                >
+                  {el.ko}
+                </text>
+              </g>
+            )
+          })}
+        </g>
+
+        {/* ── 태극 ───────────────────────────────────────────
+            카드 위쪽에 온전히 드러나게 올린다. 조금만 더 올리면 오행 고리(r=96)에
+            닿으므로 살짝 줄여 간격을 둔다. */}
+        <g transform="translate(0 -26) scale(0.9)">
+          <circle r="40" fill="rgb(10 14 28)" fillOpacity="0.75" />
+          <circle r="40" fill="none" stroke={GOLD} strokeOpacity="0.7" strokeWidth="1.5" />
+          {/* 음(어두움) 바탕에 양(밝음) 반쪽 */}
+          <path
+            d="M0,-40 A20,20 0 0,1 0,0 A20,20 0 0,0 0,40 A40,40 0 0,0 0,-40"
+            fill={GOLD_TEXT}
+            fillOpacity="0.9"
+          />
+          <circle cx="0" cy="-20" r="6" fill="rgb(10 14 28)" />
+          <circle cx="0" cy="20" r="6" fill={GOLD_TEXT} fillOpacity="0.9" />
+        </g>
+      </svg>
+
+      {/* ── 서양 · 타로 3장 ─────────────────────────────── */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        {CARDS.map((c) => (
+          <figure
+            key={c.file}
+            className="absolute w-[4.75rem] overflow-hidden rounded-md border border-gold-400/50 shadow-2xl shadow-ink-950/80 sm:w-[5.5rem]"
+            style={{
+              transform: `translate(${c.x}px, ${c.y}px) rotate(${c.rotate}deg)`,
+              zIndex: c.z,
+            }}
+          >
+            <img
+              src={`/cards/${c.file}.jpg`}
+              alt=""
+              className="block aspect-[2/3] w-full object-cover"
+            />
+          </figure>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/components/form/BirthForm.tsx =====
+/**
+ * 입력 폼 (PRD §6.1 필드 1~10).
+ *
+ * 상태 하나(calendarType)가 바뀌면 날짜 선택지·윤달 노출·보조 텍스트가 함께 파생된다
+ * (PRD §5.3 상태 정의).
+ * 프론트 검증은 편의일 뿐이고, 같은 규칙을 서버에서 다시 검증한다 (PRD §12.2).
+ */
+import { useState } from 'react'
+import TarotFan from './TarotFan'
+import {
+  BIRTH_PLACES,
+  CALENDAR_TYPES,
+  GENDERS,
+  MAX_TOPICS,
+  TOPICS,
+  correctionMinutes,
+  TOPIC_META,
+  readingInputSchema,
+  type ReadingInput,
+  type ReadingRequest,
+  type Topic,
+} from '../../schemas/reading'
+import { JIJI_HOURS, YEARS, formatDateKo } from '../../lib/calendar'
+import { DateNotFound } from '../../api/calendar'
+import { useConvertedDate, useLunarYear } from '../../hooks/useCalendar'
+import { Card, Checkbox, Chip, Field, Segmented, Select, TextInput } from '../ui'
+
+type Errors = Partial<Record<keyof ReadingInput | 'form', string>>
+
+export default function BirthForm({
+  onSubmit,
+  submitting,
+}: {
+  onSubmit: (input: ReadingRequest) => void
+  submitting: boolean
+}) {
+  const [name, setName] = useState('')
+  const [gender, setGender] = useState<'남' | '여' | undefined>()
+  const [calendarType, setCalendarType] = useState<'solar' | 'lunar'>('solar')
+  const [year, setYear] = useState('1990')
+  const [month, setMonth] = useState('1')
+  const [day, setDay] = useState('1')
+  const [isLeapMonth, setIsLeapMonth] = useState(false)
+  const [timeMode, setTimeMode] = useState<'clock' | 'jiji'>('clock')
+  const [hour, setHour] = useState('12')
+  const [minute, setMinute] = useState('00')
+  const [jiji, setJiji] = useState('11:30')
+  const [timeUnknown, setTimeUnknown] = useState(false)
+  const [place, setPlace] = useState('서울')
+  const [topics, setTopics] = useState<Topic[]>([...TOPICS])
+  const [picks, setPicks] = useState<(number | null)[]>([null, null, null])
+  const [agreed, setAgreed] = useState(false)
+  const [errors, setErrors] = useState<Errors>({})
+  const [touched, setTouched] = useState<Record<string, boolean>>({})
+
+  const isLunar = calendarType === 'lunar'
+
+  /** 음력 연도 정보 — 달마다 일수가 다르고 윤달이 있는 달도 해마다 다르다 (PRD §8.1) */
+  const lunarYear = useLunarYear(Number(year), isLunar)
+  const monthInfo = lunarYear.data?.months.find((m) => m.month === Number(month))
+
+  // 서버 정보가 오기 전/실패 시에는 29일로 잡는다. 30일로 잡으면 없는 날짜를 고를 수 있다
+  const maxDay = isLunar
+    ? (isLeapMonth ? monthInfo?.leap_days : monthInfo?.days) ?? 29
+    : new Date(Number(year), Number(month), 0).getDate()
+
+  const showLeap = isLunar && Boolean(monthInfo?.has_leap)
+
+  const placeCorrection = correctionMinutes(
+    BIRTH_PLACES.find((p) => p.name === place)?.longitude ?? 126.978,
+  )
+
+  const birthDate = `${year}-${String(month).padStart(2, '0')}-${String(
+    Math.min(Number(day), maxDay),
+  ).padStart(2, '0')}`
+
+  const birthTime = timeUnknown ? null : timeMode === 'jiji' ? jiji : `${hour.padStart(2, '0')}:${minute}`
+
+  /** 토글해도 입력값을 버리지 않고 변환해 보여준다 (PRD §6.1 폼 UX 규칙) */
+  const converted = useConvertedDate(calendarType, birthDate, showLeap && isLeapMonth)
+
+  const missing: string[] = []
+  if (!name.trim()) missing.push('이름')
+  if (!gender) missing.push('성별')
+  if (topics.length === 0) missing.push('상담 주제')
+  if (picks.some((p) => p === null)) missing.push('타로 카드 3장')
+  if (!agreed) missing.push('개인정보 동의')
+  const ready = missing.length === 0
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const candidate = {
+      name,
+      gender: gender as '남' | '여',
+      calendar_type: calendarType,
+      birth_date: birthDate,
+      is_leap_month: showLeap ? isLeapMonth : false,
+      birth_time: birthTime,
+      birth_place: place,
+      topics,
+      // 화면의 기본 흐름은 손님이 직접 뽑는 것이다 (PRD §8.6.1).
+      // API 기본값은 여전히 auto 이므로 여기서 명시해 보낸다.
+      tarot_mode: 'manual' as const,
+      tarot_picks: picks.every((p): p is number => p !== null) ? picks : null,
+      privacy_agreed: agreed,
+    }
+    const parsed = readingInputSchema.safeParse(candidate)
+    if (!parsed.success) {
+      const next: Errors = {}
+      for (const issue of parsed.error.issues) {
+        const key = (issue.path[0] as keyof ReadingInput) ?? 'form'
+        next[key] ??= issue.message
+      }
+      setErrors(next)
+      setTouched({ name: true, gender: true, topics: true, tarot_picks: true, privacy_agreed: true })
+
+      // 빠진 칸으로 데려간다 — 버튼만 안 눌리면 어디가 문제인지 알 수 없다
+      const firstKey = Object.keys(next)[0]
+      const target =
+        firstKey === 'name'
+          ? document.getElementById('name')
+          : firstKey === 'privacy_agreed'
+            ? document.getElementById('agree')
+            : document.querySelector(`[data-field="${firstKey}"]`)
+      target?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      if (target instanceof HTMLInputElement) target.focus({ preventScroll: true })
+      return
+    }
+    setErrors({})
+    const { privacy_agreed: _agreed, ...request } = parsed.data
+    onSubmit(request)
+  }
+
+  return (
+    <Card className="p-6 sm:p-8">
+      <form onSubmit={handleSubmit} className="space-y-7" noValidate>
+        {/* ── 1. 누구의 사주인가 ───────────────────────────── */}
+        <fieldset className="space-y-5">
+          <legend className="mb-1 font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+            누구의 사주인가요
+          </legend>
+
+          <Field
+            label="이름"
+            required
+            htmlFor="name"
+            error={touched.name ? errors.name : undefined}
+            hint="리포트 인사말에만 쓰입니다"
+          >
+            <TextInput
+              id="name"
+              value={name}
+              onChange={(v) => {
+                setName(v)
+                if (errors.name) setErrors((e) => ({ ...e, name: undefined }))
+              }}
+              placeholder="홍길동"
+              maxLength={20}
+              invalid={Boolean(touched.name && errors.name)}
+            />
+          </Field>
+
+          <Field
+            label="성별"
+            required
+            error={touched.gender ? errors.gender : undefined}
+            hint="대운의 방향을 정하는 데 쓰입니다"
+          >
+            <div data-field="gender">
+            <Segmented
+              ariaLabel="성별"
+              value={gender}
+              onChange={(v) => setGender(v)}
+              options={GENDERS.map((g) => ({ value: g, label: g }))}
+            />
+            </div>
+          </Field>
+        </fieldset>
+
+        <hr className="border-paper-200 dark:border-ink-800" />
+
+        {/* ── 2. 태어난 날 ─────────────────────────────────── */}
+        <fieldset className="space-y-5">
+          <legend className="mb-1 font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+            태어난 날과 시간
+          </legend>
+
+          <Field label="달력" required hint="어느 달력으로 아시나요">
+            <Segmented
+              ariaLabel="달력 구분"
+              value={calendarType}
+              onChange={(v) => setCalendarType(v)}
+              options={CALENDAR_TYPES.map((c) => ({
+                value: c,
+                label: c === 'solar' ? '양력' : '음력',
+              }))}
+            />
+          </Field>
+
+          <Field label="생년월일" required htmlFor="year" error={errors.birth_date}>
+            <div className="grid grid-cols-3 gap-2">
+              <Select id="year" ariaLabel="태어난 해" value={year} onChange={setYear}>
+                {YEARS.map((y) => (
+                  <option key={y} value={String(y)}>
+                    {y}년
+                  </option>
+                ))}
+              </Select>
+              <Select ariaLabel="태어난 달" value={month} onChange={setMonth}>
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                  <option key={m} value={String(m)}>
+                    {m}월
+                  </option>
+                ))}
+              </Select>
+              <Select ariaLabel="태어난 날" value={day} onChange={setDay}>
+                {Array.from({ length: maxDay }, (_, i) => i + 1).map((d) => (
+                  <option key={d} value={String(d)}>
+                    {d}일
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            {/* 변환 결과를 보조 텍스트로 (PRD §6.1) — 이제 서버가 실제로 계산한 값이다 */}
+            <p
+              className="pt-1 text-xs text-ink-400 dark:text-ink-300"
+              aria-live="polite"
+            >
+              {converted.isPending && '변환 중…'}
+              {converted.isError &&
+                (converted.error instanceof DateNotFound
+                  ? converted.error.message
+                  : '변환 서버에 연결하지 못했습니다. 날짜는 그대로 제출할 수 있습니다.')}
+              {converted.data && (
+                <>
+                  {calendarType === 'solar'
+                    ? `${formatDateKo(birthDate, 'solar')} = 음력 ${converted.data.lunar_date}${
+                        converted.data.is_leap_month ? ' (윤달)' : ''
+                      }`
+                    : `음력 ${birthDate}${showLeap && isLeapMonth ? ' 윤달' : ''} = 양력 ${
+                        converted.data.solar_date
+                      }`}
+                  <span className="ml-1.5 opacity-70">· {converted.data.ganji}</span>
+                </>
+              )}
+            </p>
+
+            {/* 음력 + 그 해 그 달에 윤달이 있을 때만 (PRD §6.1 필드 5) */}
+            {showLeap && (
+              <div className="rise rounded-xl bg-plum-500/8 px-4 py-3 dark:bg-plum-400/12">
+                <Checkbox id="leap" checked={isLeapMonth} onChange={setIsLeapMonth}>
+                  이 해 {month}월은 <strong>윤달</strong>이 있습니다 — 윤달에 태어나셨나요?
+                </Checkbox>
+              </div>
+            )}
+          </Field>
+
+          <Field
+            label="태어난 시간"
+            required
+            hint={timeUnknown ? '시주를 제외해 계산합니다' : '시간대로 골라도 됩니다'}
+          >
+            {!timeUnknown && (
+              <>
+                <Segmented
+                  ariaLabel="시간 입력 방식"
+                  value={timeMode}
+                  onChange={(v) => setTimeMode(v)}
+                  options={[
+                    { value: 'clock' as const, label: '시각으로' },
+                    { value: 'jiji' as const, label: '12지시로' },
+                  ]}
+                />
+                <div className="pt-2">
+                  {timeMode === 'clock' ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Select ariaLabel="시" value={hour} onChange={setHour}>
+                        {Array.from({ length: 24 }, (_, i) => i).map((h) => (
+                          <option key={h} value={String(h)}>
+                            {String(h).padStart(2, '0')}시
+                          </option>
+                        ))}
+                      </Select>
+                      <Select ariaLabel="분" value={minute} onChange={setMinute}>
+                        {['00', '10', '20', '30', '40', '50'].map((m) => (
+                          <option key={m} value={m}>
+                            {m}분
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                  ) : (
+                    <Select ariaLabel="12지시" value={jiji} onChange={setJiji}>
+                      {JIJI_HOURS.map((j) => (
+                        <option key={j.ji} value={j.time}>
+                          {j.label}
+                        </option>
+                      ))}
+                    </Select>
+                  )}
+                </div>
+              </>
+            )}
+            <div className="pt-2">
+              <Checkbox id="time-unknown" checked={timeUnknown} onChange={setTimeUnknown}>
+                태어난 시간을 모릅니다
+              </Checkbox>
+            </div>
+          </Field>
+
+          <Field
+            label="태어난 곳"
+            hint={timeUnknown ? '시각을 모르면 쓰이지 않습니다' : `진태양시 ${placeCorrection}분 보정`}
+          >
+            <Select ariaLabel="태어난 곳" value={place} onChange={setPlace}>
+              {BIRTH_PLACES.map((p) => (
+                <option key={p.name} value={p.name}>
+                  {p.name}
+                </option>
+              ))}
+            </Select>
+            <p className="pt-1 text-xs text-ink-400 dark:text-ink-300">
+              시계 시각을 태양 기준으로 맞춥니다. 도(道)는 도청 소재지 기준입니다.
+            </p>
+          </Field>
+        </fieldset>
+
+        {/* ── 개인정보 동의 — 생년월일을 받은 바로 다음에 묻는다 ─── */}
+        <div className="space-y-4 rounded-xl bg-paper-100/70 p-4 dark:bg-ink-900/60">
+          <Checkbox id="agree" checked={agreed} onChange={setAgreed}>
+            생년월일·시간을 <strong>리포트 생성 목적</strong>으로만 쓰고,{' '}
+            <strong>90일 뒤 자동 삭제</strong>하는 것에 동의합니다.
+            <span className="ml-1 text-gold-600 dark:text-gold-400">*</span>
+          </Checkbox>
+          {touched.privacy_agreed && errors.privacy_agreed && (
+            <p role="alert" className="text-xs font-medium text-rose-600 dark:text-rose-400">
+              {errors.privacy_agreed}
+            </p>
+          )}
+
+        </div>
+
+        <hr className="border-paper-200 dark:border-ink-800" />
+
+        {/* ── 3. 무엇이 궁금한가 ───────────────────────────── */}
+        <fieldset className="space-y-5">
+          <legend className="mb-1 font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+            무엇이 궁금하세요
+          </legend>
+          <Field
+            label="상담 주제"
+            required
+            error={touched.topics ? errors.topics : undefined}
+            hint={`${topics.length}/${MAX_TOPICS} 선택 · 고른 주제만 담깁니다`}
+          >
+            <div className="grid gap-2 sm:grid-cols-2" data-field="topics">
+              {TOPICS.map((t) => (
+                <Chip
+                  key={t}
+                  label={t}
+                  sub={TOPIC_META[t].question}
+                  active={topics.includes(t)}
+                  onClick={() =>
+                    setTopics((prev) =>
+                      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t],
+                    )
+                  }
+                />
+              ))}
+            </div>
+
+            {/* 상대의 사주 없이 읽는 주제는 한계를 미리 밝힌다 (PRD §3.4) */}
+            {topics.some((t) => TOPIC_META[t].caveat) && (
+              <ul className="rise mt-1 space-y-1 rounded-xl bg-plum-500/8 px-4 py-3 text-xs leading-relaxed text-ink-600 dark:bg-plum-400/12 dark:text-ink-300">
+                {topics
+                  .filter((t) => TOPIC_META[t].caveat)
+                  .map((t) => (
+                    <li key={t}>
+                      <strong className="font-semibold">{t}</strong> — {TOPIC_META[t].caveat}
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </Field>
+        </fieldset>
+
+        {/* ── 타로 뽑기 — 여기부터는 사주가 아니다 (PRD §8.6.1) ─── */}
+        <TarotFan
+          picks={picks}
+          onChange={setPicks}
+          error={touched.tarot_picks ? errors.tarot_picks : undefined}
+        />
+
+        {/* ── 제출 ─────────────────────────────────────────── */}
+        <div className="space-y-4 rounded-xl bg-paper-100/70 p-4 dark:bg-ink-900/60">
+          <button
+            type="submit"
+            disabled={submitting}
+            className={[
+              'w-full rounded-xl px-6 py-4 text-base font-semibold shadow-lg transition-all',
+              'disabled:cursor-wait disabled:opacity-70',
+              ready
+                ? 'bg-gradient-to-b from-ink-800 to-ink-900 text-paper-50 hover:from-ink-700 hover:to-ink-800 dark:from-gold-500 dark:to-gold-600 dark:text-ink-950 dark:hover:from-gold-400 dark:hover:to-gold-500'
+                : 'bg-gradient-to-b from-ink-700/70 to-ink-800/70 text-paper-100 hover:from-ink-700 hover:to-ink-800 dark:from-gold-600/60 dark:to-gold-600/60 dark:text-ink-950',
+            ].join(' ')}
+          >
+            {submitting ? '사주와 타로를 해석하는 중입니다' : '선택한 세 장 뒤집기'}
+          </button>
+
+          {/*
+            남은 항목을 늘어놓던 안내는 뺐다 (사용자 지시).
+            빠진 칸은 제출할 때 그 자리로 데려가 알려준다(handleSubmit 참고).
+          */}
+          <p className="text-center text-xs text-ink-400 dark:text-ink-300">
+            입력하신 정보는 리포트 생성에만 쓰입니다
+          </p>
+        </div>
+      </form>
+    </Card>
+  )
+}

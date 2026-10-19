@@ -1,0 +1,1651 @@
+
+
+===== calorie-tracker/MVP_SCOPE.md =====
+# MVP 범위 구체화 — 칼로리 트래커
+
+관련 문서: [PRD.md](PRD.md) · [TECH_SPEC.md](TECH_SPEC.md)
+
+이 문서는 PRD의 범위(3장)를 실제 구현 착수 기준으로 더 구체화한 체크리스트다. "Must / Should / Won't"로 우선순위를 나눠서, 시간이 부족하면 Must만으로도 배포 가능한 앱이 되도록 구성했다.
+
+> v2.0 변경: 회원가입/로그인(Supabase Auth)과 기록의 Supabase DB 저장이 Must Have로 승격됨 (기존 Won't Have에서 이동).
+> v3.0 변경: "날짜별 히스토리(달력) 조회"와 "목표 칼로리 설정"이 Won't Have에서 Must Have로 승격됨 (PRD v4.0 반영). 실제 구현 진행 상황에 맞춰 완료된 항목을 [x]로 표시함.
+
+---
+
+## 1. Must Have — 이번 MVP에 반드시 포함
+
+### 1-1. 인증 (Supabase Auth)
+- [x] 이메일/비밀번호 회원가입 화면
+- [x] 이메일/비밀번호 로그인 화면
+- [x] 로그아웃 버튼 (헤더에 로그인 이메일 + 로그아웃)
+- [x] 비로그인 상태에서는 트래커 화면 접근 불가 → 로그인 화면으로 전환
+- [x] 세션 유지 (새로고침해도 로그인 상태 유지)
+- [x] Supabase 에러(중복 가입, 잘못된 비밀번호 등)를 사용자 친화적 메시지로 표시
+- [x] 비밀번호 정책: 8자 이상 + 복잡도 요구(클라이언트) + 유출 비밀번호 차단(Supabase HaveIBeenPwned 연동, 대시보드 설정)
+- [ ] CAPTCHA(Cloudflare Turnstile) 프론트엔드 연동 (Supabase 대시보드 설정은 별도 진행 중, 코드 반영 대기)
+
+### 1-2. 화면/인터랙션 (트래커)
+- [x] 음식 이름 검색창 (입력 시 실시간 필터링)
+- [x] 검색 결과 리스트 (최대 8~10개까지만 노출)
+- [x] 음식 선택 시 100g 기준 칼로리/탄/단/지 미리보기 표시
+- [x] 섭취량(g) 입력창 — 음식 선택 시 `commonServingG` 값으로 자동 채움, 수정 가능
+- [x] 실시간 계산 미리보기
+- [x] "기록에 추가" 버튼 — 음식 미선택 또는 섭취량 0 이하일 때 비활성화
+- [x] 오늘의 기록 리스트 (Supabase에서 로그인 사용자 + 오늘 날짜 기준 조회)
+- [x] 각 기록 항목 삭제 버튼 (Supabase에서 실제 삭제)
+- [x] 상단 요약: 오늘 총 칼로리 / 탄수화물(g) / 단백질(g) / 지방(g)
+- [x] 기록이 없을 때 빈 상태 안내 문구
+
+### 1-3. 데이터
+- [x] `foods.json` — 114개 음식 데이터 (한식/배달음식/프랜차이즈 포함), 정적 파일로 유지
+- [x] Supabase `logs` 테이블 생성 (user_id, food_id, food_name, amount_g, calories, carbs, protein, fat, log_date, created_at) — TECH_SPEC 3.3 참고
+- [x] `logs` 테이블 RLS 활성화 + select/insert/delete 정책 (본인 데이터만 접근) — TECH_SPEC 3.4 참고
+
+### 1-4. 저장/동기화
+- [x] 로그인 계정 기준으로 기록이 Supabase DB에 저장됨
+- [x] 같은 계정으로 다른 기기/브라우저에서 로그인 시 동일한 오늘 기록 조회 (재접속/새로고침 기준, 실시간 아님)
+- [x] 날짜가 바뀌면 새 날짜 기준 빈 기록으로 자연스럽게 전환 (`log_date` 컬럼 기준 조회)
+
+### 1-5. 배포
+- [x] GitHub 새 저장소 생성 — [rubilisa08/my-product_MVP](https://github.com/rubilisa08/my-product_MVP)
+- [x] Supabase 프로젝트 생성
+- [x] `supabase/setup.sql` 실행하여 테이블/RLS 적용
+- [x] 프론트엔드는 정적 파일(HTML/CSS/JS/JSON)만으로 구성, 빌드 단계 없음
+- [x] GitHub Pages로 배포하여 공개 URL로 접속 가능 — https://rubilisa08.github.io/my-product_MVP/
+- [ ] 배포 전 서로 다른 두 계정으로 교차 확인 (RLS 검증)
+
+### 1-6. 목표 칼로리 & 캘린더 (PRD v4.0 추가)
+- [x] 목표 칼로리(하루 총 칼로리) 설정/수정 UI — Supabase Auth user_metadata에 저장 (TECH_SPEC 3.5)
+- [x] 목표 미설정 시 안내 문구 표시, 이 경우 캘린더에 노란색 표시 없음
+- [x] 캘린더 화면: 요일별 그리드의 실제 월력, 이전/다음 달 이동
+- [x] 날짜별 총 칼로리 숫자 표시 (기록 있는 날짜만)
+- [x] 목표 초과 날짜 노란색 표시 / 이내는 기본색 / 기록 없음은 무강조
+- [x] 오늘 날짜 시각적 구분 표시
+- [x] 날짜 클릭 시 해당 날짜 기록 상세 조회 (읽기 전용 — 삭제/수정 버튼 없음)
+- [x] 기록 없는 날짜 클릭 시 "이 날은 기록이 없어요" 안내
+
+---
+
+### 1-7. 정확성/견고성 보강 (2026-09-09 추가)
+- [x] `logs` 테이블에 `calories/carbs/protein/fat >= 0` DB 체크 제약 추가 — devtools로 API를 직접 호출해도 음수/조작된 값 저장 불가 (TECH_SPEC 3.4)
+- [x] "기록에 추가" 버튼 연타 시 중복 저장 방지 (TECH_SPEC 5.4 addLog)
+- [x] 앱을 켜둔 채로 자정을 넘겨도 새로고침 없이 오늘의 기록/캘린더가 자동 갱신됨 (TECH_SPEC 5.8 scheduleMidnightRefresh)
+
+### 1-8. 체감 개선 아이디어 반영 (2026-09-09 추가)
+- [x] "목표까지 남은 칼로리 / 초과 칼로리" 실시간 표시 — 캘린더까지 가지 않아도 트래커 화면에서 바로 확인 (TECH_SPEC 5.6)
+- [x] 한글 초성 검색 지원 — "ㄱㅊㅈㄲ" 입력으로 "김치찌개" 검색 가능 (TECH_SPEC 5.7)
+- [x] 오늘 기록의 섭취량을 삭제 후 재입력 없이 바로 수정 가능 — `logs` update RLS 정책 추가 (TECH_SPEC 3.4, 5.5-1)
+- [x] `foods.json` 164개 목록에 없는 음식을 위한 "직접 입력" 기능 — 음식 이름/칼로리(필수) + 탄단지(선택)를 그날 기록에 1회성으로 저장 (foods.json에 영구 등록되는 것은 아님, TECH_SPEC 5.5-2)
+
+### 1-9. 음식 데이터 정확성 검증 (2026-09-09 추가)
+- [x] 164개 전체 항목 Atwater 계수 내부 정합성 검증 (탄단지로 역산한 칼로리와 표기 칼로리 비교) — 88.4%가 오차 10% 이내
+- [x] 오차 20% 초과 4개 항목 + 대표 항목 2개를 USDA/한국 식품영양성분 자료와 대조 — 4개 일치 확인, 1개(콩나물) 수정, 1개(김) 근거 부족으로 수정 보류
+- [x] 검증 방법·결과·한계를 [DATA_ACCURACY.md](DATA_ACCURACY.md)에 문서화
+- [x] Round 2: 나머지 158개 중 원재료성 64개 전체 + 조리식품 표본 10개, 총 70개를 USDA/한국 식품영양성분 자료와 대조 — 7개 수정(현미밥·감자·고구마·삼겹살·애호박·방울토마토·콩나물), 47개 일치 확인, 6개 근거 상충으로 보류
+- [x] 식약처 오픈API 직접 호출 시도 — 원재료 DB는 정식 인증키 필요(사용자 본인 신청 필요)로 접근 불가 확인, DATA_ACCURACY.md에 기록
+- [ ] 조리식품·프랜차이즈·디저트류 나머지 84개는 개별 대조 안 함 — 브랜드별 편차가 커서(예: 떡볶이 132~245kcal) 애초에 "정확한 단일 값" 개념이 성립하기 어려움 (DATA_ACCURACY.md 참고)
+- [x] 사용자가 실사용 중 발견한 버그(라면 100g당 145→174kcal/봉지, 실제 500kcal와 큰 차이) 수정 — 포장 단위 라벨과 조리 기준 불일치가 원인, 164개 전체에 같은 유형의 버그가 있는지 서빙량 환산 눈으로 재점검 (DATA_ACCURACY.md Round 3)
+
+### 1-10. 음식 데이터 164→262개 확장 (2026-09-09 추가)
+- [x] 국밥·덮밥(10), 면류(9), 한식일품(12), 탕·찌개(8), 밑반찬·김치(7), 죽(4), 일식(7), 중식(8), 양식(15), 빵·베이커리(5), 음료(7), 견과·건강식품(4), 분식(2) = 98개 신규 추가
+- [x] 신규 98개는 1차 조사 수준(각 1~2개 자료 교차 확인) — 기존 164개의 Round 1·2처럼 항목별 정밀 검증을 거치진 않음, DATA_ACCURACY.md에 명시
+- [x] `unitType: "count"` 부여 기준을 신규 카테고리에도 일관 적용 (국밥·면류·한식일품·탕찌개·죽·일식·중식·양식·분식 = count / 밑반찬·김치·빵·음료·견과 = 기존처럼 weight)
+- [x] Round 5: 신규 98개 중 표본 8개 검증(순수 추정치 위주) — 3개 수정(규동·스테이크(안심)·그린샐러드), 국밥류는 출처 편차가 커서 미수정
+- [x] Round 6: 나머지 90개 전체 검증 — 26개 수정(죽 4종 전체 대폭 상향, 갈비찜·닭갈비·군만두 등), 34개 일치 확인, 30개는 자료 부족으로 미수정. 이로써 신규 98개 전체를 한 번씩 검증 완료 (DATA_ACCURACY.md 참고)
+
+## 2. Should Have — 여유 있으면 포함 (없어도 MVP 성립)
+- [x] 반응형 레이아웃 (모바일 화면에서도 깨지지 않게)
+- [ ] 최근 추가한 음식 "즐겨찾기/최근 사용" 상단 노출
+- [x] 섭취량 단위를 g 외에 "인분/개/조각" 등으로 입력 (2026-09-09, `unitType: "count"` — TECH_SPEC 5.5-3)
+- [x] 로그인/회원가입 폼 기본적인 유효성 검사 (이메일 형식, 비밀번호 확인 일치, 비밀번호 복잡도)
+
+---
+
+## 3. Won't Have (이번엔 제외, 향후 로드맵)
+- 비밀번호 재설정(이메일 발송), 소셜 로그인(Google 등)
+- 사용자가 새 음식을 직접 등록하는 기능
+- 외부 공공 영양성분 API 연동
+- 주간/월간 통계 그래프 (평균 추이 등 — 달력 색상 표시로 대체)
+- 탄수화물/단백질/지방 개별 목표 설정 및 달성률
+- 과거 날짜 기록의 수정/추가 (조회만 가능)
+- 목표 변경 이력 관리 (소급 적용됨, PRD 8.1)
+- 실시간 동기화 (Supabase Realtime)
+- 다국어 지원, 다크모드
+- 프로필 수정, 회원 탈퇴 UI
+
+---
+
+## 4. 완료 기준 (Definition of Done)
+아래를 모두 만족하면 이번 MVP는 "완성"으로 본다.
+
+1. 이메일/비밀번호로 회원가입 → 로그인 → 트래커 화면 진입까지 오류 없이 동작한다.
+2. 음식 검색 → 선택 → 섭취량 입력 → 추가 → 삭제까지 전체 플로우가 오류 없이 동작하며, 실제로 Supabase DB에 반영된다.
+3. 새로고침/재로그인해도 오늘 기록이 유지된다.
+4. 서로 다른 두 계정으로 각각 로그인했을 때, 상대방의 기록이 절대 보이지 않는다 (RLS 검증 완료).
+5. 오늘 기록의 총합(칼로리/탄/단/지)이 개별 항목 합과 항상 일치한다.
+6. 모바일 브라우저(가로 360~400px)에서 레이아웃이 깨지지 않고 사용 가능하다.
+7. GitHub Pages 배포 URL로 접속했을 때 로컬과 동일하게 동작한다 (Supabase 연결 포함).
+8. 목표 칼로리를 설정하면, 달력에서 목표를 초과한 날짜가 정확히 노란색으로 표시된다.
+9. 과거 날짜의 기록 상세 화면에는 삭제/수정 버튼이 없다 (조회 전용).
+
+---
+
+## 5. 다음 단계 (착수 순서 제안)
+1. ~~Supabase 프로젝트 생성~~ ✅ 완료
+2. ~~`supabase/setup.sql` 작성 및 실행 (logs 테이블 + RLS)~~ ✅ 완료
+3. ~~로컬 프로젝트 뼈대 생성~~ ✅ 완료
+4. ~~`foods.json` 데이터 작성 (현재 114개)~~ ✅ 완료
+5. ~~회원가입/로그인/로그아웃 화면 및 로직 구현~~ ✅ 완료
+6. ~~검색 + 계산 + 추가/삭제 로직을 Supabase 연동으로 구현~~ ✅ 완료
+7. ~~로컬 서버 확인 + GitHub Pages 배포~~ ✅ 완료 — https://rubilisa08.github.io/my-product_MVP/
+8. ~~목표 칼로리 설정 UI 구현 (user_metadata 저장/조회, TECH_SPEC 3.5/5.9)~~ ✅ 완료
+9. ~~캘린더 화면 구현 (월별 로그 조회, 날짜별 색상 판정, TECH_SPEC 5.10~5.11)~~ ✅ 완료
+10. ~~날짜 클릭 시 상세 조회(읽기 전용) 구현 (TECH_SPEC 5.12/6.8)~~ ✅ 완료
+11. **실제 계정으로 회원가입 → 목표 설정 → 여러 날짜 기록 → 달력 색상까지 사람이 직접 수동 테스트** (아직 안 함 — 지금까지는 코드/브라우저 자동화로만 검증)
+12. ~~GitHub Pages 배포판에서 최종 확인~~ ✅ 완료 (2026-09-09) — 콘솔 에러 없음, app.js/style.css v=4 최신 반영, foods.json 262개 로드 확인, 모바일 375px 뷰포트에서 가로 스크롤 없음(documentElement.scrollWidth=375, 뷰포트와 동일). **계정이 필요한 부분(회원가입/로그인/기록 흐름)은 계정 생성을 대신 할 수 없어 미확인 — 11번 항목으로 남음**
+13. (별도 트랙, 보류) CAPTCHA 프론트엔드 연동 — Turnstile 사이트 키 발급 후 진행 예정, 사용자 판단으로 당장은 패스
+
+
+===== calorie-tracker/README.md =====
+# 칼로리 트래커
+
+오늘 먹은 음식을 검색해서 섭취량만 입력하면 칼로리·탄수화물·단백질·지방을 자동 계산하고, 로그인 계정 기준으로 기록을 저장해 여러 기기에서 확인할 수 있는 웹 앱입니다.
+
+문서: [PRD.md](PRD.md) · [TECH_SPEC.md](TECH_SPEC.md) · [MVP_SCOPE.md](MVP_SCOPE.md) · [DATA_ACCURACY.md](DATA_ACCURACY.md)
+
+## 기술 스택
+- HTML / CSS / Vanilla JavaScript (빌드 도구 없음)
+- [Supabase](https://supabase.com) — 인증(이메일/비밀번호) + Postgres DB (RLS 적용)
+
+## 로컬에서 실행하기
+`fetch`로 `data/foods.json`을 불러오므로 `file://`로 직접 열면 동작하지 않습니다. 반드시 로컬 서버를 통해 열어주세요.
+
+```bash
+npx http-server . -p 8322 -c-1
+```
+
+## Supabase 설정
+1. [supabase.com](https://supabase.com)에서 프로젝트 생성
+2. `supabase/setup.sql`을 SQL Editor에서 실행 (logs 테이블 + RLS 정책 생성)
+3. `Project Settings > API`에서 Project URL, anon(publishable) key 확인
+4. `supabaseClient.js`에 해당 값 입력
+
+## 알려진 제약사항 (MVP)
+- 음식 데이터는 자체 조사한 약 262개 항목만 지원합니다 (국밥·면류·한식일품·탕찌개·죽·일식·중식·양식·분식·배달음식·프랜차이즈·디저트·유행음식 메뉴 포함). 영양성분은 일반적인 평균값 기준 추정치이며, 초기 164개 중 71개(원재료 위주)는 외부 공식 자료와 개별 대조해 8개를 수정했고, 이후 추가된 98개는 1차 조사 수준입니다 — 검증 방법·범위·한계는 [DATA_ACCURACY.md](DATA_ACCURACY.md) 참고.
+- 비밀번호 재설정, 소셜 로그인은 지원하지 않습니다.
+- 기기 간 기록 동기화는 재접속/새로고침 시점에 반영됩니다 (실시간 아님).
+- Supabase 무료 프로젝트는 일정 기간 미사용 시 자동 일시정지될 수 있습니다.
+
+## 배포
+GitHub Pages를 통해 정적 파일로 배포합니다 (백엔드는 Supabase 관리형 서비스 사용).
+
+
+===== calorie-tracker/TECH_SPEC.md =====
+# 기술명세서 — 칼로리 트래커 MVP
+
+관련 문서: [PRD.md](PRD.md)
+
+## 0. 문서 정보
+- 작성일: 2026-09-08
+- 버전: v3.0 — 목표 칼로리 + 월간 캘린더 반영
+- 전제: 회원가입/로그인은 Supabase Auth에 위임, 음식 기록(logs)은 Supabase Postgres DB에 사용자별로 저장, 목표 칼로리는 Supabase Auth user metadata에 저장
+
+### v3.0 변경 요약 (PRD v4.0 대응)
+- 목표 칼로리(하루 총 칼로리 단일 값)를 Supabase Auth의 `user_metadata`에 저장 — 별도 테이블/RLS 불필요.
+- 캘린더 화면을 위한 월 단위 로그 조회 쿼리 및 날짜별 색상(초과=노란색/이내=기본색) 판정 로직 추가.
+- 과거 날짜는 조회 전용이며 `logs` 테이블에 `update` 정책을 추가하지 않는 기존 방침을 유지.
+
+---
+
+## 1. 아키텍처 개요
+
+```
+[브라우저]
+  ├─ index.html        (로그인/회원가입 화면 + 트래커 메인 화면)
+  ├─ style.css
+  ├─ app.js            (화면 전환/검색/계산/렌더링 로직)
+  ├─ supabaseClient.js (Supabase 클라이언트 초기화, URL + anon key)
+  └─ data/foods.json   (자체 음식 DB, 정적 파일 — 로그인 불필요)
+        │
+        │ fetch (최초 1회, 메모리 캐시)
+        ↓
+  ┌─────────────────────────────┐
+  │        Supabase             │
+  │  ┌────────────┐ ┌─────────┐ │
+  │  │ Auth        │ │ Postgres│ │
+  │  │ (회원가입/   │ │  logs   │ │
+  │  │  로그인/세션)│ │  테이블 │ │
+  │  └────────────┘ └─────────┘ │
+  │        RLS: auth.uid() 기준  │
+  └─────────────────────────────┘
+```
+
+- 프론트엔드는 정적 파일로 GitHub Pages에 배포.
+- 인증(회원가입/로그인/로그아웃/세션 유지)은 전부 **Supabase Auth**가 처리 — 비밀번호 해싱/저장, 토큰 발급/검증을 우리 코드가 직접 다루지 않는다.
+- 음식 기록(logs)은 **Supabase Postgres DB**에 사용자 계정 기준으로 저장 → 기기 간 동기화 가능.
+- 음식 데이터베이스(`foods.json`)는 로그인 여부와 무관한 공용 참고 데이터이므로 정적 파일로 유지 (DB로 옮기지 않음 — 조회 전용, 사용자별 분리 불필요).
+- [todo_supabase](../todo_supabase) 프로젝트와 동일하게 **빌드 도구 없이(no Node/Ruby build step)** Supabase JS SDK를 CDN으로 로드하는 방식 사용.
+
+---
+
+## 2. 기술 스택
+- HTML5 / CSS3 / Vanilla JavaScript (ES6+)
+- 인증 + DB: **Supabase** (Auth: 이메일/비밀번호, DB: Postgres, 자동 REST API)
+- 클라이언트 라이브러리: `@supabase/supabase-js` (CDN `<script>` 태그로 로드, npm/빌드 불필요)
+- 배포: GitHub Pages (프론트엔드 정적 파일만)
+- 로컬 개발 서버: `npx http-server` (todo_supabase와 동일 방식)
+
+---
+
+## 3. 데이터 모델
+
+### 3.1 음식 데이터베이스 — `data/foods.json` (변경 없음, 정적 파일)
+모든 영양성분은 **100g 기준**으로 정규화하여 저장한다.
+
+```json
+[
+  {
+    "id": "rice_white",
+    "name": "흰쌀밥",
+    "category": "주식",
+    "caloriesPer100g": 130,
+    "carbsPer100g": 28.1,
+    "proteinPer100g": 2.5,
+    "fatPer100g": 0.3,
+    "commonServingG": 210,
+    "commonServingLabel": "1공기"
+  }
+]
+```
+필드 설명은 이전 버전과 동일 (id, name, category, caloriesPer100g, carbsPer100g, proteinPer100g, fatPer100g, commonServingG, commonServingLabel).
+
+초기 데이터 규모: 약 80~100개.
+
+### 3.2 인증 — Supabase Auth
+- 별도 `users` 테이블을 직접 만들지 않고 Supabase의 내장 `auth.users` 테이블을 사용한다.
+- 회원가입: `supabase.auth.signUp({ email, password })`
+- 로그인: `supabase.auth.signInWithPassword({ email, password })`
+- 로그아웃: `supabase.auth.signOut()`
+- 현재 세션 확인: `supabase.auth.getSession()` / 세션 변경 구독: `supabase.auth.onAuthStateChange(...)`
+- 이메일 인증(컨펌 메일) 사용 여부는 Supabase 프로젝트 대시보드 설정에 따름 (MVP는 개발/개인 사용 목적이므로 **이메일 인증 비활성화** 권장 → 가입 즉시 로그인 가능, 필요 시 나중에 활성화).
+
+### 3.3 기록 데이터 — Supabase `logs` 테이블
+
+```sql
+create table logs (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  food_id text not null,
+  food_name text not null,
+  amount_g numeric not null check (amount_g > 0),
+  calories numeric not null,
+  carbs numeric not null,
+  protein numeric not null,
+  fat numeric not null,
+  log_date date not null default current_date,
+  created_at timestamptz not null default now()
+);
+
+create index logs_user_date_idx on logs (user_id, log_date);
+```
+
+필드 설명:
+| 필드 | 타입 | 설명 |
+|---|---|---|
+| `id` | uuid | 기록 고유 ID (자동 생성) |
+| `user_id` | uuid | 소유 사용자 (auth.users 참조, RLS 핵심 컬럼) |
+| `food_id` | text | `foods.json`의 음식 `id` |
+| `food_name` | text | 기록 시점의 음식명 (스냅샷, foods.json이 나중에 바뀌어도 과거 기록 유지) |
+| `amount_g` | numeric | 섭취량(g) |
+| `calories`, `carbs`, `protein`, `fat` | numeric | 계산된 영양성분 (스냅샷 저장 — 매번 재계산하지 않음) |
+| `log_date` | date | 기록 날짜 (사용자 로컬 날짜 기준 문자열을 클라이언트에서 계산해 전달) |
+| `created_at` | timestamptz | 생성 시각 (정렬용) |
+
+### 3.4 Row Level Security (RLS) — 필수
+
+```sql
+alter table logs enable row level security;
+
+create policy "select own logs"
+  on logs for select
+  using (auth.uid() = user_id);
+
+create policy "insert own logs"
+  on logs for insert
+  with check (auth.uid() = user_id);
+
+create policy "delete own logs"
+  on logs for delete
+  using (auth.uid() = user_id);
+
+create policy "update own logs"
+  on logs for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+```
+
+- `update` 정책은 delete 정책과 동일한 설계 — DB는 "본인 것인지"만 강제하고, "오늘 기록만 수정 가능"은 UI에서 강제한다(과거 날짜 상세 화면엔 수정/삭제 버튼 자체를 렌더링하지 않음, 6.8/5.13 참고). 캘린더에서 과거 날짜를 조회 전용으로 두는 PRD 8.1 제약과 UI 레벨에서 일치시킨 것.
+- RLS 없이 배포하면 **다른 사용자의 기록이 노출되는 심각한 보안 문제**가 발생하므로, 배포 전 반드시 RLS 활성화 + 정책 적용을 확인한다 (PRD 8.3 리스크 참고).
+- RLS는 "누구 것인지"만 보장할 뿐 "값이 정상적인지"는 보장하지 않는다 — 프론트엔드는 항상 정상 계산해서 보내지만, 브라우저 devtools로 API를 직접 호출하면 음수/조작된 영양성분 값도 저장될 수 있다. 이를 막기 위해 `calories`, `carbs`, `protein`, `fat`에도 `amount_g`와 동일하게 `check (... >= 0)` 제약을 추가했다 ([supabase/setup.sql](supabase/setup.sql) 참고, 이미 배포한 프로젝트는 파일 하단의 마이그레이션 블록 실행 필요).
+
+### 3.5 목표 칼로리 — Supabase Auth user metadata
+새 테이블을 만들지 않고, 각 사용자의 `auth.users` 레코드에 딸린 `user_metadata`(JSON)에 목표 칼로리를 저장한다.
+
+```js
+// 설정/변경
+await client.auth.updateUser({ data: { daily_calorie_goal: 1800 } });
+
+// 조회 (현재 세션에서 바로 확인 가능, 별도 쿼리 불필요)
+const { data: { user } } = await client.auth.getUser();
+const goal = user.user_metadata.daily_calorie_goal ?? null; // 미설정 시 null
+```
+
+- `user_metadata`는 **본인만 자신의 것을 수정**할 수 있고(Supabase Auth가 세션의 소유자 검증을 내부적으로 처리), 다른 사용자의 값을 읽거나 쓸 방법이 없으므로 별도의 RLS 설정이 필요 없다.
+- 값이 없으면(`null`/`undefined`) "목표 미설정" 상태로 간주 — PRD US-12, US-14의 "목표 미설정 시 노란색 표시 안 함" 조건과 연결된다.
+- 목표를 변경해도 과거 `logs` 데이터 자체는 바뀌지 않으며, 캘린더가 매번 "현재 목표값"과 비교해 색상을 계산하므로 자연히 소급 적용된다 (PRD 8.1/8.3에 이미 알려진 제약으로 명시됨 — 별도 이력 테이블을 만들지 않는 가장 단순한 구현).
+
+---
+
+## 4. 파일/폴더 구조
+
+```
+calorie_tracker/
+├── PRD.md
+├── TECH_SPEC.md
+├── MVP_SCOPE.md
+├── index.html
+├── style.css
+├── app.js
+├── supabaseClient.js   (Supabase URL + anon key, 클라이언트 초기화)
+├── data/
+│   └── foods.json
+├── supabase/
+│   └── setup.sql       (logs 테이블 생성 + RLS 정책, todo_supabase의 setup.sql과 동일 패턴)
+└── README.md           (배포 링크, 사용법, Supabase 설정 방법, 알려진 제약사항)
+```
+
+`supabaseClient.js` 예시:
+```js
+const SUPABASE_URL = "https://xxxxx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJ..."; // anon(public) key — 클라이언트에 노출되어도 안전 (RLS로 보호됨)
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+```
+- anon key는 공개되어도 안전하도록 설계된 키이며(RLS가 실제 보호막), **service_role key는 절대 프론트엔드 코드에 넣지 않는다** (todo_supabase에서 지켰던 원칙과 동일).
+
+---
+
+## 5. 핵심 로직
+
+### 5.1 인증 상태에 따른 화면 전환
+```js
+supabase.auth.onAuthStateChange((event, session) => {
+  if (session) {
+    showTrackerScreen(session.user);
+    loadTodayLogs(session.user.id);
+  } else {
+    showLoginScreen();
+  }
+});
+```
+
+### 5.2 영양성분 계산 (변경 없음)
+```js
+function calcNutrition(food, amountG) {
+  const ratio = amountG / 100;
+  return {
+    calories: Math.round(food.caloriesPer100g * ratio),
+    carbs: round1(food.carbsPer100g * ratio),
+    protein: round1(food.proteinPer100g * ratio),
+    fat: round1(food.fatPer100g * ratio),
+  };
+}
+```
+
+### 5.3 오늘 기록 조회
+```js
+async function loadTodayLogs(userId) {
+  const today = getLocalDateString(); // YYYY-MM-DD
+  const { data, error } = await supabase
+    .from('logs')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('log_date', today)
+    .order('created_at', { ascending: true });
+  // data를 리스트로 렌더링, 에러 시 안내 메시지
+}
+```
+- `user_id` 조건은 RLS로도 강제되지만, 명시적으로 쿼리에 포함해 의도를 명확히 하고 불필요한 조회를 줄인다.
+
+### 5.4 기록 추가
+```js
+async function addLog(userId, food, amountG, nutrition) {
+  const { error } = await supabase.from('logs').insert({
+    user_id: userId,
+    food_id: food.id,
+    food_name: food.name,
+    amount_g: amountG,
+    calories: nutrition.calories,
+    carbs: nutrition.carbs,
+    protein: nutrition.protein,
+    fat: nutrition.fat,
+    log_date: getLocalDateString(),
+  });
+  // 성공 시 목록 다시 로드 또는 로컬 상태에 즉시 반영
+}
+```
+
+### 5.5 기록 삭제
+```js
+async function deleteLog(logId) {
+  const { error } = await supabase.from('logs').delete().eq('id', logId);
+  // RLS의 delete 정책이 본인 소유 행만 삭제되도록 보장
+}
+```
+
+### 5.5-1 기록 수정 (오늘 기록의 섭취량만)
+삭제 후 재검색·재입력하지 않아도, 오늘 기록 항목을 클릭 한 번으로 인라인 수정 모드로 전환해 섭취량만 바로 고칠 수 있다.
+```js
+async function updateLog(logId, foodData, amountG) {
+  const n = calcNutrition(foodData, amountG); // foods.json의 현재 100g당 값으로 재계산
+  const { error } = await supabase
+    .from('logs')
+    .update({ amount_g: amountG, calories: n.calories, carbs: n.carbs, protein: n.protein, fat: n.fat })
+    .eq('id', logId);
+  // RLS의 update 정책이 본인 소유 행만 수정되도록 보장
+}
+```
+- 수정 시 영양성분은 기록 당시 값이 아니라 **현재 `foods.json`의 100g당 값**으로 다시 계산한다 (addLog와 동일한 계산 경로 재사용).
+- 편집 UI를 그릴 때 `food_id`가 현재 `foods.json`에 없는 경우(음식 데이터가 나중에 제거된 경우) 수정 버튼을 비활성화하고 삭제만 허용한다 — 재계산에 필요한 100g당 값을 알 수 없기 때문.
+- 오늘이 아닌 날짜의 기록에는 애초에 이 버튼을 렌더링하지 않는다(6.8 참고, PRD 8.1과 일치).
+
+### 5.5-2 음식 직접 입력 (2026-09-09 추가)
+`foods.json`의 262개 목록에 없는 음식을 위한 수동 기록 경로. **PRD 3.2의 "사용자가 새 음식을 직접 등록하는 기능"(Won't Have)과는 다르다** — `foods.json`이라는 공용 데이터베이스에 영구 등록되는 게 아니라, 그날의 `logs`에 1회성으로 저장되는 기록일 뿐이며 검색 결과에는 나타나지 않는다.
+- 입력 항목: 음식 이름(필수), 칼로리(필수), 탄수화물/단백질/지방(선택 — 비워두면 0으로 저장).
+- 100g당 값 기반 비례 계산을 하지 않으므로 `amount_g`는 의미가 없어 더미 값 `1`을 저장한다.
+- `food_id`는 `foods.json`과 겹치지 않도록 `custom_<uuid>` 형태로 생성 — 검색/캘린더 로직은 `food_id`를 `foods` 배열에서 찾아 이모지·수정 가능 여부를 판단하므로(5.5-1), 커스텀 기록은 자동으로 "수정 불가"(삭제 후 재입력만 가능) 상태가 된다.
+```js
+async function addManualLog(name, calories, carbs, protein, fat) {
+  const { error } = await supabase.from('logs').insert({
+    user_id, food_id: `custom_${crypto.randomUUID()}`, food_name: name,
+    amount_g: 1, calories, carbs, protein, fat, log_date: getLocalDateString(),
+  });
+}
+```
+
+### 5.5-3 "몇 인분/개" 개수 단위 입력 (2026-09-09 추가)
+찌개·국밥·디저트·프랜차이즈 음식처럼 그램으로 재는 게 부자연스러운 음식을 위해, `foods.json` 항목에 `unitType: "count"`를 표시하면 그램 입력 대신 "몇 인분/조각/개"를 입력받는다. **국·찌개, 배달·프랜차이즈, 디저트, 유행음식 4개 카테고리(84개)에 소급 적용**했고, 신규 추가 음식도 카테고리별로 이 값을 부여한다. `주식·단백질·채소·과일·유제품·음료`처럼 실제로 그램 단위 정밀 기록이 의미 있는 카테고리는 그대로 그램 입력(`unitType` 필드 없음, 기본값)을 유지한다.
+
+- DB 스키마 변경 없음 — `logs.amount_g`는 항상 그램으로 저장하고, `commonServingG × 입력한 개수`로 환산해서 넣는다. 화면에 표시할 때만 반대로 `amount_g ÷ commonServingG`로 되돌려 "1.5인분"처럼 보여준다(`formatAmountDisplay`).
+- `commonServingLabel`(예: `"1인분"`, `"2줄"`)은 수량이 포함된 서술형 문자열이라, 입력값 뒤에 그대로 이어붙이면 `"1.51인분"`처럼 숫자가 겹친다. 앞의 숫자(분수 포함, 예: `"1/4모"`)를 정규식으로 떼어낸 단위 이름만 별도로 뽑아 쓴다(`getUnitName`).
+- 검색 결과 리스트도 `unitType`에 따라 `"165kcal/100g"` 대신 `"495kcal/1인분"`으로 표시한다 — 100g 기준 숫자만 보고 "떡볶이가 165kcal밖에 안 되네"라고 오해하는 걸 막기 위함 (실사용자가 실제로 겪은 혼동).
+```js
+function getAmountGrams(food, inputValue) {
+  const value = Number(inputValue);
+  if (!value || value <= 0) return 0;
+  return food.unitType === "count" ? value * food.commonServingG : value;
+}
+
+function getUnitName(label) {
+  return label.replace(/^[0-9]+(\.[0-9]+)?(\/[0-9]+)?/, "") || label;
+}
+```
+
+### 5.6 하루 총합 계산 및 목표까지 남은 칼로리
+- 로드된 오늘 기록 배열을 `reduce`하여 칼로리/탄/단/지 합계를 클라이언트에서 계산 (DB 집계 쿼리 없이 단순 합산으로 충분).
+- 합계 계산 직후 `renderGoalRemaining(totalCalories)`를 호출해 목표 대비 잔여/초과 칼로리를 한 줄로 표시한다 (목표 미설정 시 표시하지 않음). 캘린더의 월 단위 초과 표시(5.11)와 달리, 트래커 화면에서 실시간으로 "오늘" 기준 즉각적인 피드백을 준다.
+```js
+function renderGoalRemaining(totalCalories) {
+  if (currentGoal == null) { /* 표시 안 함 */ return; }
+  const diff = currentGoal - Math.round(totalCalories);
+  // diff >= 0 → "목표까지 {diff}kcal 남았어요"
+  // diff < 0  → "목표를 {|diff|}kcal 초과했어요" (강조 스타일)
+}
+```
+
+### 5.7 음식 검색 — 초성 검색 지원
+- `foods.json`을 앱 로드 시 1회 `fetch`하여 메모리 배열로 보관.
+- 기본은 `name.includes(query)` 부분 문자열 매칭이지만, 입력값이 초성(ㄱ~ㅎ)으로만 이루어진 경우(`isChosungOnlyQuery`) 음식명에서 초성만 추출한 문자열(`getChosung`)과 비교해 매칭한다. 예: "ㄱㅊㅈㄲ" 입력 시 "김치찌개"가 검색됨.
+- 완성형 한글(가~힣) 한 글자당 초성 하나를 추출하고, 한글이 아닌 문자(영문/숫자/공백 등)는 그대로 통과시킨다.
+
+### 5.8 날짜 기준
+- `log_date`는 서버(UTC) 기준이 아니라 **클라이언트 로컬 날짜**를 문자열로 계산해 전달 (`new Date().toLocaleDateString('sv-SE')` 형태로 `YYYY-MM-DD` 생성) — 사용자가 실제로 인지하는 "오늘"과 일치시키기 위함.
+- 앱을 켜둔 채로 자정을 넘기면 화면이 어제 날짜 그대로 남는 문제가 있어, 다음 자정(+5초 여유)까지의 시간을 계산해 `setTimeout`으로 예약하고 그 시점에 오늘의 기록/캘린더를 다시 불러오도록 처리했다 (`scheduleMidnightRefresh`, [app.js](app.js) 참고). 매번 갱신 후 다음 자정을 다시 예약하는 재귀 방식이다.
+
+### 5.9 목표 칼로리 설정/조회
+```js
+async function saveGoal(calorieGoal) {
+  const { error } = await client.auth.updateUser({ data: { daily_calorie_goal: calorieGoal } });
+  // 성공 시 화면의 목표 표시 및 캘린더 색상 즉시 재계산
+}
+
+function getGoal(user) {
+  return user.user_metadata?.daily_calorie_goal ?? null;
+}
+```
+
+### 5.10 월별 로그 조회 (캘린더용)
+한 번의 쿼리로 해당 월 전체 로그를 가져온 뒤, 클라이언트에서 날짜별로 묶어 합산한다 (하루씩 31번 조회하지 않음).
+
+```js
+function getMonthRange(year, month) {
+  // month: 1~12
+  const start = `${year}-${String(month).padStart(2, "0")}-01`;
+  const lastDay = new Date(year, month, 0).getDate(); // 해당 월의 마지막 날짜
+  const end = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+  return { start, end };
+}
+
+async function loadMonthLogs(userId, year, month) {
+  const { start, end } = getMonthRange(year, month);
+  const { data, error } = await client
+    .from("logs")
+    .select("log_date, calories")
+    .eq("user_id", userId)
+    .gte("log_date", start)
+    .lte("log_date", end);
+
+  if (error) {
+    console.error(error);
+    return {};
+  }
+
+  // { "2026-09-01": 1650, "2026-09-02": 1900, ... } 형태로 날짜별 합계 생성
+  const dailyTotals = {};
+  for (const row of data) {
+    dailyTotals[row.log_date] = (dailyTotals[row.log_date] || 0) + Number(row.calories);
+  }
+  return dailyTotals;
+}
+```
+
+### 5.11 날짜별 색상 판정
+```js
+function getDayStatus(dateStr, dailyTotals, goal) {
+  const total = dailyTotals[dateStr];
+  if (total == null) return "none";          // 기록 없음 → 무강조
+  if (goal == null) return "logged";         // 목표 미설정 → 칼로리 숫자만 표시
+  return total > goal ? "over" : "within";   // 초과 → 노란색 / 이내 → 기본색
+}
+```
+- `over` → CSS 클래스 `.day-over` (노란색 배경)
+- `within` / `logged` → 기본 스타일
+- `none` → 날짜 숫자만, 칼로리 표시 없음
+
+### 5.12 특정 날짜 상세 조회 (읽기 전용)
+```js
+async function loadLogsForDate(userId, dateStr) {
+  const { data, error } = await client
+    .from("logs")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("log_date", dateStr)
+    .order("created_at", { ascending: true });
+  // 오늘 날짜가 아니면 렌더링 시 삭제 버튼을 생성하지 않음 (PRD US-15)
+}
+```
+
+---
+
+## 6. 화면별 상세 설계
+
+### 6.1 로그인 / 회원가입 화면
+- 이메일 input, 비밀번호 input (회원가입 시 비밀번호 확인 input 추가)
+- 로그인/회원가입 버튼, 화면 전환 링크
+- 에러 메시지 표시 영역 (Supabase 에러 메시지를 사용자 친화적 문구로 매핑)
+
+### 6.2 트래커 메인 화면 — 헤더
+- 로그인된 사용자 이메일 표시
+- 로그아웃 버튼
+- 오늘 날짜 표시
+
+### 6.3 상단 요약 영역 (변경 없음)
+- 총 칼로리(kcal), 총 탄수화물(g), 총 단백질(g), 총 지방(g)
+
+### 6.4 입력 영역 (변경 없음)
+- 검색 input, 검색 결과 리스트, 섭취량 input, 계산 미리보기, "기록에 추가" 버튼
+- 추가 시 Supabase insert 호출 → 성공 시 리스트 갱신
+
+### 6.5 기록 리스트 영역
+- 오늘 추가한 항목을 `created_at` 순으로 렌더링
+- 각 행: 음식명 · 섭취량(g) · 칼로리 · 탄/단/지 · 삭제(×) 버튼 → 삭제 시 Supabase delete 호출
+
+### 6.6 목표 칼로리 입력
+- 트래커 헤더 또는 요약 영역 근처에 목표 칼로리 표시 + "수정" 버튼(또는 숫자 입력 필드 + 저장 버튼)
+- 목표 미설정 시 "목표를 설정해보세요" 안내와 함께 입력 유도
+- 저장 시 `saveGoal()` 호출 (5.9) → 성공 시 화면 표시 갱신, 캘린더가 열려 있다면 색상도 재계산
+
+### 6.7 캘린더 화면
+- 상단: "◀ / YYYY년 M월 / ▶" 이동 컨트롤, 현재 목표 칼로리 표시
+- 요일 헤더(일~토) + 날짜 그리드 (해당 월 1일의 요일에 맞춰 앞쪽 빈 칸 채움)
+- 각 날짜 칸: 날짜 숫자 + (기록 있으면) 총 칼로리 숫자, `getDayStatus()` 결과에 따라 클래스 부여
+- 오늘 날짜 칸은 테두리 등으로 별도 강조
+- 월 이동 시 `loadMonthLogs()`를 다시 호출해 그리드 갱신
+- 트래커 화면과 캘린더 화면은 같은 페이지 내 뷰 전환(탭/버튼)으로 처리, 별도 라우팅 라이브러리 없이 `hidden` 속성으로 토글
+
+### 6.8 날짜 상세 조회 (읽기 전용)
+- 캘린더의 날짜 칸 클릭 시 모달 또는 화면 하단 영역에 `loadLogsForDate()` 결과를 표시
+- 오늘 날짜가 아니면 삭제 버튼을 렌더링하지 않음 (조회 전용, PRD US-15/8.1)
+- 기록이 없는 날짜 클릭 시 "이 날은 기록이 없어요" 안내
+
+---
+
+## 7. 배포 계획
+- `github-pages-deploy` 체크리스트를 따라 프론트엔드 정적 파일 배포 (기존 `rubilisa08/my-product_MVP` 저장소 사용).
+- Supabase 프로젝트는 사용자가 직접 [supabase.com](https://supabase.com)에서 생성 (계정 생성/가입은 본인이 진행).
+- 프로젝트 생성 후 `supabase/setup.sql`을 Supabase SQL Editor에서 실행하여 `logs` 테이블 + RLS 정책 적용.
+- Supabase 프로젝트 설정(Authentication → Providers)에서 이메일 인증 여부 확인/설정.
+- `supabaseClient.js`에 발급받은 프로젝트 URL과 anon key 입력 (anon key는 공개 저장소에 커밋해도 안전 — RLS가 실질적 보호).
+
+## 8. 로컬 개발 환경
+- `.claude/launch.json`에 아래 항목 추가:
+```json
+{
+  "name": "calorie_tracker",
+  "runtimeExecutable": "npx",
+  "runtimeArgs": ["http-server", "calorie_tracker", "-p", "8322"],
+  "port": 8322
+}
+```
+- `fetch('data/foods.json')` 및 Supabase 클라이언트 호출은 `file://` 직접 열람 시 제약이 있을 수 있으므로 로컬 서버를 통해 확인한다.
+
+---
+
+## 9. 보안 체크리스트 (todo_supabase 경험 반영)
+- [ ] `logs` 테이블 RLS 활성화 및 select/insert/delete 정책 적용 확인
+- [ ] anon(public) key만 프론트엔드에 사용, service_role key는 어디에도 포함하지 않음
+- [ ] 배포 전 서로 다른 두 계정으로 로그인해 상대방 기록이 보이지 않는지 교차 확인
+- [ ] `amount_g > 0` 등 DB 레벨 체크 제약으로 최소한의 서버 측 검증 확보 (프론트 검증에만 의존하지 않음)
+- [ ] Supabase 무료 티어 제한(DB 용량, 대역폭, 장기 미사용 시 자동 일시정지) README에 명시
+
+---
+
+## 10. 테스트 계획 (수동)
+| 시나리오 | 기대 결과 |
+|---|---|
+| 신규 이메일로 회원가입 | 가입 성공, (설정에 따라) 즉시 로그인 또는 이메일 인증 안내 |
+| 이미 가입된 이메일로 재가입 | 에러 안내 |
+| 잘못된 비밀번호로 로그인 | 에러 안내, 로그인 실패 |
+| 로그인 후 음식 기록 추가 | Supabase `logs`에 저장되고 리스트에 즉시 반영 |
+| 기록 추가 후 로그아웃 → 재로그인 | 동일 계정으로 로그인 시 기존 기록이 그대로 조회됨 |
+| 계정 A로 기록 추가 후, 계정 B로 로그인 | 계정 B 화면에 계정 A의 기록이 보이지 않음 (RLS 검증) |
+| 다른 브라우저/기기에서 같은 계정 로그인 | 동일한 오늘의 기록이 조회됨 (동기화 확인) |
+| 항목 삭제 | 리스트에서 제거되고 총합이 즉시 재계산됨, DB에서도 삭제 확인 |
+| 세션 만료/로그아웃 상태에서 새로고침 | 로그인 화면으로 전환 |
+| 자정 넘겨서 접속 | 새 날짜 기준 빈 기록으로 시작, 이전 날짜 데이터는 DB에 유지 |
+| 목표 칼로리 설정 후 새로고침 | 설정한 값이 그대로 유지됨 (user_metadata 조회) |
+| 목표 미설정 상태에서 캘린더 진입 | 어떤 날짜도 노란색으로 표시되지 않음, 칼로리 숫자만 표시 |
+| 목표보다 높은 칼로리를 기록한 날 | 해당 날짜 칸이 노란색으로 표시됨 |
+| 목표를 낮춘 뒤 과거 달력 재조회 | 기존에 "이내"였던 날짜가 새 목표 기준으로 "초과"(노란색)로 바뀔 수 있음 (의도된 동작, PRD 8.1) |
+| 이전/다음 달 이동 | 해당 월의 로그를 다시 조회해 그리드가 올바르게 갱신됨 |
+| 기록 없는 날짜 클릭 | "이 날은 기록이 없어요" 안내 표시 |
+| 오늘이 아닌 날짜의 상세 조회 화면 | 삭제 버튼이 보이지 않음 (조회 전용) |
+
+---
+
+## 11. 향후 확장 시 고려사항 (참고용, 이번 구현 범위 아님)
+- 비밀번호 재설정: Supabase `resetPasswordForEmail` API + 이메일 템플릿 설정으로 비교적 쉽게 추가 가능.
+- 소셜 로그인: Supabase Auth Providers(Google 등) 설정만으로 확장 가능, 프론트 코드 변경 최소화.
+- 실시간 동기화: Supabase Realtime 구독(`supabase.channel(...)`)으로 기기 간 즉시 반영 가능.
+- 외부 영양성분 API로 전환 시 `foods.json` 로딩 부분만 API 호출로 교체하면 되도록 검색/계산 로직과 데이터 소스를 분리해서 구현.
+- 탄/단/지 개별 목표: `user_metadata`에 `daily_carbs_goal` 등 필드를 추가하고 캘린더 색상 판정 로직을 다중 조건으로 확장하면 됨.
+- 목표 변경 이력 관리: 지금은 목표를 하나의 값으로만 저장해 과거 판정에도 소급 적용되므로, 특정 시점 기준으로 고정하려면 `goal_history` 같은 별도 테이블(적용 시작일 포함)이 필요함.
+- 과거 기록 수정 허용: `logs`에 `update` RLS 정책을 추가하고 UI에서 오늘 여부에 따른 버튼 숨김 조건(6.8)을 제거하면 됨.
+- 사진 기반 음식 인식: 지금의 "정적 프론트엔드 + Supabase" 구조에 서버리스 함수(Supabase Edge Function 등)를 추가해, 이미지 업로드 → Edge Function이 비전 AI API를 호출(API 키는 서버 측에만 보관) → 인식된 음식명/추정 영양성분을 검색 결과처럼 반환 → 사용자가 확인/수정 후 기존 "기록에 추가" 흐름에 그대로 태우는 방식으로 확장 가능.
+
+
+===== calorie-tracker/app.js =====
+// Supabase 클라이언트는 supabaseClient.js 에서 생성된 전역 `sbClient` 변수를 사용
+const client = sbClient;
+
+// ---- DOM refs ----
+const authView = document.getElementById("auth-view");
+const trackerView = document.getElementById("tracker-view");
+
+const loginForm = document.getElementById("login-form");
+const signupForm = document.getElementById("signup-form");
+const authMessage = document.getElementById("auth-message");
+const showSignupLink = document.getElementById("show-signup");
+const showLoginLink = document.getElementById("show-login");
+
+const userEmailEl = document.getElementById("user-email");
+const logoutBtn = document.getElementById("logout-btn");
+const todayDateEl = document.getElementById("today-date");
+
+const sumCaloriesEl = document.getElementById("sum-calories");
+const sumCarbsEl = document.getElementById("sum-carbs");
+const sumProteinEl = document.getElementById("sum-protein");
+const sumFatEl = document.getElementById("sum-fat");
+
+const searchInputCard = document.getElementById("search-input-card");
+const foodSearchInput = document.getElementById("food-search");
+const searchResultsEl = document.getElementById("search-results");
+const selectedFoodBox = document.getElementById("selected-food");
+const selectedFoodNameEl = document.getElementById("selected-food-name");
+const selectedFoodBaseEl = document.getElementById("selected-food-base");
+const amountInput = document.getElementById("amount-input");
+const amountLabelText = document.getElementById("amount-label-text");
+const amountUnitText = document.getElementById("amount-unit-text");
+const previewEl = document.getElementById("preview");
+const addBtn = document.getElementById("add-btn");
+
+const showManualEntryLink = document.getElementById("show-manual-entry");
+const manualForm = document.getElementById("manual-form");
+const manualNameInput = document.getElementById("manual-name");
+const manualCaloriesInput = document.getElementById("manual-calories");
+const manualCarbsInput = document.getElementById("manual-carbs");
+const manualProteinInput = document.getElementById("manual-protein");
+const manualFatInput = document.getElementById("manual-fat");
+const manualAddBtn = document.getElementById("manual-add-btn");
+const manualCancelBtn = document.getElementById("manual-cancel-btn");
+
+const logListEl = document.getElementById("log-list");
+const logEmptyEl = document.getElementById("log-empty");
+
+const goalRemainingEl = document.getElementById("goal-remaining");
+
+const goalDisplayEl = document.getElementById("goal-display");
+const editGoalBtn = document.getElementById("edit-goal-btn");
+const openCalendarBtn = document.getElementById("open-calendar-btn");
+const goalForm = document.getElementById("goal-form");
+const goalInput = document.getElementById("goal-input");
+const cancelGoalBtn = document.getElementById("cancel-goal-btn");
+
+const calendarView = document.getElementById("calendar-view");
+const backToTrackerBtn = document.getElementById("back-to-tracker-btn");
+const calendarGoalDisplayEl = document.getElementById("calendar-goal-display");
+const prevMonthBtn = document.getElementById("prev-month-btn");
+const nextMonthBtn = document.getElementById("next-month-btn");
+const calendarTitleEl = document.getElementById("calendar-title");
+const calendarGridEl = document.getElementById("calendar-grid");
+const dayDetailEl = document.getElementById("day-detail");
+const dayDetailTitleEl = document.getElementById("day-detail-title");
+const dayDetailListEl = document.getElementById("day-detail-list");
+const dayDetailEmptyEl = document.getElementById("day-detail-empty");
+
+// ---- 상태 ----
+let foods = [];
+let selectedFood = null;
+let currentLogs = [];
+let currentUser = null;
+let currentGoal = null; // 하루 목표 칼로리 (kcal), 미설정 시 null
+
+const today = new Date();
+let calendarYear = today.getFullYear();
+let calendarMonth = today.getMonth() + 1; // 1~12
+let monthlyTotals = {}; // { "YYYY-MM-DD": totalCalories }
+
+// ---- 유틸 ----
+function round1(n) {
+  return Math.round(n * 10) / 10;
+}
+
+function getLocalDateString(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function getFoodEmoji(foodId) {
+  return foods.find((f) => f.id === foodId)?.emoji || "🍽️";
+}
+
+// ---- 한글 초성 검색 ----
+// "ㄱㅊㅈㄲ" 처럼 초성만으로 입력해도 "김치찌개"가 검색되도록 지원.
+const CHOSUNG_LIST = [
+  "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ",
+  "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
+];
+
+function getChosung(str) {
+  let result = "";
+  for (const ch of str) {
+    const code = ch.charCodeAt(0) - 0xac00;
+    result += code >= 0 && code <= 11171 ? CHOSUNG_LIST[Math.floor(code / 588)] : ch;
+  }
+  return result;
+}
+
+function isChosungOnlyQuery(str) {
+  return /^[ㄱ-ㅎ]+$/.test(str);
+}
+
+function matchesFoodQuery(food, query) {
+  if (isChosungOnlyQuery(query)) {
+    return getChosung(food.name).includes(query);
+  }
+  return food.name.includes(query);
+}
+
+function calcNutrition(food, amountG) {
+  const ratio = amountG / 100;
+  return {
+    calories: Math.round(food.caloriesPer100g * ratio),
+    carbs: round1(food.carbsPer100g * ratio),
+    protein: round1(food.proteinPer100g * ratio),
+    fat: round1(food.fatPer100g * ratio),
+  };
+}
+
+function showAuthMessage(text) {
+  authMessage.textContent = text;
+  authMessage.hidden = !text;
+}
+
+// 비밀번호 정책: 8자 이상 + 대문자/소문자/숫자/특수문자 중 3종류 이상 포함
+// (실제 최종 검증과 유출 비밀번호 차단은 Supabase Auth 설정에서 서버 측으로 강제됨)
+function checkPasswordPolicy(password) {
+  if (password.length < 8) {
+    return "비밀번호는 8자 이상이어야 해요.";
+  }
+
+  const classes = [/[a-z]/, /[A-Z]/, /[0-9]/, /[^a-zA-Z0-9]/];
+  const matched = classes.filter((re) => re.test(password)).length;
+
+  if (matched < 3) {
+    return "비밀번호에 대문자·소문자·숫자·특수문자 중 3종류 이상을 포함해주세요.";
+  }
+
+  return null;
+}
+
+// ---- 음식 데이터 로드 ----
+async function loadFoods() {
+  const res = await fetch("data/foods.json");
+  foods = await res.json();
+}
+
+// ---- 음식 검색 ----
+function renderSearchResults(query) {
+  const trimmed = query.trim();
+  searchResultsEl.innerHTML = "";
+
+  if (!trimmed) return;
+
+  const matches = foods.filter((f) => matchesFoodQuery(f, trimmed)).slice(0, 10);
+
+  if (matches.length === 0) {
+    const li = document.createElement("li");
+    li.className = "search-empty";
+    li.textContent = "검색 결과가 없어요. 다른 이름으로 검색해보세요.";
+    searchResultsEl.appendChild(li);
+    return;
+  }
+
+  for (const food of matches) {
+    const li = document.createElement("li");
+
+    const name = document.createElement("span");
+    name.textContent = `${food.emoji} ${food.name}`;
+
+    const meta = document.createElement("span");
+    meta.className = "result-meta";
+    meta.textContent = isCountUnit(food)
+      ? `${Math.round((food.caloriesPer100g * food.commonServingG) / 100)}kcal/${food.commonServingLabel}`
+      : `${food.caloriesPer100g}kcal/100g`;
+
+    li.appendChild(name);
+    li.appendChild(meta);
+    li.addEventListener("click", () => selectFood(food));
+    searchResultsEl.appendChild(li);
+  }
+}
+
+// ---- 그램 입력 vs "몇 인분/개" 같은 개수 입력 ----
+// 국밥·찌개·디저트처럼 그램으로 재는 게 부자연스러운 음식은 unitType: "count"로 표시해
+// "몇 인분(개/조각...)"을 입력받고, 내부적으로만 commonServingG를 곱해 그램으로 환산한다.
+function isCountUnit(food) {
+  return food.unitType === "count";
+}
+
+// commonServingLabel은 "1인분"/"2줄"처럼 수량이 포함된 서술형 문자열이라,
+// 입력값(예: 1.5) 뒤에 그대로 붙이면 "1.51인분"처럼 숫자가 겹친다.
+// 앞의 숫자를 떼어낸 단위 이름("인분", "줄")만 뽑아 쓴다.
+function getUnitName(label) {
+  return label.replace(/^[0-9]+(\.[0-9]+)?(\/[0-9]+)?/, "") || label;
+}
+
+function getAmountGrams(food, inputValue) {
+  const value = Number(inputValue);
+  if (!value || value <= 0) return 0;
+  return isCountUnit(food) ? value * food.commonServingG : value;
+}
+
+function selectFood(food) {
+  selectedFood = food;
+  foodSearchInput.value = food.name;
+  searchResultsEl.innerHTML = "";
+
+  selectedFoodBox.hidden = false;
+  selectedFoodNameEl.textContent = `${food.emoji} ${food.name}`;
+
+  if (isCountUnit(food)) {
+    const n = calcNutrition(food, food.commonServingG);
+    selectedFoodBaseEl.textContent = `${food.commonServingLabel}(${food.commonServingG}g) 기준 ${n.calories}kcal · 탄${n.carbs}g · 단${n.protein}g · 지${n.fat}g`;
+    amountLabelText.textContent = "수량";
+    amountUnitText.textContent = getUnitName(food.commonServingLabel);
+    amountInput.min = "0.5";
+    amountInput.step = "0.5";
+    amountInput.value = 1;
+  } else {
+    selectedFoodBaseEl.textContent = `100g당 ${food.caloriesPer100g}kcal · 탄${food.carbsPer100g}g · 단${food.proteinPer100g}g · 지${food.fatPer100g}g`;
+    amountLabelText.textContent = "섭취량";
+    amountUnitText.textContent = "g";
+    amountInput.min = "1";
+    amountInput.step = "1";
+    amountInput.value = food.commonServingG;
+  }
+
+  updatePreview();
+}
+
+function updatePreview() {
+  if (!selectedFood) {
+    previewEl.textContent = "";
+    addBtn.disabled = true;
+    return;
+  }
+
+  const amountG = getAmountGrams(selectedFood, amountInput.value);
+  if (!amountG) {
+    previewEl.textContent = "";
+    addBtn.disabled = true;
+    return;
+  }
+
+  const n = calcNutrition(selectedFood, amountG);
+  previewEl.textContent = `→ 예상: ${n.calories}kcal / 탄${n.carbs}g · 단${n.protein}g · 지${n.fat}g`;
+  addBtn.disabled = false;
+}
+
+function resetFoodInput() {
+  selectedFood = null;
+  foodSearchInput.value = "";
+  searchResultsEl.innerHTML = "";
+  selectedFoodBox.hidden = true;
+  previewEl.textContent = "";
+  addBtn.disabled = true;
+  amountLabelText.textContent = "섭취량";
+  amountUnitText.textContent = "g";
+  amountInput.min = "1";
+  amountInput.step = "1";
+}
+
+// ---- 음식 직접 입력 (foods.json 164개 목록에 없는 음식용) ----
+// foods.json에 새 음식으로 등록되는 것이 아니라, 그날의 기록에 1회성으로 저장된다 (검색 결과에는 나오지 않음).
+function resetManualForm() {
+  manualForm.reset();
+  manualAddBtn.disabled = false; // form.reset()은 값만 되돌릴 뿐 수동으로 설정한 disabled는 풀어주지 않음
+}
+
+function showManualForm() {
+  resetFoodInput();
+  searchInputCard.hidden = true;
+  manualForm.hidden = false;
+  manualNameInput.focus();
+}
+
+function hideManualForm() {
+  manualForm.hidden = true;
+  searchInputCard.hidden = false;
+  resetManualForm();
+}
+
+async function addManualLog() {
+  const name = manualNameInput.value.trim();
+  const calories = Number(manualCaloriesInput.value);
+
+  if (!name || manualCaloriesInput.value === "" || Number.isNaN(calories) || calories < 0) return;
+  if (manualAddBtn.disabled) return; // 연타로 인한 중복 기록 방지
+
+  const carbs = manualCarbsInput.value === "" ? 0 : Number(manualCarbsInput.value);
+  const protein = manualProteinInput.value === "" ? 0 : Number(manualProteinInput.value);
+  const fat = manualFatInput.value === "" ? 0 : Number(manualFatInput.value);
+
+  if ([carbs, protein, fat].some((v) => Number.isNaN(v) || v < 0)) return;
+
+  manualAddBtn.disabled = true;
+
+  const { error } = await client.from("logs").insert({
+    user_id: currentUser.id,
+    food_id: `custom_${crypto.randomUUID()}`,
+    food_name: name,
+    amount_g: 1, // 직접 입력은 g 기준 비례 계산이 아니라 총량을 그대로 기록하므로 더미 값
+    calories,
+    carbs,
+    protein,
+    fat,
+    log_date: getLocalDateString(),
+  });
+
+  if (error) {
+    console.error(error);
+    alert("기록 추가에 실패했어요. 잠시 후 다시 시도해주세요.");
+    manualAddBtn.disabled = false;
+    return;
+  }
+
+  hideManualForm();
+  await loadTodayLogs();
+}
+
+// ---- 오늘의 기록 (Supabase) ----
+async function loadTodayLogs() {
+  const today = getLocalDateString();
+  const { data, error } = await client
+    .from("logs")
+    .select("*")
+    .eq("user_id", currentUser.id)
+    .eq("log_date", today)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  currentLogs = data;
+  renderLogs();
+}
+
+function renderLogs() {
+  logListEl.innerHTML = "";
+  logEmptyEl.hidden = currentLogs.length !== 0;
+
+  for (const log of currentLogs) {
+    logListEl.appendChild(buildLogItem(log));
+  }
+
+  renderSummary();
+}
+
+// 국밥·찌개처럼 unitType이 "count"인 음식은 그램 대신 "1.5인분" 식으로 표시한다.
+function formatAmountDisplay(log) {
+  const foodData = foods.find((f) => f.id === log.food_id);
+  if (foodData && isCountUnit(foodData) && foodData.commonServingG > 0) {
+    const count = log.amount_g / foodData.commonServingG;
+    const countText = Number.isInteger(count) ? String(count) : round1(count).toString();
+    return `${countText}${getUnitName(foodData.commonServingLabel)}`;
+  }
+  return `${log.amount_g}g`;
+}
+
+function buildLogItem(log) {
+  const li = document.createElement("li");
+  li.className = "log-item";
+
+  const nameBox = document.createElement("div");
+  nameBox.className = "log-name";
+  nameBox.innerHTML = `<span class="log-food">${getFoodEmoji(log.food_id)} ${log.food_name}</span><span class="log-amount">${formatAmountDisplay(log)}</span>`;
+
+  const nutritionBox = document.createElement("div");
+  nutritionBox.className = "log-nutrition";
+  nutritionBox.innerHTML = `<span class="log-calories">${log.calories}kcal</span><br>탄${log.carbs} · 단${log.protein} · 지${log.fat}`;
+
+  const actions = document.createElement("div");
+  actions.className = "log-actions";
+
+  const foodData = foods.find((f) => f.id === log.food_id);
+
+  const editBtn = document.createElement("button");
+  editBtn.type = "button";
+  editBtn.className = "edit-btn";
+  editBtn.textContent = "✎";
+  if (foodData) {
+    editBtn.title = "섭취량 수정";
+    editBtn.addEventListener("click", () => enterEditMode(li, log, foodData));
+  } else {
+    editBtn.disabled = true;
+    editBtn.title = "이 음식은 더 이상 데이터에 없어 수정할 수 없어요";
+  }
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.className = "delete-btn";
+  deleteBtn.textContent = "✕";
+  deleteBtn.addEventListener("click", () => deleteLog(log.id));
+
+  actions.appendChild(editBtn);
+  actions.appendChild(deleteBtn);
+
+  li.appendChild(nameBox);
+  li.appendChild(nutritionBox);
+  li.appendChild(actions);
+  return li;
+}
+
+// 삭제 후 재검색/재추가 대신, 오늘 기록의 섭취량만 바로 고칠 수 있도록 인라인 수정 모드로 전환.
+function enterEditMode(li, log, foodData) {
+  li.innerHTML = "";
+  li.classList.add("log-item-editing");
+
+  const nameRow = document.createElement("div");
+  nameRow.className = "log-name";
+  nameRow.innerHTML = `<span class="log-food">${getFoodEmoji(log.food_id)} ${log.food_name}</span>`;
+
+  const editRow = document.createElement("div");
+  editRow.className = "edit-row";
+
+  const isCount = isCountUnit(foodData);
+
+  const amountInputEl = document.createElement("input");
+  amountInputEl.type = "number";
+  amountInputEl.min = isCount ? "0.5" : "1";
+  amountInputEl.step = isCount ? "0.5" : "1";
+  amountInputEl.value = isCount ? round1(log.amount_g / foodData.commonServingG) : log.amount_g;
+
+  const gLabel = document.createElement("span");
+  gLabel.textContent = isCount ? getUnitName(foodData.commonServingLabel) : "g";
+
+  const previewSpan = document.createElement("span");
+  previewSpan.className = "edit-preview";
+
+  const actionsRow = document.createElement("div");
+  actionsRow.className = "edit-actions";
+
+  const saveBtn = document.createElement("button");
+  saveBtn.type = "button";
+  saveBtn.textContent = "저장";
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.type = "button";
+  cancelBtn.className = "secondary-btn";
+  cancelBtn.textContent = "취소";
+  cancelBtn.addEventListener("click", renderLogs); // 편집 취소 → 현재 데이터로 목록 다시 그림
+
+  function updateEditPreview() {
+    const amountG = getAmountGrams(foodData, amountInputEl.value);
+    if (!amountG) {
+      previewSpan.textContent = "";
+      saveBtn.disabled = true;
+      return;
+    }
+    const n = calcNutrition(foodData, amountG);
+    previewSpan.textContent = `→ ${n.calories}kcal / 탄${n.carbs}·단${n.protein}·지${n.fat}`;
+    saveBtn.disabled = false;
+  }
+
+  amountInputEl.addEventListener("input", updateEditPreview);
+
+  saveBtn.addEventListener("click", async () => {
+    const amountG = getAmountGrams(foodData, amountInputEl.value);
+    if (!amountG || saveBtn.disabled) return;
+    saveBtn.disabled = true;
+    cancelBtn.disabled = true;
+    await updateLog(log.id, foodData, amountG);
+  });
+
+  editRow.appendChild(amountInputEl);
+  editRow.appendChild(gLabel);
+  editRow.appendChild(previewSpan);
+  actionsRow.appendChild(saveBtn);
+  actionsRow.appendChild(cancelBtn);
+
+  li.appendChild(nameRow);
+  li.appendChild(editRow);
+  li.appendChild(actionsRow);
+
+  updateEditPreview();
+  amountInputEl.focus();
+}
+
+async function updateLog(id, foodData, amount) {
+  const n = calcNutrition(foodData, amount);
+
+  const { error } = await client
+    .from("logs")
+    .update({ amount_g: amount, calories: n.calories, carbs: n.carbs, protein: n.protein, fat: n.fat })
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    alert("수정에 실패했어요. 잠시 후 다시 시도해주세요.");
+  }
+
+  await loadTodayLogs();
+}
+
+function renderSummary() {
+  const totals = currentLogs.reduce(
+    (acc, log) => {
+      acc.calories += Number(log.calories);
+      acc.carbs += Number(log.carbs);
+      acc.protein += Number(log.protein);
+      acc.fat += Number(log.fat);
+      return acc;
+    },
+    { calories: 0, carbs: 0, protein: 0, fat: 0 }
+  );
+
+  sumCaloriesEl.textContent = Math.round(totals.calories);
+  sumCarbsEl.textContent = round1(totals.carbs);
+  sumProteinEl.textContent = round1(totals.protein);
+  sumFatEl.textContent = round1(totals.fat);
+
+  renderGoalRemaining(totals.calories);
+}
+
+// ---- 목표까지 남은 칼로리 ----
+function renderGoalRemaining(totalCalories) {
+  if (currentGoal == null) {
+    goalRemainingEl.hidden = true;
+    goalRemainingEl.textContent = "";
+    goalRemainingEl.classList.remove("goal-over");
+    return;
+  }
+
+  const diff = currentGoal - Math.round(totalCalories);
+  goalRemainingEl.hidden = false;
+
+  if (diff >= 0) {
+    goalRemainingEl.classList.remove("goal-over");
+    goalRemainingEl.textContent = `목표까지 ${diff}kcal 남았어요`;
+  } else {
+    goalRemainingEl.classList.add("goal-over");
+    goalRemainingEl.textContent = `목표를 ${Math.abs(diff)}kcal 초과했어요`;
+  }
+}
+
+async function addLog() {
+  if (!selectedFood) return;
+  const amountG = getAmountGrams(selectedFood, amountInput.value);
+  if (!amountG) return;
+
+  if (addBtn.disabled) return; // 이미 처리 중 — 연타로 인한 중복 기록 방지
+
+  const n = calcNutrition(selectedFood, amountG);
+
+  addBtn.disabled = true;
+
+  const { error } = await client.from("logs").insert({
+    user_id: currentUser.id,
+    food_id: selectedFood.id,
+    food_name: selectedFood.name,
+    amount_g: amountG,
+    calories: n.calories,
+    carbs: n.carbs,
+    protein: n.protein,
+    fat: n.fat,
+    log_date: getLocalDateString(),
+  });
+
+  if (error) {
+    console.error(error);
+    alert("기록 추가에 실패했어요. 잠시 후 다시 시도해주세요.");
+    updatePreview(); // 현재 선택 상태 기준으로 버튼 활성화 여부 다시 계산
+    return;
+  }
+
+  resetFoodInput();
+  await loadTodayLogs();
+}
+
+async function deleteLog(id) {
+  const { error } = await client.from("logs").delete().eq("id", id);
+  if (error) {
+    console.error(error);
+    alert("삭제에 실패했어요. 잠시 후 다시 시도해주세요.");
+    return;
+  }
+  await loadTodayLogs();
+}
+
+// ---- 목표 칼로리 ----
+function renderGoalDisplay() {
+  const text = currentGoal ? `목표: ${currentGoal}kcal` : "목표가 설정되지 않았어요";
+  goalDisplayEl.textContent = text;
+  calendarGoalDisplayEl.textContent = text;
+}
+
+function loadGoal(user) {
+  currentGoal = user.user_metadata?.daily_calorie_goal ?? null;
+  renderGoalDisplay();
+}
+
+async function saveGoal(value) {
+  const { data, error } = await client.auth.updateUser({ data: { daily_calorie_goal: value } });
+  if (error) {
+    console.error(error);
+    alert("목표 저장에 실패했어요. 잠시 후 다시 시도해주세요.");
+    return;
+  }
+  currentGoal = data.user.user_metadata?.daily_calorie_goal ?? null;
+  renderGoalDisplay();
+  renderSummary();
+  if (!calendarView.hidden) renderCalendar();
+}
+
+// ---- 캘린더 ----
+function getMonthRange(year, month) {
+  const start = `${year}-${String(month).padStart(2, "0")}-01`;
+  const lastDay = new Date(year, month, 0).getDate();
+  const end = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+  return { start, end, lastDay };
+}
+
+async function loadMonthLogs(year, month) {
+  const { start, end } = getMonthRange(year, month);
+  const { data, error } = await client
+    .from("logs")
+    .select("log_date, calories")
+    .eq("user_id", currentUser.id)
+    .gte("log_date", start)
+    .lte("log_date", end);
+
+  if (error) {
+    console.error(error);
+    monthlyTotals = {};
+    return;
+  }
+
+  monthlyTotals = {};
+  for (const row of data) {
+    monthlyTotals[row.log_date] = (monthlyTotals[row.log_date] || 0) + Number(row.calories);
+  }
+}
+
+function getDayStatus(dateStr) {
+  const total = monthlyTotals[dateStr];
+  if (total == null) return "none";
+  if (currentGoal == null) return "logged";
+  return total > currentGoal ? "over" : "within";
+}
+
+async function renderCalendar() {
+  calendarTitleEl.textContent = `${calendarYear}년 ${calendarMonth}월`;
+  await loadMonthLogs(calendarYear, calendarMonth);
+
+  calendarGridEl.innerHTML = "";
+
+  const firstWeekday = new Date(calendarYear, calendarMonth - 1, 1).getDay(); // 0=일
+  const { lastDay } = getMonthRange(calendarYear, calendarMonth);
+  const todayStr = getLocalDateString();
+
+  for (let i = 0; i < firstWeekday; i++) {
+    const empty = document.createElement("div");
+    empty.className = "day-cell day-empty-slot";
+    calendarGridEl.appendChild(empty);
+  }
+
+  for (let day = 1; day <= lastDay; day++) {
+    const dateStr = `${calendarYear}-${String(calendarMonth).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const status = getDayStatus(dateStr);
+
+    const cell = document.createElement("div");
+    cell.className = "day-cell";
+    if (status !== "none") cell.classList.add("day-has-log");
+    if (status === "over") cell.classList.add("day-over");
+    if (dateStr === todayStr) cell.classList.add("day-today");
+
+    const numberEl = document.createElement("span");
+    numberEl.className = "day-number";
+    numberEl.textContent = day;
+    cell.appendChild(numberEl);
+
+    if (status !== "none") {
+      const calEl = document.createElement("span");
+      calEl.className = "day-calories";
+      calEl.textContent = `${monthlyTotals[dateStr]}kcal`;
+      cell.appendChild(calEl);
+    }
+
+    cell.addEventListener("click", () => openDayDetail(dateStr));
+    calendarGridEl.appendChild(cell);
+  }
+}
+
+async function openDayDetail(dateStr) {
+  const { data, error } = await client
+    .from("logs")
+    .select("*")
+    .eq("user_id", currentUser.id)
+    .eq("log_date", dateStr)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  dayDetailEl.hidden = false;
+  dayDetailTitleEl.textContent = `${dateStr} (총 ${monthlyTotals[dateStr] || 0}kcal)`;
+  dayDetailListEl.innerHTML = "";
+  dayDetailEmptyEl.hidden = data.length !== 0;
+
+  for (const log of data) {
+    const li = document.createElement("li");
+    li.className = "log-item";
+
+    const nameBox = document.createElement("div");
+    nameBox.className = "log-name";
+    nameBox.innerHTML = `<span class="log-food">${getFoodEmoji(log.food_id)} ${log.food_name}</span><span class="log-amount">${formatAmountDisplay(log)}</span>`;
+
+    const nutritionBox = document.createElement("div");
+    nutritionBox.className = "log-nutrition";
+    nutritionBox.innerHTML = `<span class="log-calories">${log.calories}kcal</span><br>탄${log.carbs} · 단${log.protein} · 지${log.fat}`;
+
+    // 조회 전용 — 삭제 버튼 없음 (오늘이 아닌 날짜의 기록은 수정/삭제 불가)
+    li.appendChild(nameBox);
+    li.appendChild(nutritionBox);
+    dayDetailListEl.appendChild(li);
+  }
+}
+
+function switchToCalendarView() {
+  trackerView.hidden = true;
+  calendarView.hidden = false;
+  dayDetailEl.hidden = true;
+  const now = new Date(); // 자정을 넘겨 페이지가 오래 열려 있었을 수 있으므로 매번 새로 계산
+  calendarYear = now.getFullYear();
+  calendarMonth = now.getMonth() + 1;
+  renderCalendar();
+}
+
+function switchToTrackerView() {
+  calendarView.hidden = true;
+  trackerView.hidden = false;
+}
+
+// ---- 화면 전환 ----
+function showAuthView() {
+  authView.hidden = false;
+  trackerView.hidden = true;
+  showAuthMessage("");
+}
+
+async function showTrackerView(user) {
+  currentUser = user;
+  authView.hidden = true;
+  calendarView.hidden = true;
+  trackerView.hidden = false;
+
+  userEmailEl.textContent = user.email;
+  todayDateEl.textContent = getLocalDateString();
+
+  loadGoal(user);
+  goalForm.hidden = true;
+  hideManualForm();
+  resetFoodInput();
+  await loadTodayLogs();
+}
+
+// ---- 인증 이벤트 ----
+showSignupLink.addEventListener("click", (e) => {
+  e.preventDefault();
+  loginForm.hidden = true;
+  signupForm.hidden = false;
+  showSignupLink.hidden = true;
+  showLoginLink.hidden = false;
+  showAuthMessage("");
+});
+
+showLoginLink.addEventListener("click", (e) => {
+  e.preventDefault();
+  loginForm.hidden = false;
+  signupForm.hidden = true;
+  showSignupLink.hidden = false;
+  showLoginLink.hidden = true;
+  showAuthMessage("");
+});
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  showAuthMessage("");
+
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value;
+
+  const { error } = await client.auth.signInWithPassword({ email, password });
+  if (error) {
+    showAuthMessage("로그인에 실패했어요: " + error.message);
+  }
+});
+
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  showAuthMessage("");
+
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value;
+  const passwordConfirm = document.getElementById("signup-password-confirm").value;
+
+  if (password !== passwordConfirm) {
+    showAuthMessage("비밀번호가 일치하지 않아요.");
+    return;
+  }
+
+  const policyError = checkPasswordPolicy(password);
+  if (policyError) {
+    showAuthMessage(policyError);
+    return;
+  }
+
+  const { data, error } = await client.auth.signUp({ email, password });
+  if (error) {
+    // 유출된 비밀번호(HaveIBeenPwned 연동) 등 서버 측 정책 위반도 이 메시지로 표시됨
+    showAuthMessage("회원가입에 실패했어요: " + error.message);
+    return;
+  }
+
+  if (!data.session) {
+    showAuthMessage("가입 확인 이메일을 보냈어요. 메일함을 확인한 뒤 로그인해주세요.");
+  }
+});
+
+logoutBtn.addEventListener("click", async () => {
+  await client.auth.signOut();
+});
+
+// ---- 트래커 이벤트 ----
+foodSearchInput.addEventListener("input", () => {
+  if (selectedFood && foodSearchInput.value !== selectedFood.name) {
+    selectedFood = null;
+    selectedFoodBox.hidden = true;
+    previewEl.textContent = "";
+    addBtn.disabled = true;
+  }
+  renderSearchResults(foodSearchInput.value);
+});
+
+amountInput.addEventListener("input", updatePreview);
+
+addBtn.addEventListener("click", addLog);
+
+// ---- 음식 직접 입력 이벤트 ----
+showManualEntryLink.addEventListener("click", (e) => {
+  e.preventDefault();
+  showManualForm();
+});
+
+manualCancelBtn.addEventListener("click", hideManualForm);
+
+manualForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  addManualLog();
+});
+
+// ---- 목표 칼로리 이벤트 ----
+editGoalBtn.addEventListener("click", () => {
+  goalInput.value = currentGoal ?? "";
+  goalForm.hidden = false;
+});
+
+cancelGoalBtn.addEventListener("click", () => {
+  goalForm.hidden = true;
+});
+
+goalForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const value = Number(goalInput.value);
+  if (!value || value <= 0) return;
+  await saveGoal(value);
+  goalForm.hidden = true;
+});
+
+// ---- 캘린더 이벤트 ----
+openCalendarBtn.addEventListener("click", switchToCalendarView);
+backToTrackerBtn.addEventListener("click", switchToTrackerView);
+
+prevMonthBtn.addEventListener("click", () => {
+  calendarMonth -= 1;
+  if (calendarMonth < 1) {
+    calendarMonth = 12;
+    calendarYear -= 1;
+  }
+  dayDetailEl.hidden = true;
+  renderCalendar();
+});
+
+nextMonthBtn.addEventListener("click", () => {
+  calendarMonth += 1;
+  if (calendarMonth > 12) {
+    calendarMonth = 1;
+    calendarYear += 1;
+  }
+  dayDetailEl.hidden = true;
+  renderCalendar();
+});
+
+// ---- 인증 상태 감지 ----
+client.auth.onAuthStateChange((event, session) => {
+  if (session) {
+    showTrackerView(session.user);
+  } else {
+    currentUser = null;
+    showAuthView();
+  }
+});
+
+// ---- 자정 경계 처리 ----
+// 자정이 지나도 새로고침 없이는 화면이 어제 날짜 그대로 남아있던 문제를 해결.
+// 다음 자정(+5초 여유)까지 걸리는 시간을 계산해 그 시점에 화면을 갱신하고, 다시 다음 자정을 예약한다.
+function scheduleMidnightRefresh() {
+  const now = new Date();
+  const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+  const ms = nextMidnight.getTime() - now.getTime();
+
+  setTimeout(async () => {
+    if (currentUser) {
+      todayDateEl.textContent = getLocalDateString();
+
+      if (!trackerView.hidden) {
+        hideManualForm();
+        resetFoodInput();
+        await loadTodayLogs();
+      } else if (!calendarView.hidden) {
+        const refreshedNow = new Date();
+        if (calendarYear === refreshedNow.getFullYear() && calendarMonth === refreshedNow.getMonth() + 1) {
+          dayDetailEl.hidden = true;
+          await renderCalendar();
+        }
+      }
+    }
+
+    scheduleMidnightRefresh();
+  }, ms);
+}
+
+// ---- 시작 ----
+loadFoods();
+scheduleMidnightRefresh();

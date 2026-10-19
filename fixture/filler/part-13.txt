@@ -1,0 +1,818 @@
+
+
+===== to-do-list/Review.md =====
+# AIFFEL Campus Code Peer Review Templete
+- 코더 : 박서연
+- 리뷰어 : 이두규
+
+> **리뷰 방법** — 저장소를 포크·클론해 파일 8개를 전부 읽고, 배포 링크(https://rubilisa08.github.io/to-do-list/)를 열어 실제로 동작을 확인했습니다.
+> 표기는 액션 가이드대로 **해당하면 O / 해당하지 않으면 X**입니다.
+> 리뷰 시점 기준으로 `todos` 테이블이 비어 있어서, **쓰기 경로는 코드로**, **읽기 경로는 배포된 앱에서 실제 응답으로** 확인했습니다.
+
+# PRT(Peer Review Template)
+
+[O]  **1. 주어진 문제를 해결하는 완성된 코드가 제출되었나요?**
+- 문제에서 요구하는 기능이 정상적으로 작동하는지?
+    - 해당 조건을 만족하는 부분의 코드 및 결과물을 근거로 첨부
+
+**근거 ① — 배포된 앱이 실제로 뜨고, 백엔드 응답이 살아 있습니다.**
+
+배포 링크를 열었을 때 이번 주(9/7~9/13)가 렌더되고 **오늘(9/9 수) 칸이 강조**됩니다. 콘솔 에러는 0건이었습니다.
+그리고 페이지 안의 클라이언트로 조회를 직접 걸어 봤습니다.
+
+```js
+await client.from('todos').select('*').limit(5)
+// → { error: null, status: 200, rowCount: 0 }
+```
+
+`status: 200` · `error: null` 이라는 건 단순히 화면이 그려진 게 아니라 **Supabase까지 왕복이 성공했고, RLS의 `anon` select 정책이 실제로 통과했다**는 뜻입니다. 루브릭의 *"실제로 동작하는 백엔드"*가 여기서 증명됩니다.
+
+**근거 ② — CRUD 네 가지가 모두 구현돼 있습니다.**
+
+| 기능 | 위치 | 코드 |
+|---|---|---|
+| Read | `app.js:72` | `.select("*").gte("task_date", …).lte(…).order("created_at")` |
+| Create | `app.js:141` | `client.from("todos").insert({ task, task_date: taskDate })` |
+| Update | `app.js:151` | `.update({ is_complete: isComplete }).eq("id", id)` |
+| Delete | `app.js:162` | `.delete().eq("id", id)` |
+
+**근거 ③ — 반응형이 실제로 동작합니다.**
+
+`index.html:5`에 viewport 메타가 있고, 폭을 바꿔 확인했습니다.
+
+```
+1280px → grid-template-columns: 131px × 7   (7열, 가로 스크롤 없음)
+ 375px → grid-template-columns: 279px       (1열, 가로 스크롤 없음)
+```
+
+7열 캘린더는 좁은 화면에서 깨지기 쉬운 구조인데 **1열로 정직하게 떨어집니다.** 루브릭의 *'직관적'* 에 해당하는 부분이라 따로 적어 둡니다.
+
+---
+
+[O]  **2. 핵심적이거나 복잡하고 이해하기 어려운 부분에 작성된 설명을 보고 해당 코드가 잘 이해되었나요?**
+- 해당 코드 블럭에 doc string/annotation/markdown이 달려 있는지 확인
+- 해당 코드가 무슨 기능을 하는지, 왜 그렇게 짜여진건지, 작동 메커니즘이 뭔지 기술.
+- 주석을 보고 코드 이해가 잘 되었는지 확인
+    - 잘 작성되었다고 생각되는 부분을 근거로 첨부합니다.
+
+**이 항목이 이 저장소의 가장 강한 부분이었습니다.** 특히 *"왜 그렇게 짜여진건지"* 가 적혀 있는 곳이 많았습니다.
+
+**근거 ① — 가장 이해하기 어려운 한 줄에 정확히 주석이 붙어 있습니다.**
+
+```js
+// app.js:24-29
+// 오늘 기준 이번 주 월요일~일요일 날짜를 계산
+function getWeekDates() {
+  const today = new Date();
+  const diffToMonday = (today.getDay() + 6) % 7; // 일=0 ... 토=6 → 월요일까지 거리
+```
+
+`(getDay() + 6) % 7` 은 처음 보면 **왜 6을 더하는지** 알 수 없는 줄입니다. JS의 `getDay()`가 일요일을 0으로 주기 때문에 월요일 시작 주로 옮기는 계산인데, 그 변환을 `일=0 ... 토=6 → 월요일까지 거리` 라고 **한 줄로 풀어 놨습니다.** 저는 이 주석 덕분에 코드를 따로 실행해 보지 않고 이해했습니다.
+
+**근거 ② — 설계 판단의 '왜'가 주석에 있습니다.**
+
+```js
+// app.js:13-14
+// 검색은 매번 DB에 물어보지 않고, 마지막으로 불러온 목록을 그대로 필터링
+let currentTodos = [];
+```
+
+`currentTodos`라는 변수가 왜 존재하는지가 이 두 줄에 다 있습니다. *무엇을 하는지*가 아니라 *왜 이 변수가 필요한지*를 적은 주석입니다.
+
+**근거 ③ — 배운 개념과 코드를 번호로 묶었습니다.**
+
+`app.js`의 함수 앞에 `// 1) 읽기(Read)` · `// 2) 쓰기(Create)` · `// 3) 수정(Update)` · `// 4) 삭제(Delete)` 가 순서대로 붙어 있습니다. 처음 읽는 사람이 **"CRUD가 어디 있나"를 찾아 헤매지 않게** 됩니다.
+
+**근거 ④ — SQL에도 '왜'가 적혀 있습니다.**
+
+```sql
+-- setup.sql:12-17
+-- RLS(Row Level Security)를 켜서 "정책을 명시적으로 허용한 요청만" 통과시킵니다.
+alter table todos enable row level security;
+
+-- 이 튜토리얼은 로그인 기능이 없는 공개 데모이므로,
+-- anon(비로그인) 키로도 읽기/쓰기가 가능하도록 정책을 둡니다.
+-- (실제 서비스라면 auth.uid() 기반으로 "내 데이터만" 보이게 제한해야 합니다.)
+```
+
+마지막 괄호 한 줄이 좋았습니다. **지금 코드가 왜 이렇게 느슨한지, 그리고 제대로 하려면 어디를 바꿔야 하는지**를 함께 적어 뒀습니다. 이러면 읽는 사람이 이 정책을 *실수*로 오해하지 않습니다.
+
+**근거 ⑤ — 아키텍처 판단이 도식으로 정리돼 있습니다.**
+
+`docs/PRD.md` §4에 mermaid 흐름도가 있고, **만들지 않은 대안(커스텀 API 서버)을 점선으로** 그려 두었습니다.
+
+```
+Browser --anon key + REST--> PostgREST --정책 확인--> RLS --> todos
+Browser -.만들지 않음.-> 커스텀 API 서버 (Node/Express)
+```
+
+그리고 §4 마지막의 `> 결정:` 블록에 *"백엔드 로직을 직접 구현하는 대신 매니지드 서비스로 대체했다"* 는 이유가 적혀 있습니다. **안 만든 것을 문서에 남긴 것**이 인상적이었습니다 — 보통은 만든 것만 적습니다.
+
+---
+
+[O]  **3. 에러가 난 부분을 디버깅하여 “문제를 해결한 기록”을 남겼나요? 또는 “새로운 시도 및 추가 실험”을 해봤나요?**
+- 문제 원인 및 해결 과정을 잘 기록하였는지 확인
+- 문제에서 요구하는 조건에 더해 추가적으로 수행한 나만의 시도, 실험이 기록되어 있는지 확인
+    - 잘 작성되었다고 생각되는 부분을 캡쳐해 근거로 첨부합니다.
+
+원문이 *"또는"* 으로 두 갈래를 준 항목입니다. **뒤쪽(새로운 시도)이 확실히 충족**되고, 앞쪽(해결 기록)도 커밋에 흔적이 남아 있어 O로 봤습니다.
+
+**근거 ① — 튜토리얼 범위를 넘는 기능을 직접 설계했습니다.**
+
+```markdown
+# README.md:16
+튜토리얼 기본 기능(추가/조회/완료 체크)에 더해 **삭제**와 **키워드 검색**을 직접 추가했습니다.
+검색은 매 입력마다 DB를 다시 조회하지 않고, 이미 불러온 목록을 클라이언트에서
+필터링하도록 구현했습니다.
+```
+
+기능을 추가했다는 것보다 **"DB를 다시 조회하지 않기로 했다"는 판단을 적은 것**이 더 좋았습니다. `docs/PRD.md` §6 표에도 `키워드 검색 | 없음 — 클라이언트 필터 | 직접 추가 · DB 재조회 없이 로컬 필터링` 으로 같은 결정이 한 번 더 기록돼 있습니다.
+
+**근거 ② — 실제로 겪은 문제를 고친 기록이 커밋과 코드에 남아 있습니다.**
+
+```
+daf702f  2026-09-06  Cache-bust static assets
+```
+
+그리고 그 결과가 코드에 보입니다.
+
+```html
+<!-- index.html:7,26,27 -->
+<link rel="stylesheet" href="style.css?v=2" />
+<script src="config.js?v=2"></script>
+<script src="app.js?v=2"></script>
+```
+
+`?v=2`를 세 곳에 붙인 건 **"고쳤는데 브라우저에 반영이 안 된다"는 문제를 만나서 해결한 기록**입니다. 커밋 메시지가 `Cache-bust`라고 원인을 정확히 지목하고 있어서, 별도 문서가 없어도 무엇에 막혔는지 읽힙니다.
+
+**근거 ③ — 스키마 변경을 파괴적으로 하지 않았습니다.**
+
+주간 캘린더로 바꿀 때 `setup.sql`을 고쳐 버리는 대신 **마이그레이션 파일을 따로 뒀습니다.**
+
+```sql
+-- migration_weekly.sql
+alter table todos
+  add column task_date date not null default current_date;
+```
+
+그리고 `README.md:2`에 *"이미 todos 테이블이 있는 프로젝트라면 이 파일 대신 migration_weekly.sql만 실행하세요"* 라고 **어느 쪽을 실행해야 하는지**까지 안내했습니다. 이미 데이터가 든 테이블을 어떻게 옮길지 고민한 흔적입니다.
+
+**근거 ④ — 보안 항목을 '실험'으로 확인했습니다.**
+
+`README.md:23`이 브라우저의 `required` 속성을 **우회해서 API를 직접 호출하는 경우**를 가정하고, DB CHECK 제약이 그걸 막는다고 적었습니다.
+
+```sql
+-- setup.sql:6
+task text not null check (char_length(trim(task)) > 0 and char_length(task) <= 200)
+```
+
+*"화면에서 막았으니 됐다"* 가 아니라 **"화면을 건너뛰면?"** 을 스스로 물은 부분입니다.
+
+---
+
+[X]  **4. 회고를 잘 작성했나요?**
+- 프로젝트 결과물에 대해 배운점과 아쉬운점, 느낀점 등이 상세히 기록 되어 있나요?
+	- 딥러닝 모델의 경우, 인풋이 들어가 최종적으로 아웃풋이 나오기까지의 전체 흐름을 도식화하여 모델 아키텍쳐에 대한 이해를 돕고 있는지 확인
+
+**이 항목만 근거를 찾지 못했습니다. 틀렸다는 뜻이 아니라, 제가 못 찾았다는 뜻으로 X를 적었습니다.**
+
+**어디를 봤는지**
+
+- `README.md` 전체 (26줄) — 사용 기술 / 실행 방법 / 개선한 부분 / 배포 링크 / 보안 체크
+- `docs/PRD.md` 전체 (157줄) — §2 목표 & 성공 기준, §10 향후 확장
+- 저장소 파일 8개 전체를 `회고 | 배운 | 아쉬 | 느낀` 으로 검색 → **0건**
+
+```bash
+$ git ls-files
+README.md  app.js  config.js  docs/PRD.md
+index.html  migration_weekly.sql  setup.sql  style.css
+
+$ grep -rn -iE '회고|배운|아쉬|느낀' .
+(결과 없음)
+```
+
+**가장 가까운 것**은 `docs/PRD.md` §10 「향후 확장」입니다. 다만 이건 *앞으로 무엇을 할 수 있는지*(범위 밖으로 둔 것)라서, 문항이 묻는 *배운점·아쉬운점·느낀점*과는 방향이 다르다고 봤습니다.
+
+**있으면 제가 바로 O를 줬을 것**
+
+이미 재료는 다 있는데 한 군데 모이지 않았을 뿐입니다. 예를 들어 이 세 줄만 있어도 충분했을 것 같습니다.
+
+- **배운 점** — 백엔드를 직접 짜지 않고 PostgREST + RLS로 대체한 판단 (PRD §4에 이미 근거가 있음)
+- **아쉬운 점** — 로그인·사용자별 분리를 범위 밖으로 둔 것 (PRD §3에 이미 이유가 있음)
+- **막혔던 점** — 캐시 때문에 수정이 반영되지 않아 `?v=2`를 붙인 일 (`daf702f`에 이미 기록이 있음)
+
+*(딥러닝 모델이 아니라 웹 앱이므로 도식화 조건은 해당하지 않는다고 봤습니다. 다만 PRD §4에 mermaid 아키텍처 도식이 이미 있어서, 그 항목의 취지는 오히려 충족돼 있습니다.)*
+
+---
+
+[O]  **5. 코드가 간결하고 효율적인가요?**
+- 파이썬 스타일 가이드 (PEP8)를 준수하였는지 확인
+- 코드 중복을 최소화하고 범용적으로 사용할 수 있도록 모듈화(함수화) 했는지
+    - 잘 작성되었다고 생각되는 부분을 근거로 첨부합니다.
+
+> **먼저 밝힐 것** — 이 프로젝트는 **JavaScript / HTML / CSS**입니다. **PEP8은 파이썬 스타일 가이드라 적용 대상이 아니므로**, *"PEP8을 안 지켰으니 X"* 로 판정하지 않았습니다. 대신 문항의 취지인 **① 그 언어의 통용 규칙 ② 중복 최소화·모듈화** 두 가지로 봤고, 둘 다 충족한다고 판단했습니다.
+
+**근거 ① — 함수 하나가 한 가지 일만 합니다.**
+
+`app.js` 180줄이 이렇게 나뉘어 있습니다.
+
+| 함수 | 책임 |
+|---|---|
+| `toISODate` | Date → `"YYYY-MM-DD"` |
+| `getWeekDates` | 오늘 기준 월~일 7개 |
+| `shortLabel` | `"2026-09-09"` → `"9/9"` |
+| `setupWeek` | 헤딩·select·7열 뼈대 |
+| `loadTodos` / `filterTodos` / `renderTodos` | 조회 / 걸러내기 / 그리기 |
+| `addTodo` / `toggleComplete` / `deleteTodo` | 쓰기 3종 |
+
+**근거 ② — 중복 대신 순수 함수를 재사용했습니다.**
+
+`filterTodos`는 인자만 받아 결과를 돌려주는 순수 함수인데, **두 곳에서 같은 함수를 그대로 씁니다.**
+
+```js
+// app.js:85  — DB에서 새로 불러온 직후
+renderTodos(filterTodos(currentTodos, searchInput.value));
+
+// app.js:176 — 검색창에 타이핑할 때
+renderTodos(filterTodos(currentTodos, searchInput.value));
+```
+
+검색 로직을 두 번 쓰지 않았고, 덕분에 *"새로 불러와도 검색어가 유지된다"* 는 동작이 공짜로 따라옵니다. 이건 코드가 짧아서 좋은 게 아니라 **버그가 생길 자리를 없앤 것**입니다.
+
+**근거 ③ — 사용자 입력을 `textContent`로 넣었습니다. (이 부분을 제가 배웠습니다)**
+
+```js
+// app.js:122-123
+const span = document.createElement("span");
+span.textContent = todo.task;
+```
+
+할 일 제목은 사용자가 입력한 값이라, `innerHTML`로 넣으면 **`<img onerror=...>` 같은 걸 저장해 두면 다음에 그 목록을 여는 모든 사람의 브라우저에서 실행됩니다.** `textContent`는 태그를 글자로만 취급해서 이걸 원천 차단합니다.
+
+눈여겨본 건 **구분해서 쓴 것**입니다. `setupWeek`(`app.js:50,57`)은 `innerHTML`을 쓰는데, 거기 들어가는 값은 `weekDates`처럼 **코드가 스스로 만든 날짜 문자열**뿐입니다. 위험한 자리와 안전한 자리를 나눠서 쓴 걸로 보입니다.
+
+**근거 ④ — DB가 할 일을 DB에 맡겼습니다.**
+
+```sql
+-- setup.sql:5-9
+id bigint generated always as identity primary key,
+task text not null check (char_length(trim(task)) > 0 and char_length(task) <= 200),
+is_complete boolean default false,
+task_date date not null default current_date,
+```
+
+기본값·제약을 스키마에 두었기 때문에 `app.js:141`의 insert가 `{ task, task_date }` 두 개만 넘기면 끝납니다. **앱 코드가 짧아진 이유가 여기 있습니다.**
+
+---
+
+# 참고 링크 및 코드 개선
+
+## 1.코드 리뷰 시 참고한 링크가 있다면 링크와 간략한 설명을 첨부합니다.
+
+- **Supabase — Row Level Security** https://supabase.com/docs/guides/database/postgres/row-level-security
+  `setup.sql`의 `to anon` 정책 4개가 문서의 권장 형태와 맞는지 대조했습니다. `enable row level security`만 켜고 정책을 안 넣으면 **전부 거부**가 기본이라는 점을 확인했고, 그래서 정책 4개가 *필요해서* 있는 것이라는 걸 이해했습니다.
+- **PostgREST — Tables and Views** https://docs.postgrest.org/en/stable/references/api/tables_views.html
+  PRD §4가 말한 *"Supabase가 Postgres 위에 REST를 자동으로 얹어준다"* 가 실제로 어떤 형태인지(`client.from("todos").select()` → `GET /rest/v1/todos`) 확인했습니다.
+- **MDN — `Date.prototype.getDay()`** https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay
+  `(getDay() + 6) % 7` 이 월요일 시작으로 옮기는 계산인지 검산했습니다. 일요일이 0이므로 맞습니다.
+
+## 2.코드 리뷰를 통해 개선을 제안할 코드가 있다면 코드와 간략한 설명을 첨부합니다.
+
+수정을 권하는 게 아니라 **제가 읽으면서 걸린 곳**입니다. 판단은 코더 몫입니다.
+
+### ① 추가가 실패하면 쓴 글이 사라집니다 — `app.js:167-173`
+
+입력칸을 **비우는 것이 `addTodo`보다 먼저** 실행됩니다.
+
+```js
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const task = input.value.trim();
+  if (!task) return;
+  input.value = "";          // ← 여기서 이미 비움
+  await addTodo(task, daySelect.value);
+});
+```
+
+그리고 `addTodo`는 실패해도 콘솔에만 적고 끝납니다 (`app.js:142-145`).
+
+```js
+if (error) {
+  console.error(error);
+  return;                    // ← 화면에는 아무 변화가 없다
+}
+```
+
+그래서 insert가 실패하면 **입력칸은 비었고, 목록에는 안 뜨고, 아무 메시지도 없는** 상태가 됩니다. 사용자는 추가된 줄 알고 창을 닫을 수 있습니다.
+
+이게 가정이 아닌 이유는, **`docs/PRD.md` §8에 그 상황이 직접 적혀 있기 때문**입니다 — *"무료 Supabase 프로젝트는 1주 이상 비활동 시 자동 일시정지되므로, 오래 방치되면 첫 요청이 실패할 수 있다."* 바로 그때 이 경로를 타게 됩니다.
+
+한 줄만 옮기면 대부분 해결됩니다.
+
+```js
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const task = input.value.trim();
+  if (!task) return;
+
+  const ok = await addTodo(task, daySelect.value);
+  if (ok) input.value = "";        // 성공했을 때만 비운다
+  else alert("추가에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+});
+```
+
+`addTodo`가 `return !error;` 한 줄을 돌려주면 됩니다. `alert`가 투박하면 `<p id="msg">`에 텍스트를 넣는 방식도 있습니다.
+
+### ② PRD의 데이터 모델에 `task_date`가 빠져 있습니다 — `docs/PRD.md` §6
+
+지금 PRD §6 데이터 모델 표는 컬럼이 넷입니다.
+
+```
+| id | task | is_complete | created_at |
+```
+
+그런데 실제 테이블에는 **`task_date`가 있고**, 그게 주간 캘린더의 핵심입니다 (`setup.sql:8`, `app.js:76-77`의 `.gte/.lte("task_date", …)`).
+
+커밋 순서를 보면 이유가 보입니다.
+
+```
+eaad292  2026-09-06  Add PRD documenting architecture and API delivery decisions
+c86fee6  2026-09-06  Turn Todo List into a weekly (Mon-Sun) calendar view   ← PRD 이후
+```
+
+**PRD가 먼저 들어가고, 그 다음에 주간 캘린더로 바뀐 것**입니다. 문서가 잘못된 게 아니라 **한 발 뒤에 있는** 상태입니다. §6 표에 한 줄, 그리고 §6 기능 매핑에 *"날짜별 배치"* 한 줄만 더하면 코드와 다시 맞습니다.
+
+이걸 적어 두는 이유는, PRD §5가 *"API 계약이 바뀌면 `setup.sql`과 `app.js`를 같은 커밋에서 함께 바꾼다"* 고 **스스로 규칙을 정해 놨기** 때문입니다. 그 규칙에 PRD 자신을 포함시키면 딱 맞을 것 같습니다.
+
+### ③ 삭제가 확인 없이 즉시 실행됩니다 — `app.js:125-129, 161-165`
+
+`✕` 버튼을 한 번 누르면 바로 지워지고, 되돌릴 방법이 없습니다.
+
+```js
+deleteBtn.addEventListener("click", () => deleteTodo(todo.id));
+```
+
+이 앱은 **로그인 없는 공개 데모라 여러 사람이 같은 목록을 함께 본다**는 점(PRD §3)에서 좀 더 신경 쓰이는 부분입니다. 남의 항목을 실수로 지울 수 있으니까요.
+
+```js
+deleteBtn.addEventListener("click", () => {
+  if (confirm(`"${todo.task}" 를 삭제할까요?`)) deleteTodo(todo.id);
+});
+```
+
+*범위를 의도적으로 좁힌 것이라면 그대로 두셔도 됩니다 — PRD에 "삭제 확인은 범위 밖" 한 줄만 있으면 저는 납득했을 것 같습니다.*
+
+### ④ (아주 작은 것) 매 변경마다 그 주 전체를 다시 불러옵니다 — `app.js:146, 157, 164`
+
+체크박스 하나를 눌러도 `await loadTodos()` 가 주간 전체를 다시 조회합니다. 지금 규모(PRD §8이 *"수십 건 이하"* 로 전제)에서는 **문제가 아니고, 오히려 화면과 DB가 항상 일치하는 장점이 있습니다.** 다만 나중에 항목이 많아지면 여기가 먼저 느려질 자리라, 알고만 계시면 좋을 것 같아서 적어 둡니다.
+
+---
+
+# 총평
+
+**배운 것** — `app.js:122-123`에서 사용자 입력은 `textContent`로 넣고, 코드가 스스로 만든 날짜 문자열에는 `innerHTML`을 쓴 것. 저는 그냥 "`innerHTML`은 위험하다"로만 알고 있었는데, **위험한 자리와 안전한 자리를 나눠서 쓴 실물**을 처음 봤습니다. 제 코드에 돌아가서 같은 기준으로 다시 볼 생각입니다.
+
+**인상적이었던 것** — `docs/PRD.md` §4에서 **만들지 않은 것(커스텀 API 서버)을 점선으로 그려 두고 왜 안 만들었는지 적은 것.** 보통 문서에는 만든 것만 적히는데, "무엇을 거절했는지"가 남아 있어서 판단을 따라갈 수 있었습니다. 그리고 `setup.sql:17`의 *"실제 서비스라면 auth.uid() 기반으로 제한해야 합니다"* 처럼, **지금 코드의 한계를 코드 옆에 직접 적어 둔 것**도 좋았습니다. 느슨한 정책을 실수로 오해할 여지를 없애 줍니다.
+
+**전체적으로** — 다섯 문항 중 넷이 O이고, X는 **회고 하나**입니다. 그런데 그 회고에 쓸 재료가 이미 PRD와 커밋에 흩어져 있어서, **모으기만 하면 되는 상태**로 보였습니다. 튜토리얼을 따라간 결과물이 아니라 **판단이 문서로 남은 결과물**이라는 게 이 저장소의 성격이라고 느꼈습니다.
+
+*리뷰 중 데이터는 추가·수정·삭제하지 않았습니다 (조회만 했습니다).*
+
+
+===== to-do-list/app.js =====
+// Supabase 클라이언트 생성 — 이 client 객체로 DB에 있는 "todos" 테이블에 접근합니다.
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const form = document.getElementById("todo-form");
+const input = document.getElementById("todo-input");
+const daySelect = document.getElementById("day-select");
+const searchInput = document.getElementById("search-input");
+const grid = document.getElementById("week-grid");
+const heading = document.getElementById("week-heading");
+
+const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
+
+// 검색은 매번 DB에 물어보지 않고, 마지막으로 불러온 목록을 그대로 필터링
+let currentTodos = [];
+let weekDates = []; // 이번 주 월~일, "YYYY-MM-DD" 문자열 7개
+
+function toISODate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// 오늘 기준 이번 주 월요일~일요일 날짜를 계산
+function getWeekDates() {
+  const today = new Date();
+  const diffToMonday = (today.getDay() + 6) % 7; // 일=0 ... 토=6 → 월요일까지 거리
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - diffToMonday);
+
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    dates.push(toISODate(d));
+  }
+  return dates;
+}
+
+// 화면에 쓸 "9/8" 같은 짧은 날짜 라벨
+function shortLabel(isoDate) {
+  const [, m, d] = isoDate.split("-");
+  return `${Number(m)}/${Number(d)}`;
+}
+
+function setupWeek() {
+  weekDates = getWeekDates();
+  heading.textContent = `주간 목록 (${shortLabel(weekDates[0])} ~ ${shortLabel(weekDates[6])})`;
+
+  daySelect.innerHTML = weekDates
+    .map((iso, i) => `<option value="${iso}">${DAY_LABELS[i]} ${shortLabel(iso)}</option>`)
+    .join("");
+
+  const today = toISODate(new Date());
+  if (weekDates.includes(today)) daySelect.value = today;
+
+  grid.innerHTML = weekDates
+    .map(
+      (iso, i) => `
+      <section class="day-col" data-date="${iso}">
+        <header class="day-col-header${iso === today ? " today" : ""}">
+          <span class="day-name">${DAY_LABELS[i]}</span>
+          <span class="day-date">${shortLabel(iso)}</span>
+        </header>
+        <ul class="day-list" data-date="${iso}"></ul>
+      </section>`
+    )
+    .join("");
+}
+
+// 1) 읽기(Read): 이번 주(월~일) 범위의 행만 가져옴
+async function loadTodos() {
+  const { data, error } = await client
+    .from("todos")
+    .select("*")
+    .gte("task_date", weekDates[0])
+    .lte("task_date", weekDates[6])
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+  currentTodos = data;
+  renderTodos(filterTodos(currentTodos, searchInput.value));
+}
+
+function filterTodos(todos, keyword) {
+  const trimmed = keyword.trim().toLowerCase();
+  if (!trimmed) return todos;
+  return todos.filter((todo) => todo.task.toLowerCase().includes(trimmed));
+}
+
+function renderTodos(todos) {
+  const byDate = new Map(weekDates.map((iso) => [iso, []]));
+  for (const todo of todos) {
+    if (byDate.has(todo.task_date)) byDate.get(todo.task_date).push(todo);
+  }
+
+  for (const iso of weekDates) {
+    const listEl = grid.querySelector(`.day-list[data-date="${iso}"]`);
+    listEl.innerHTML = "";
+
+    const items = byDate.get(iso);
+    if (items.length === 0) {
+      const empty = document.createElement("li");
+      empty.className = "empty";
+      empty.textContent = searchInput.value.trim() ? "검색 결과 없음" : "-";
+      listEl.appendChild(empty);
+      continue;
+    }
+
+    for (const todo of items) {
+      const li = document.createElement("li");
+      li.className = "todo-item" + (todo.is_complete ? " done" : "");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = todo.is_complete;
+      checkbox.addEventListener("change", () => toggleComplete(todo.id, checkbox.checked));
+
+      const span = document.createElement("span");
+      span.textContent = todo.task;
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.className = "delete-btn";
+      deleteBtn.textContent = "✕";
+      deleteBtn.addEventListener("click", () => deleteTodo(todo.id));
+
+      li.appendChild(checkbox);
+      li.appendChild(span);
+      li.appendChild(deleteBtn);
+      listEl.appendChild(li);
+    }
+  }
+}
+
+// 2) 쓰기(Create): 선택한 날짜에 새 행을 삽입
+async function addTodo(task, taskDate) {
+  const { error } = await client.from("todos").insert({ task, task_date: taskDate });
+  if (error) {
+    console.error(error);
+    return;
+  }
+  await loadTodos();
+}
+
+// 3) 수정(Update): 완료 여부를 토글
+async function toggleComplete(id, isComplete) {
+  const { error } = await client
+    .from("todos")
+    .update({ is_complete: isComplete })
+    .eq("id", id);
+
+  if (error) console.error(error);
+  await loadTodos();
+}
+
+// 4) 삭제(Delete): 행을 하나 지움
+async function deleteTodo(id) {
+  const { error } = await client.from("todos").delete().eq("id", id);
+  if (error) console.error(error);
+  await loadTodos();
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const task = input.value.trim();
+  if (!task) return;
+  input.value = "";
+  await addTodo(task, daySelect.value);
+});
+
+searchInput.addEventListener("input", () => {
+  renderTodos(filterTodos(currentTodos, searchInput.value));
+});
+
+setupWeek();
+loadTodos();
+
+
+===== to-do-list/index.html =====
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>주간 목록</title>
+  <link rel="stylesheet" href="style.css?v=2" />
+</head>
+<body>
+  <main>
+    <h1 id="week-heading">주간 목록</h1>
+
+    <form id="todo-form">
+      <input id="todo-input" type="text" placeholder="할 일을 입력하세요" autocomplete="off" required />
+      <select id="day-select"></select>
+      <button type="submit">추가</button>
+    </form>
+
+    <input id="search-input" type="text" placeholder="검색..." autocomplete="off" />
+
+    <div id="week-grid" class="week-grid"></div>
+  </main>
+
+  <!-- Supabase JS 라이브러리 (CDN, 빌드 도구 불필요) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js?v=2"></script>
+  <script src="app.js?v=2"></script>
+</body>
+</html>
+
+
+===== to-do-list/migration_weekly.sql =====
+-- Supabase 대시보드 > SQL Editor 에 붙여넣고 Run 하세요.
+-- 기존 todos 테이블에 "이 할 일이 속한 날짜" 컬럼을 추가합니다.
+
+alter table todos
+  add column task_date date not null default current_date;
+
+
+===== to-do-list/setup.sql =====
+-- Supabase 대시보드 > SQL Editor 에 붙여넣고 Run 하세요.
+-- 이미 todos 테이블이 있는 프로젝트라면 이 파일 대신 migration_weekly.sql만 실행하세요.
+
+create table todos (
+  id bigint generated always as identity primary key,
+  task text not null check (char_length(trim(task)) > 0 and char_length(task) <= 200),
+  is_complete boolean default false,
+  task_date date not null default current_date,
+  created_at timestamptz default now()
+);
+
+-- RLS(Row Level Security)를 켜서 "정책을 명시적으로 허용한 요청만" 통과시킵니다.
+alter table todos enable row level security;
+
+-- 이 튜토리얼은 로그인 기능이 없는 공개 데모이므로,
+-- anon(비로그인) 키로도 읽기/쓰기가 가능하도록 정책을 둡니다.
+-- (실제 서비스라면 auth.uid() 기반으로 "내 데이터만" 보이게 제한해야 합니다.)
+create policy "anyone can read todos"
+  on todos for select
+  to anon
+  using (true);
+
+create policy "anyone can insert todos"
+  on todos for insert
+  to anon
+  with check (true);
+
+create policy "anyone can update todos"
+  on todos for update
+  to anon
+  using (true);
+
+create policy "anyone can delete todos"
+  on todos for delete
+  to anon
+  using (true);
+
+
+===== to-do-list/style.css =====
+body {
+  font-family: system-ui, sans-serif;
+  background: #f4f5f7;
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+main {
+  width: 100%;
+  max-width: 980px;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+#todo-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+#todo-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+#day-select {
+  padding: 10px 8px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+}
+
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #4f46e5;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #4338ca;
+}
+
+#search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  margin-bottom: 20px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.day-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.day-col-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  border-radius: 8px;
+  background: #f4f5f7;
+}
+
+.day-col-header.today {
+  background: #eef0ff;
+}
+
+.day-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #344054;
+}
+
+.day-col-header.today .day-name {
+  color: #4338ca;
+}
+
+.day-date {
+  font-size: 11px;
+  color: #98a2b3;
+}
+
+.day-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 40px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #eaecf0;
+  border-radius: 8px;
+}
+
+.todo-item span {
+  flex: 1;
+  font-size: 12.5px;
+  word-break: break-word;
+}
+
+.todo-item.done span {
+  text-decoration: line-through;
+  color: #98a2b3;
+}
+
+.delete-btn {
+  background: transparent;
+  color: #98a2b3;
+  padding: 2px 6px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.delete-btn:hover {
+  background: #fee4e2;
+  color: #d92d20;
+}
+
+.empty {
+  color: #c0c6d0;
+  font-size: 12px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+@media (max-width: 720px) {
+  #todo-form {
+    flex-wrap: wrap;
+  }
+
+  .week-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .day-col-header {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px 12px;
+  }
+}

@@ -1,0 +1,1308 @@
+
+
+===== calorie-tracker/data/foods.json =====
+[
+  {"id":"rice_white","name":"흰쌀밥","emoji":"🍚","category":"주식","caloriesPer100g":130,"carbsPer100g":28.1,"proteinPer100g":2.5,"fatPer100g":0.3,"commonServingG":210,"commonServingLabel":"1공기"},
+  {"id":"rice_brown","name":"현미밥","emoji":"🍚","category":"주식","caloriesPer100g":172,"carbsPer100g":38.9,"proteinPer100g":3.1,"fatPer100g":0.5,"commonServingG":210,"commonServingLabel":"1공기"},
+  {"id":"rice_mixed_grain","name":"잡곡밥","emoji":"🍚","category":"주식","caloriesPer100g":143,"carbsPer100g":30,"proteinPer100g":3.5,"fatPer100g":0.8,"commonServingG":210,"commonServingLabel":"1공기"},
+  {"id":"bread_white","name":"식빵","emoji":"🍞","category":"주식","caloriesPer100g":267,"carbsPer100g":49.7,"proteinPer100g":9,"fatPer100g":4.2,"commonServingG":35,"commonServingLabel":"1쪽"},
+  {"id":"bread_wholewheat","name":"통밀식빵","emoji":"🍞","category":"주식","caloriesPer100g":246,"carbsPer100g":41,"proteinPer100g":10,"fatPer100g":3.5,"commonServingG":35,"commonServingLabel":"1쪽"},
+  {"id":"udon_noodle","name":"우동면(삶음)","emoji":"🍜","category":"주식","caloriesPer100g":105,"carbsPer100g":21.6,"proteinPer100g":2.6,"fatPer100g":0.4,"commonServingG":250,"commonServingLabel":"1인분"},
+  {"id":"spaghetti","name":"스파게티(삶음)","emoji":"🍝","category":"주식","caloriesPer100g":158,"carbsPer100g":31,"proteinPer100g":5.8,"fatPer100g":0.9,"commonServingG":200,"commonServingLabel":"1인분"},
+  {"id":"ramen_noodle","name":"라면(건면+스프)","emoji":"🍜","category":"주식","caloriesPer100g":417,"carbsPer100g":65.8,"proteinPer100g":8.3,"fatPer100g":13.3,"commonServingG":120,"commonServingLabel":"1개"},
+  {"id":"potato","name":"감자(삶은것)","emoji":"🥔","category":"주식","caloriesPer100g":86,"carbsPer100g":20,"proteinPer100g":1.9,"fatPer100g":0.1,"commonServingG":130,"commonServingLabel":"1개(중)"},
+  {"id":"sweet_potato","name":"고구마(찐것)","emoji":"🍠","category":"주식","caloriesPer100g":163,"carbsPer100g":39.4,"proteinPer100g":1.1,"fatPer100g":0.2,"commonServingG":150,"commonServingLabel":"1개(중)"},
+  {"id":"rice_cake","name":"떡(가래떡)","emoji":"🍡","category":"주식","caloriesPer100g":234,"carbsPer100g":52,"proteinPer100g":4.3,"fatPer100g":0.6,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"gimbap_basic","name":"김밥(기본)","emoji":"🍙","category":"주식","caloriesPer100g":158,"carbsPer100g":25,"proteinPer100g":4.5,"fatPer100g":4,"commonServingG":250,"commonServingLabel":"1줄"},
+  {"id":"toast_butter","name":"토스트(버터)","emoji":"🍞","category":"주식","caloriesPer100g":280,"carbsPer100g":33,"proteinPer100g":6,"fatPer100g":13,"commonServingG":70,"commonServingLabel":"1쪽"},
+  {"id":"oatmeal_dry","name":"오트밀(건조)","emoji":"🥣","category":"주식","caloriesPer100g":389,"carbsPer100g":66,"proteinPer100g":17,"fatPer100g":7,"commonServingG":40,"commonServingLabel":"1회분"},
+  {"id":"cereal_cornflakes","name":"시리얼(콘플레이크)","emoji":"🥣","category":"주식","caloriesPer100g":378,"carbsPer100g":84,"proteinPer100g":7,"fatPer100g":0.9,"commonServingG":30,"commonServingLabel":"1회분"},
+  {"id":"chicken_breast","name":"닭가슴살(구이)","emoji":"🍗","category":"단백질","caloriesPer100g":165,"carbsPer100g":0,"proteinPer100g":31,"fatPer100g":3.6,"commonServingG":100,"commonServingLabel":"1조각"},
+  {"id":"chicken_thigh","name":"닭다리살(구이)","emoji":"🍗","category":"단백질","caloriesPer100g":172,"carbsPer100g":0,"proteinPer100g":24,"fatPer100g":8,"commonServingG":100,"commonServingLabel":"1조각"},
+  {"id":"egg_boiled","name":"계란(삶음)","emoji":"🥚","category":"단백질","caloriesPer100g":155,"carbsPer100g":1.1,"proteinPer100g":13,"fatPer100g":11,"commonServingG":50,"commonServingLabel":"1개"},
+  {"id":"egg_fried","name":"계란후라이","emoji":"🍳","category":"단백질","caloriesPer100g":196,"carbsPer100g":0.9,"proteinPer100g":13.6,"fatPer100g":15,"commonServingG":50,"commonServingLabel":"1개"},
+  {"id":"egg_white","name":"계란흰자","emoji":"🥚","category":"단백질","caloriesPer100g":52,"carbsPer100g":0.7,"proteinPer100g":10.9,"fatPer100g":0.2,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"tofu","name":"두부(생)","emoji":"⬜","category":"단백질","caloriesPer100g":84,"carbsPer100g":1.9,"proteinPer100g":8.1,"fatPer100g":4.8,"commonServingG":100,"commonServingLabel":"1/4모"},
+  {"id":"soft_tofu","name":"순두부","emoji":"🥣","category":"단백질","caloriesPer100g":47,"carbsPer100g":1.7,"proteinPer100g":4.5,"fatPer100g":2.5,"commonServingG":150,"commonServingLabel":"1인분"},
+  {"id":"pork_belly","name":"돼지고기 삼겹살(구이)","emoji":"🥓","category":"단백질","caloriesPer100g":484,"carbsPer100g":0,"proteinPer100g":22.7,"fatPer100g":41.2,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"pork_neck","name":"돼지고기 목살(구이)","emoji":"🥩","category":"단백질","caloriesPer100g":262,"carbsPer100g":0,"proteinPer100g":19,"fatPer100g":20,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"beef_sirloin","name":"소고기 등심(구이)","emoji":"🥩","category":"단백질","caloriesPer100g":267,"carbsPer100g":0,"proteinPer100g":26,"fatPer100g":17,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"beef_tenderloin","name":"소고기 안심(구이)","emoji":"🥩","category":"단백질","caloriesPer100g":201,"carbsPer100g":0,"proteinPer100g":28,"fatPer100g":9.5,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"salmon","name":"연어(구이)","emoji":"🐟","category":"단백질","caloriesPer100g":208,"carbsPer100g":0,"proteinPer100g":20,"fatPer100g":13,"commonServingG":100,"commonServingLabel":"1조각"},
+  {"id":"mackerel","name":"고등어(구이)","emoji":"🐟","category":"단백질","caloriesPer100g":205,"carbsPer100g":0,"proteinPer100g":21,"fatPer100g":13,"commonServingG":100,"commonServingLabel":"1토막"},
+  {"id":"tuna_canned_water","name":"참치(캔, 물)","emoji":"🐟","category":"단백질","caloriesPer100g":116,"carbsPer100g":0,"proteinPer100g":26,"fatPer100g":1,"commonServingG":85,"commonServingLabel":"1캔"},
+  {"id":"shrimp_boiled","name":"새우(삶음)","emoji":"🍤","category":"단백질","caloriesPer100g":99,"carbsPer100g":0.2,"proteinPer100g":24,"fatPer100g":0.3,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"squid_boiled","name":"오징어(삶음)","emoji":"🦑","category":"단백질","caloriesPer100g":92,"carbsPer100g":3,"proteinPer100g":16,"fatPer100g":1,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"black_beans_boiled","name":"검은콩(삶음)","emoji":"🫘","category":"단백질","caloriesPer100g":132,"carbsPer100g":23,"proteinPer100g":9,"fatPer100g":0.5,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"lentils_boiled","name":"렌틸콩(삶음)","emoji":"🫘","category":"단백질","caloriesPer100g":116,"carbsPer100g":20,"proteinPer100g":9,"fatPer100g":0.4,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"bacon","name":"베이컨(구이)","emoji":"🥓","category":"단백질","caloriesPer100g":541,"carbsPer100g":1.4,"proteinPer100g":37,"fatPer100g":42,"commonServingG":30,"commonServingLabel":"2줄"},
+  {"id":"sausage_vienna","name":"소시지(비엔나)","emoji":"🌭","category":"단백질","caloriesPer100g":279,"carbsPer100g":3,"proteinPer100g":13,"fatPer100g":24,"commonServingG":60,"commonServingLabel":"5알"},
+  {"id":"lettuce","name":"상추","emoji":"🥬","category":"채소","caloriesPer100g":15,"carbsPer100g":2.7,"proteinPer100g":1.4,"fatPer100g":0.2,"commonServingG":30,"commonServingLabel":"1줌"},
+  {"id":"cabbage","name":"양배추","emoji":"🥬","category":"채소","caloriesPer100g":25,"carbsPer100g":5.8,"proteinPer100g":1.3,"fatPer100g":0.1,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"broccoli_boiled","name":"브로콜리(삶음)","emoji":"🥦","category":"채소","caloriesPer100g":35,"carbsPer100g":7.2,"proteinPer100g":2.8,"fatPer100g":0.4,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"spinach_boiled","name":"시금치(데침)","emoji":"🥬","category":"채소","caloriesPer100g":23,"carbsPer100g":3.8,"proteinPer100g":2.9,"fatPer100g":0.3,"commonServingG":70,"commonServingLabel":"1인분"},
+  {"id":"cucumber","name":"오이","emoji":"🥒","category":"채소","caloriesPer100g":15,"carbsPer100g":3.6,"proteinPer100g":0.7,"fatPer100g":0.1,"commonServingG":100,"commonServingLabel":"1/2개"},
+  {"id":"tomato","name":"토마토","emoji":"🍅","category":"채소","caloriesPer100g":18,"carbsPer100g":3.9,"proteinPer100g":0.9,"fatPer100g":0.2,"commonServingG":150,"commonServingLabel":"1개"},
+  {"id":"cherry_tomato","name":"방울토마토","emoji":"🍅","category":"채소","caloriesPer100g":25,"carbsPer100g":6,"proteinPer100g":1,"fatPer100g":0.1,"commonServingG":100,"commonServingLabel":"10알"},
+  {"id":"carrot","name":"당근","emoji":"🥕","category":"채소","caloriesPer100g":41,"carbsPer100g":9.6,"proteinPer100g":0.9,"fatPer100g":0.2,"commonServingG":70,"commonServingLabel":"1/2개"},
+  {"id":"zucchini","name":"애호박","emoji":"🥒","category":"채소","caloriesPer100g":22,"carbsPer100g":5.1,"proteinPer100g":1.1,"fatPer100g":0.1,"commonServingG":100,"commonServingLabel":"1/4개"},
+  {"id":"bean_sprout_boiled","name":"콩나물(데침)","emoji":"🌱","category":"채소","caloriesPer100g":34,"carbsPer100g":3.8,"proteinPer100g":4.2,"fatPer100g":1,"commonServingG":70,"commonServingLabel":"1인분"},
+  {"id":"radish_salad","name":"무생채","emoji":"🥗","category":"채소","caloriesPer100g":45,"carbsPer100g":9,"proteinPer100g":1,"fatPer100g":0.5,"commonServingG":80,"commonServingLabel":"1인분"},
+  {"id":"seaweed_raw","name":"미역(생)","emoji":"🌿","category":"채소","caloriesPer100g":45,"carbsPer100g":9.1,"proteinPer100g":3,"fatPer100g":0.6,"commonServingG":50,"commonServingLabel":"1인분"},
+  {"id":"dried_laver","name":"김(구운 김)","emoji":"🟩","category":"채소","caloriesPer100g":210,"carbsPer100g":20,"proteinPer100g":38,"fatPer100g":5,"commonServingG":2,"commonServingLabel":"1장"},
+  {"id":"mushroom_oyster","name":"버섯(느타리, 볶음)","emoji":"🍄","category":"채소","caloriesPer100g":34,"carbsPer100g":4,"proteinPer100g":3,"fatPer100g":1,"commonServingG":70,"commonServingLabel":"1인분"},
+  {"id":"bell_pepper","name":"파프리카","emoji":"🫑","category":"채소","caloriesPer100g":31,"carbsPer100g":6,"proteinPer100g":1,"fatPer100g":0.3,"commonServingG":100,"commonServingLabel":"1/2개"},
+  {"id":"apple","name":"사과","emoji":"🍎","category":"과일","caloriesPer100g":52,"carbsPer100g":13.8,"proteinPer100g":0.3,"fatPer100g":0.2,"commonServingG":200,"commonServingLabel":"1개"},
+  {"id":"banana","name":"바나나","emoji":"🍌","category":"과일","caloriesPer100g":89,"carbsPer100g":22.8,"proteinPer100g":1.1,"fatPer100g":0.3,"commonServingG":120,"commonServingLabel":"1개"},
+  {"id":"strawberry","name":"딸기","emoji":"🍓","category":"과일","caloriesPer100g":33,"carbsPer100g":7.7,"proteinPer100g":0.7,"fatPer100g":0.3,"commonServingG":100,"commonServingLabel":"10알"},
+  {"id":"grape","name":"포도","emoji":"🍇","category":"과일","caloriesPer100g":69,"carbsPer100g":18.1,"proteinPer100g":0.7,"fatPer100g":0.2,"commonServingG":100,"commonServingLabel":"1송이"},
+  {"id":"mandarin","name":"귤","emoji":"🍊","category":"과일","caloriesPer100g":44,"carbsPer100g":10.9,"proteinPer100g":0.8,"fatPer100g":0.2,"commonServingG":100,"commonServingLabel":"1개"},
+  {"id":"orange","name":"오렌지","emoji":"🍊","category":"과일","caloriesPer100g":47,"carbsPer100g":11.8,"proteinPer100g":0.9,"fatPer100g":0.1,"commonServingG":150,"commonServingLabel":"1개"},
+  {"id":"watermelon","name":"수박","emoji":"🍉","category":"과일","caloriesPer100g":30,"carbsPer100g":7.6,"proteinPer100g":0.6,"fatPer100g":0.2,"commonServingG":200,"commonServingLabel":"1쪽"},
+  {"id":"korean_melon","name":"참외","emoji":"🍈","category":"과일","caloriesPer100g":32,"carbsPer100g":7.9,"proteinPer100g":0.9,"fatPer100g":0.2,"commonServingG":150,"commonServingLabel":"1/2개"},
+  {"id":"kiwi","name":"키위","emoji":"🥝","category":"과일","caloriesPer100g":57,"carbsPer100g":14.7,"proteinPer100g":1.1,"fatPer100g":0.5,"commonServingG":80,"commonServingLabel":"1개"},
+  {"id":"blueberry","name":"블루베리","emoji":"🫐","category":"과일","caloriesPer100g":57,"carbsPer100g":14.5,"proteinPer100g":0.7,"fatPer100g":0.3,"commonServingG":100,"commonServingLabel":"1컵"},
+  {"id":"milk_white","name":"흰우유","emoji":"🥛","category":"유제품·음료","caloriesPer100g":63,"carbsPer100g":4.8,"proteinPer100g":3.2,"fatPer100g":3.6,"commonServingG":200,"commonServingLabel":"1컵"},
+  {"id":"milk_lowfat","name":"저지방우유","emoji":"🥛","category":"유제품·음료","caloriesPer100g":46,"carbsPer100g":5,"proteinPer100g":3.4,"fatPer100g":1,"commonServingG":200,"commonServingLabel":"1컵"},
+  {"id":"soymilk","name":"두유","emoji":"🥛","category":"유제품·음료","caloriesPer100g":54,"carbsPer100g":4.2,"proteinPer100g":3.6,"fatPer100g":2.5,"commonServingG":200,"commonServingLabel":"1팩"},
+  {"id":"yogurt_plain","name":"플레인요거트","emoji":"🥣","category":"유제품·음료","caloriesPer100g":62,"carbsPer100g":4.7,"proteinPer100g":3.5,"fatPer100g":3.3,"commonServingG":100,"commonServingLabel":"1컵"},
+  {"id":"greek_yogurt_plain","name":"그릭요거트(무가당)","emoji":"🥣","category":"유제품·음료","caloriesPer100g":97,"carbsPer100g":3.6,"proteinPer100g":9,"fatPer100g":5,"commonServingG":100,"commonServingLabel":"1컵"},
+  {"id":"americano","name":"아메리카노","emoji":"☕","category":"유제품·음료","caloriesPer100g":2,"carbsPer100g":0.3,"proteinPer100g":0.1,"fatPer100g":0,"commonServingG":350,"commonServingLabel":"1잔"},
+  {"id":"cafe_latte","name":"카페라떼","emoji":"☕","category":"유제품·음료","caloriesPer100g":40,"carbsPer100g":4,"proteinPer100g":2,"fatPer100g":1.5,"commonServingG":300,"commonServingLabel":"1잔"},
+  {"id":"orange_juice","name":"오렌지주스","emoji":"🧃","category":"유제품·음료","caloriesPer100g":45,"carbsPer100g":10.4,"proteinPer100g":0.7,"fatPer100g":0.2,"commonServingG":200,"commonServingLabel":"1컵"},
+  {"id":"cola","name":"콜라","emoji":"🥤","category":"유제품·음료","caloriesPer100g":42,"carbsPer100g":10.6,"proteinPer100g":0,"fatPer100g":0,"commonServingG":250,"commonServingLabel":"1캔"},
+  {"id":"cheese_cheddar","name":"치즈(체다)","emoji":"🧀","category":"유제품·음료","caloriesPer100g":403,"carbsPer100g":1.3,"proteinPer100g":25,"fatPer100g":33,"commonServingG":20,"commonServingLabel":"1장"},
+  {"id":"doenjang_jjigae","name":"된장찌개","emoji":"🍲","category":"국·찌개","caloriesPer100g":45,"carbsPer100g":4,"proteinPer100g":4,"fatPer100g":1.5,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"kimchi_jjigae","name":"김치찌개","emoji":"🍲","category":"국·찌개","caloriesPer100g":60,"carbsPer100g":4.5,"proteinPer100g":5,"fatPer100g":2.8,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"sundubu_jjigae","name":"순두부찌개","emoji":"🍲","category":"국·찌개","caloriesPer100g":55,"carbsPer100g":3.5,"proteinPer100g":5.5,"fatPer100g":2.5,"commonServingG":350,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"budae_jjigae","name":"부대찌개","emoji":"🍲","category":"국·찌개","caloriesPer100g":90,"carbsPer100g":5,"proteinPer100g":6,"fatPer100g":5,"commonServingG":350,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"seaweed_soup","name":"미역국","emoji":"🍲","category":"국·찌개","caloriesPer100g":30,"carbsPer100g":2.5,"proteinPer100g":3,"fatPer100g":1,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"bean_sprout_soup","name":"콩나물국","emoji":"🍲","category":"국·찌개","caloriesPer100g":15,"carbsPer100g":2,"proteinPer100g":1.5,"fatPer100g":0.3,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"galbitang","name":"갈비탕","emoji":"🍲","category":"국·찌개","caloriesPer100g":65,"carbsPer100g":2,"proteinPer100g":7,"fatPer100g":3.5,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"samgyetang","name":"삼계탕","emoji":"🍲","category":"국·찌개","caloriesPer100g":110,"carbsPer100g":3,"proteinPer100g":12,"fatPer100g":5.5,"commonServingG":500,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"yukgaejang","name":"육개장","emoji":"🍲","category":"국·찌개","caloriesPer100g":55,"carbsPer100g":3.5,"proteinPer100g":5.5,"fatPer100g":2.3,"commonServingG":350,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"fish_cake_soup","name":"어묵탕","emoji":"🍢","category":"국·찌개","caloriesPer100g":40,"carbsPer100g":4,"proteinPer100g":3.5,"fatPer100g":1.2,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"choco_pie","name":"초코파이","emoji":"🍫","category":"간식","caloriesPer100g":405,"carbsPer100g":68,"proteinPer100g":4.5,"fatPer100g":13,"commonServingG":39,"commonServingLabel":"1개"},
+  {"id":"potato_chips","name":"감자칩","emoji":"🥔","category":"간식","caloriesPer100g":536,"carbsPer100g":53,"proteinPer100g":6.6,"fatPer100g":34,"commonServingG":50,"commonServingLabel":"1봉지(소)"},
+  {"id":"saeukkang","name":"새우깡","emoji":"🦐","category":"간식","caloriesPer100g":480,"carbsPer100g":63,"proteinPer100g":7,"fatPer100g":21,"commonServingG":50,"commonServingLabel":"1봉지(소)"},
+  {"id":"ice_cream_vanilla","name":"아이스크림(바닐라)","emoji":"🍦","category":"간식","caloriesPer100g":207,"carbsPer100g":24,"proteinPer100g":3.5,"fatPer100g":11,"commonServingG":100,"commonServingLabel":"1컵"},
+  {"id":"chocolate_milk_bar","name":"초콜릿(밀크)","emoji":"🍫","category":"간식","caloriesPer100g":535,"carbsPer100g":59,"proteinPer100g":7.6,"fatPer100g":30,"commonServingG":30,"commonServingLabel":"1줄"},
+  {"id":"jelly_fruit","name":"젤리(과일맛)","emoji":"🍬","category":"간식","caloriesPer100g":335,"carbsPer100g":80,"proteinPer100g":4,"fatPer100g":0.2,"commonServingG":30,"commonServingLabel":"1봉지"},
+  {"id":"popcorn_butter","name":"팝콘(버터맛)","emoji":"🍿","category":"간식","caloriesPer100g":480,"carbsPer100g":55,"proteinPer100g":7,"fatPer100g":26,"commonServingG":50,"commonServingLabel":"1봉지(소)"},
+  {"id":"macaron","name":"마카롱","emoji":"🧁","category":"간식","caloriesPer100g":400,"carbsPer100g":55,"proteinPer100g":5,"fatPer100g":18,"commonServingG":25,"commonServingLabel":"1개"},
+  {"id":"croffle","name":"크로플","emoji":"🥐","category":"간식","caloriesPer100g":420,"carbsPer100g":42,"proteinPer100g":7,"fatPer100g":25,"commonServingG":100,"commonServingLabel":"1개"},
+  {"id":"almond_roasted","name":"아몬드(구운)","emoji":"🌰","category":"간식","caloriesPer100g":598,"carbsPer100g":20,"proteinPer100g":21,"fatPer100g":52,"commonServingG":20,"commonServingLabel":"1줌"},
+  {"id":"fried_chicken","name":"후라이드치킨","emoji":"🍗","category":"배달·프랜차이즈","caloriesPer100g":275,"carbsPer100g":9,"proteinPer100g":17,"fatPer100g":18,"commonServingG":100,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"seasoned_chicken","name":"양념치킨","emoji":"🍗","category":"배달·프랜차이즈","caloriesPer100g":290,"carbsPer100g":15,"proteinPer100g":16,"fatPer100g":18,"commonServingG":100,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"chicken_nugget","name":"치킨너겟","emoji":"🍗","category":"배달·프랜차이즈","caloriesPer100g":296,"carbsPer100g":16,"proteinPer100g":14,"fatPer100g":20,"commonServingG":90,"commonServingLabel":"5조각","unitType":"count"},
+  {"id":"pizza_pepperoni","name":"페퍼로니피자","emoji":"🍕","category":"배달·프랜차이즈","caloriesPer100g":266,"carbsPer100g":26,"proteinPer100g":11,"fatPer100g":12,"commonServingG":120,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"pizza_combination","name":"콤비네이션피자","emoji":"🍕","category":"배달·프랜차이즈","caloriesPer100g":250,"carbsPer100g":27,"proteinPer100g":10,"fatPer100g":10,"commonServingG":120,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"burger_bulgogi","name":"불고기버거","emoji":"🍔","category":"배달·프랜차이즈","caloriesPer100g":250,"carbsPer100g":28,"proteinPer100g":10,"fatPer100g":10,"commonServingG":220,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"burger_cheese","name":"치즈버거","emoji":"🍔","category":"배달·프랜차이즈","caloriesPer100g":270,"carbsPer100g":26,"proteinPer100g":13,"fatPer100g":13,"commonServingG":220,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"french_fries","name":"감자튀김","emoji":"🍟","category":"배달·프랜차이즈","caloriesPer100g":312,"carbsPer100g":41,"proteinPer100g":3.4,"fatPer100g":15,"commonServingG":130,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"corn_dog","name":"핫도그","emoji":"🌭","category":"배달·프랜차이즈","caloriesPer100g":280,"carbsPer100g":30,"proteinPer100g":8,"fatPer100g":14,"commonServingG":120,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"jjajangmyeon","name":"짜장면","emoji":"🍜","category":"배달·프랜차이즈","caloriesPer100g":160,"carbsPer100g":25,"proteinPer100g":5,"fatPer100g":4.5,"commonServingG":500,"commonServingLabel":"1그릇","unitType":"count"},
+  {"id":"jjamppong","name":"짬뽕","emoji":"🍜","category":"배달·프랜차이즈","caloriesPer100g":110,"carbsPer100g":12,"proteinPer100g":7,"fatPer100g":3.5,"commonServingG":600,"commonServingLabel":"1그릇","unitType":"count"},
+  {"id":"tangsuyuk","name":"탕수육","emoji":"🍖","category":"배달·프랜차이즈","caloriesPer100g":250,"carbsPer100g":22,"proteinPer100g":10,"fatPer100g":13,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"tteokbokki","name":"떡볶이","emoji":"🌶️","category":"배달·프랜차이즈","caloriesPer100g":165,"carbsPer100g":33,"proteinPer100g":3,"fatPer100g":1.5,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"sundae_blood_sausage","name":"순대","emoji":"🌭","category":"배달·프랜차이즈","caloriesPer100g":166,"carbsPer100g":15,"proteinPer100g":9,"fatPer100g":7,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"assorted_fried","name":"튀김(모둠)","emoji":"🍤","category":"배달·프랜차이즈","caloriesPer100g":280,"carbsPer100g":30,"proteinPer100g":6,"fatPer100g":15,"commonServingG":150,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"donkatsu","name":"돈까스","emoji":"🍖","category":"배달·프랜차이즈","caloriesPer100g":250,"carbsPer100g":15,"proteinPer100g":14,"fatPer100g":15,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"kimchi_fried_rice","name":"김치볶음밥","emoji":"🍚","category":"배달·프랜차이즈","caloriesPer100g":180,"carbsPer100g":25,"proteinPer100g":4,"fatPer100g":6,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"jeyuk_bokkeum","name":"제육볶음","emoji":"🥘","category":"배달·프랜차이즈","caloriesPer100g":220,"carbsPer100g":8,"proteinPer100g":15,"fatPer100g":14,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"jokbal","name":"족발","emoji":"🐷","category":"배달·프랜차이즈","caloriesPer100g":280,"carbsPer100g":2,"proteinPer100g":22,"fatPer100g":20,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"bossam","name":"보쌈","emoji":"🥬","category":"배달·프랜차이즈","caloriesPer100g":230,"carbsPer100g":3,"proteinPer100g":20,"fatPer100g":15,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"naengmyeon","name":"냉면(물냉면)","emoji":"🍜","category":"배달·프랜차이즈","caloriesPer100g":110,"carbsPer100g":22,"proteinPer100g":4,"fatPer100g":1,"commonServingG":600,"commonServingLabel":"1그릇","unitType":"count"},
+  {"id":"cafe_mocha","name":"카페모카","emoji":"☕","category":"배달·프랜차이즈","caloriesPer100g":70,"carbsPer100g":8,"proteinPer100g":2,"fatPer100g":3,"commonServingG":300,"commonServingLabel":"1잔","unitType":"count"},
+  {"id":"cream_bread","name":"크림빵","emoji":"🍞","category":"배달·프랜차이즈","caloriesPer100g":320,"carbsPer100g":45,"proteinPer100g":6,"fatPer100g":12,"commonServingG":90,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"sandwich_ham_veggie","name":"샌드위치(햄야채)","emoji":"🥪","category":"배달·프랜차이즈","caloriesPer100g":220,"carbsPer100g":28,"proteinPer100g":10,"fatPer100g":7,"commonServingG":230,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"cheesecake","name":"치즈케이크","emoji":"🍰","category":"디저트","caloriesPer100g":321,"carbsPer100g":25,"proteinPer100g":5.5,"fatPer100g":23,"commonServingG":100,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"chocolate_cake","name":"초코케이크","emoji":"🍰","category":"디저트","caloriesPer100g":371,"carbsPer100g":50,"proteinPer100g":5,"fatPer100g":17,"commonServingG":100,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"tiramisu","name":"티라미수","emoji":"🍰","category":"디저트","caloriesPer100g":283,"carbsPer100g":29,"proteinPer100g":5,"fatPer100g":16,"commonServingG":100,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"brownie","name":"브라우니","emoji":"🍫","category":"디저트","caloriesPer100g":405,"carbsPer100g":50,"proteinPer100g":5,"fatPer100g":21,"commonServingG":80,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"waffle_plain","name":"와플","emoji":"🧇","category":"디저트","caloriesPer100g":291,"carbsPer100g":35,"proteinPer100g":6,"fatPer100g":14,"commonServingG":100,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"donut_glazed","name":"도넛(글레이즈드)","emoji":"🍩","category":"디저트","caloriesPer100g":452,"carbsPer100g":51,"proteinPer100g":5,"fatPer100g":25,"commonServingG":60,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"bingsu_patbingsu","name":"팥빙수","emoji":"🍧","category":"디저트","caloriesPer100g":130,"carbsPer100g":25,"proteinPer100g":4,"fatPer100g":2,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"crepe_nutella","name":"크레페(누텔라)","emoji":"🥞","category":"디저트","caloriesPer100g":300,"carbsPer100g":38,"proteinPer100g":5,"fatPer100g":14,"commonServingG":120,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"pudding_caramel","name":"푸딩(카라멜)","emoji":"🍮","category":"디저트","caloriesPer100g":150,"carbsPer100g":20,"proteinPer100g":4,"fatPer100g":6,"commonServingG":100,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"cookie_chocochip","name":"쿠키(초코칩)","emoji":"🍪","category":"디저트","caloriesPer100g":480,"carbsPer100g":60,"proteinPer100g":5,"fatPer100g":24,"commonServingG":20,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"madeleine","name":"마들렌","emoji":"🧁","category":"디저트","caloriesPer100g":400,"carbsPer100g":45,"proteinPer100g":5,"fatPer100g":22,"commonServingG":30,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"castella","name":"카스테라","emoji":"🍰","category":"디저트","caloriesPer100g":320,"carbsPer100g":50,"proteinPer100g":7,"fatPer100g":9,"commonServingG":80,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"cream_bun","name":"슈크림빵","emoji":"🥐","category":"디저트","caloriesPer100g":300,"carbsPer100g":35,"proteinPer100g":6,"fatPer100g":14,"commonServingG":90,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"red_bean_bun","name":"단팥빵","emoji":"🥮","category":"디저트","caloriesPer100g":280,"carbsPer100g":50,"proteinPer100g":7,"fatPer100g":5,"commonServingG":90,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"croissant","name":"크루아상","emoji":"🥐","category":"디저트","caloriesPer100g":406,"carbsPer100g":45,"proteinPer100g":8,"fatPer100g":21,"commonServingG":60,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"scone_plain","name":"스콘","emoji":"🥐","category":"디저트","caloriesPer100g":380,"carbsPer100g":50,"proteinPer100g":7,"fatPer100g":17,"commonServingG":80,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"salt_bread","name":"소금빵","emoji":"🥐","category":"디저트","caloriesPer100g":320,"carbsPer100g":40,"proteinPer100g":7,"fatPer100g":15,"commonServingG":70,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"yakgwa","name":"약과","emoji":"🍯","category":"디저트","caloriesPer100g":421,"carbsPer100g":60,"proteinPer100g":4,"fatPer100g":18,"commonServingG":30,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"injeolmi","name":"인절미","emoji":"🍡","category":"디저트","caloriesPer100g":220,"carbsPer100g":45,"proteinPer100g":6,"fatPer100g":1.5,"commonServingG":100,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"bungeoppang","name":"붕어빵","emoji":"🐟","category":"디저트","caloriesPer100g":220,"carbsPer100g":42,"proteinPer100g":6,"fatPer100g":3,"commonServingG":100,"commonServingLabel":"2개","unitType":"count"},
+  {"id":"hotteok","name":"호떡","emoji":"🥞","category":"디저트","caloriesPer100g":280,"carbsPer100g":45,"proteinPer100g":4,"fatPer100g":10,"commonServingG":100,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"churros","name":"츄러스","emoji":"🥖","category":"디저트","caloriesPer100g":400,"carbsPer100g":48,"proteinPer100g":5,"fatPer100g":21,"commonServingG":80,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gelato","name":"젤라또","emoji":"🍨","category":"디저트","caloriesPer100g":180,"carbsPer100g":24,"proteinPer100g":3,"fatPer100g":8,"commonServingG":100,"commonServingLabel":"1컵","unitType":"count"},
+  {"id":"eclair","name":"에클레어","emoji":"🥐","category":"디저트","caloriesPer100g":300,"carbsPer100g":28,"proteinPer100g":5,"fatPer100g":19,"commonServingG":70,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"canele","name":"카눌레","emoji":"🧁","category":"디저트","caloriesPer100g":320,"carbsPer100g":40,"proteinPer100g":6,"fatPer100g":15,"commonServingG":40,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"taiwanese_castella","name":"대만카스테라","emoji":"🍰","category":"디저트","caloriesPer100g":280,"carbsPer100g":35,"proteinPer100g":7,"fatPer100g":12,"commonServingG":100,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"croque_monsieur","name":"크로크무슈","emoji":"🥪","category":"디저트","caloriesPer100g":290,"carbsPer100g":22,"proteinPer100g":15,"fatPer100g":16,"commonServingG":150,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"acai_bowl","name":"아사이볼","emoji":"🫐","category":"디저트","caloriesPer100g":130,"carbsPer100g":22,"proteinPer100g":3,"fatPer100g":3.5,"commonServingG":300,"commonServingLabel":"1볼","unitType":"count"},
+  {"id":"souffle_pancake","name":"수플레팬케이크","emoji":"🥞","category":"디저트","caloriesPer100g":250,"carbsPer100g":30,"proteinPer100g":7,"fatPer100g":10,"commonServingG":150,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"milk_cream_bun","name":"우유크림빵","emoji":"🥐","category":"디저트","caloriesPer100g":310,"carbsPer100g":38,"proteinPer100g":7,"fatPer100g":14,"commonServingG":100,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"tanghulu","name":"탕후루","emoji":"🍡","category":"유행음식","caloriesPer100g":220,"carbsPer100g":55,"proteinPer100g":0.3,"fatPer100g":0.2,"commonServingG":100,"commonServingLabel":"1꼬치","unitType":"count"},
+  {"id":"dubai_chocolate","name":"두바이초콜릿","emoji":"🍫","category":"유행음식","caloriesPer100g":540,"carbsPer100g":45,"proteinPer100g":8,"fatPer100g":35,"commonServingG":50,"commonServingLabel":"1조각","unitType":"count"},
+  {"id":"malatang","name":"마라탕","emoji":"🍲","category":"유행음식","caloriesPer100g":90,"carbsPer100g":8,"proteinPer100g":6,"fatPer100g":4,"commonServingG":600,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"malaxiangguo","name":"마라샹궈","emoji":"🌶️","category":"유행음식","caloriesPer100g":180,"carbsPer100g":10,"proteinPer100g":12,"fatPer100g":10,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"brown_sugar_bubble_tea","name":"흑당버블티","emoji":"🧋","category":"유행음식","caloriesPer100g":75,"carbsPer100g":15,"proteinPer100g":1,"fatPer100g":1.5,"commonServingG":500,"commonServingLabel":"1잔","unitType":"count"},
+  {"id":"black_sesame_latte","name":"흑임자라떼","emoji":"☕","category":"유행음식","caloriesPer100g":65,"carbsPer100g":7,"proteinPer100g":2.5,"fatPer100g":3,"commonServingG":300,"commonServingLabel":"1잔","unitType":"count"},
+  {"id":"tendon","name":"텐동","emoji":"🍤","category":"유행음식","caloriesPer100g":190,"carbsPer100g":28,"proteinPer100g":6,"fatPer100g":6,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"mala_crayfish","name":"마라롱샤","emoji":"🦞","category":"유행음식","caloriesPer100g":150,"carbsPer100g":5,"proteinPer100g":15,"fatPer100g":8,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"hotpot_huoguo","name":"훠궈","emoji":"🍲","category":"유행음식","caloriesPer100g":120,"carbsPer100g":5,"proteinPer100g":8,"fatPer100g":7,"commonServingG":600,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gopchang","name":"곱창(구이)","emoji":"🥩","category":"유행음식","caloriesPer100g":280,"carbsPer100g":2,"proteinPer100g":15,"fatPer100g":23,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"wangmandu","name":"왕만두","emoji":"🥟","category":"유행음식","caloriesPer100g":230,"carbsPer100g":30,"proteinPer100g":9,"fatPer100g":8,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"potato_corndog","name":"감자핫도그","emoji":"🌭","category":"유행음식","caloriesPer100g":300,"carbsPer100g":32,"proteinPer100g":9,"fatPer100g":15,"commonServingG":150,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"rolled_ice_cream","name":"롤아이스크림","emoji":"🍨","category":"유행음식","caloriesPer100g":210,"carbsPer100g":26,"proteinPer100g":3,"fatPer100g":10,"commonServingG":150,"commonServingLabel":"1컵","unitType":"count"},
+  {"id":"dalgona_coffee","name":"달고나커피","emoji":"☕","category":"유행음식","caloriesPer100g":90,"carbsPer100g":15,"proteinPer100g":1,"fatPer100g":3,"commonServingG":250,"commonServingLabel":"1잔","unitType":"count"},
+  {"id":"yakult_slush","name":"야쿠르트슬러시","emoji":"🥤","category":"유행음식","caloriesPer100g":80,"carbsPer100g":18,"proteinPer100g":0.5,"fatPer100g":0.2,"commonServingG":300,"commonServingLabel":"1컵","unitType":"count"},
+  {"id":"cloud_bread","name":"구름빵","emoji":"🍞","category":"유행음식","caloriesPer100g":180,"carbsPer100g":20,"proteinPer100g":8,"fatPer100g":7,"commonServingG":80,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"honey_cheese_bread","name":"허니치즈브레드","emoji":"🧀","category":"유행음식","caloriesPer100g":380,"carbsPer100g":40,"proteinPer100g":10,"fatPer100g":18,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"matcha_latte","name":"말차라떼","emoji":"🍵","category":"유행음식","caloriesPer100g":55,"carbsPer100g":7,"proteinPer100g":2,"fatPer100g":2,"commonServingG":300,"commonServingLabel":"1잔","unitType":"count"},
+  {"id":"yogurt_ice_cream","name":"요거트아이스크림","emoji":"🍦","category":"유행음식","caloriesPer100g":120,"carbsPer100g":20,"proteinPer100g":4,"fatPer100g":2.5,"commonServingG":150,"commonServingLabel":"1컵","unitType":"count"},
+  {"id":"lava_cookie","name":"라바쿠키","emoji":"🍪","category":"유행음식","caloriesPer100g":450,"carbsPer100g":55,"proteinPer100g":5,"fatPer100g":22,"commonServingG":80,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"sundae_gukbap","name":"순대국밥","emoji":"🍲","category":"국밥·덮밥","caloriesPer100g":61,"carbsPer100g":8.6,"proteinPer100g":4.6,"fatPer100g":0.9,"commonServingG":600,"commonServingLabel":"1그릇","unitType":"count"},
+  {"id":"dwaeji_gukbap","name":"돼지국밥","emoji":"🍲","category":"국밥·덮밥","caloriesPer100g":74,"carbsPer100g":5.6,"proteinPer100g":6.5,"fatPer100g":2.9,"commonServingG":600,"commonServingLabel":"1그릇","unitType":"count"},
+  {"id":"beef_gukbap","name":"소고기국밥","emoji":"🍲","category":"국밥·덮밥","caloriesPer100g":48,"carbsPer100g":5.4,"proteinPer100g":3.6,"fatPer100g":1.3,"commonServingG":600,"commonServingLabel":"1그릇","unitType":"count"},
+  {"id":"kongnamul_gukbap","name":"콩나물국밥","emoji":"🍲","category":"국밥·덮밥","caloriesPer100g":74,"carbsPer100g":11.1,"proteinPer100g":3.7,"fatPer100g":1.7,"commonServingG":600,"commonServingLabel":"1그릇","unitType":"count"},
+  {"id":"bibimbap","name":"비빔밥","emoji":"🍚","category":"국밥·덮밥","caloriesPer100g":127,"carbsPer100g":17.5,"proteinPer100g":4.8,"fatPer100g":4.2,"commonServingG":450,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"hoe_bibimbap","name":"회비빔밥","emoji":"🍚","category":"국밥·덮밥","caloriesPer100g":147,"carbsPer100g":22.9,"proteinPer100g":6.4,"fatPer100g":3.4,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"japchae_bap","name":"잡채밥","emoji":"🍚","category":"국밥·덮밥","caloriesPer100g":136,"carbsPer100g":18.7,"proteinPer100g":4.1,"fatPer100g":5,"commonServingG":650,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"omurice","name":"오므라이스","emoji":"🍳","category":"국밥·덮밥","caloriesPer100g":183,"carbsPer100g":28.1,"proteinPer100g":5.4,"fatPer100g":5.4,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"curry_rice","name":"카레라이스","emoji":"🍛","category":"국밥·덮밥","caloriesPer100g":121,"carbsPer100g":18.1,"proteinPer100g":4.5,"fatPer100g":3.4,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"egg_fried_rice","name":"계란볶음밥","emoji":"🍳","category":"국밥·덮밥","caloriesPer100g":225,"carbsPer100g":24.2,"proteinPer100g":6.6,"fatPer100g":11.3,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"kalguksu","name":"칼국수","emoji":"🍜","category":"면류","caloriesPer100g":70,"carbsPer100g":12.3,"proteinPer100g":2.6,"fatPer100g":1.2,"commonServingG":600,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"janchi_guksu","name":"잔치국수","emoji":"🍜","category":"면류","caloriesPer100g":55,"carbsPer100g":9.6,"proteinPer100g":2.1,"fatPer100g":0.9,"commonServingG":600,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"kong_guksu","name":"콩국수","emoji":"🍜","category":"면류","caloriesPer100g":86,"carbsPer100g":8.6,"proteinPer100g":7.5,"fatPer100g":2.4,"commonServingG":600,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"makguksu","name":"막국수","emoji":"🍜","category":"면류","caloriesPer100g":182,"carbsPer100g":31.9,"proteinPer100g":6.8,"fatPer100g":3,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"rabokki","name":"라볶이","emoji":"🍜","category":"면류","caloriesPer100g":202,"carbsPer100g":41,"proteinPer100g":5,"fatPer100g":2,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"jjolmyeon","name":"쫄면","emoji":"🍜","category":"면류","caloriesPer100g":115,"carbsPer100g":20.1,"proteinPer100g":3.5,"fatPer100g":2.3,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"bibim_guksu","name":"비빔국수","emoji":"🍜","category":"면류","caloriesPer100g":103,"carbsPer100g":20.5,"proteinPer100g":3,"fatPer100g":1,"commonServingG":350,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"bokkeum_udon","name":"볶음우동","emoji":"🍜","category":"면류","caloriesPer100g":128,"carbsPer100g":17.6,"proteinPer100g":4.8,"fatPer100g":4.3,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"naeng_soba","name":"냉모밀(소바)","emoji":"🍜","category":"면류","caloriesPer100g":112,"carbsPer100g":20.6,"proteinPer100g":3.2,"fatPer100g":1.9,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"japchae","name":"잡채","emoji":"🍜","category":"한식일품","caloriesPer100g":144,"carbsPer100g":21.6,"proteinPer100g":3.6,"fatPer100g":4.8,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"galbijjim","name":"갈비찜","emoji":"🍖","category":"한식일품","caloriesPer100g":298,"carbsPer100g":7.7,"proteinPer100g":17.3,"fatPer100g":21.8,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"jjimdak","name":"찜닭","emoji":"🍗","category":"한식일품","caloriesPer100g":143,"carbsPer100g":12.5,"proteinPer100g":10.7,"fatPer100g":5.6,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"dakgalbi","name":"닭갈비","emoji":"🍗","category":"한식일품","caloriesPer100g":182,"carbsPer100g":12,"proteinPer100g":17,"fatPer100g":7,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"bulgogi","name":"불고기","emoji":"🥩","category":"한식일품","caloriesPer100g":220,"carbsPer100g":8,"proteinPer100g":22,"fatPer100g":11,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"ojingeo_bokkeum","name":"오징어볶음","emoji":"🦑","category":"한식일품","caloriesPer100g":175,"carbsPer100g":10.9,"proteinPer100g":13.1,"fatPer100g":8.8,"commonServingG":180,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gochujang_bulgogi","name":"고추장불고기","emoji":"🥩","category":"한식일품","caloriesPer100g":230,"carbsPer100g":9,"proteinPer100g":21,"fatPer100g":12,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"dubu_jorim","name":"두부조림","emoji":"🍲","category":"한식일품","caloriesPer100g":95,"carbsPer100g":3.5,"proteinPer100g":8.5,"fatPer100g":5.2,"commonServingG":150,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gyeranjjim","name":"계란찜","emoji":"🥚","category":"한식일품","caloriesPer100g":119,"carbsPer100g":1.5,"proteinPer100g":10.4,"fatPer100g":7.9,"commonServingG":150,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gamja_jorim","name":"감자조림","emoji":"🥔","category":"한식일품","caloriesPer100g":115,"carbsPer100g":22,"proteinPer100g":2.2,"fatPer100g":1.5,"commonServingG":150,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"myeolchi_bokkeum","name":"멸치볶음","emoji":"🐟","category":"한식일품","caloriesPer100g":235,"carbsPer100g":12,"proteinPer100g":18.5,"fatPer100g":10.3,"commonServingG":50,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"jinmichae_bokkeum","name":"진미채볶음","emoji":"🦑","category":"한식일품","caloriesPer100g":278,"carbsPer100g":22.5,"proteinPer100g":12.2,"fatPer100g":17.6,"commonServingG":90,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gamjatang","name":"감자탕","emoji":"🍲","category":"탕·찌개","caloriesPer100g":60,"carbsPer100g":3.3,"proteinPer100g":6.7,"fatPer100g":2.3,"commonServingG":430,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"maeuntang","name":"매운탕","emoji":"🐟","category":"탕·찌개","caloriesPer100g":71,"carbsPer100g":2.1,"proteinPer100g":11.4,"fatPer100g":1.8,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"altang","name":"알탕","emoji":"🐟","category":"탕·찌개","caloriesPer100g":94,"carbsPer100g":2.4,"proteinPer100g":10.6,"fatPer100g":4.7,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"cheonggukjang_jjigae","name":"청국장찌개","emoji":"🍲","category":"탕·찌개","caloriesPer100g":47,"carbsPer100g":1.9,"proteinPer100g":5,"fatPer100g":1.9,"commonServingG":480,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"sogogi_muguk","name":"소고기무국","emoji":"🍲","category":"탕·찌개","caloriesPer100g":27,"carbsPer100g":1.4,"proteinPer100g":3.4,"fatPer100g":0.9,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"bugeoguk","name":"북엇국","emoji":"🐟","category":"탕·찌개","caloriesPer100g":35,"carbsPer100g":2,"proteinPer100g":4.5,"fatPer100g":1,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gyeranguk","name":"계란국","emoji":"🥚","category":"탕·찌개","caloriesPer100g":40,"carbsPer100g":2,"proteinPer100g":3.5,"fatPer100g":2,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"tteokguk","name":"떡국","emoji":"🍲","category":"탕·찌개","caloriesPer100g":115,"carbsPer100g":20.1,"proteinPer100g":5.8,"fatPer100g":1.3,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"baechu_kimchi","name":"배추김치","emoji":"🥬","category":"밑반찬·김치","caloriesPer100g":30,"carbsPer100g":5.2,"proteinPer100g":1.6,"fatPer100g":0.2,"commonServingG":50,"commonServingLabel":"1인분"},
+  {"id":"kkakdugi","name":"깍두기","emoji":"🥬","category":"밑반찬·김치","caloriesPer100g":28,"carbsPer100g":5.5,"proteinPer100g":1.1,"fatPer100g":0.1,"commonServingG":50,"commonServingLabel":"1인분"},
+  {"id":"yeolmu_kimchi","name":"열무김치","emoji":"🥬","category":"밑반찬·김치","caloriesPer100g":32,"carbsPer100g":5,"proteinPer100g":2.4,"fatPer100g":0.3,"commonServingG":50,"commonServingLabel":"1인분"},
+  {"id":"doraji_muchim","name":"도라지무침","emoji":"🥗","category":"밑반찬·김치","caloriesPer100g":93,"carbsPer100g":16.7,"proteinPer100g":2.8,"fatPer100g":2.8,"commonServingG":50,"commonServingLabel":"1인분"},
+  {"id":"kongjaban","name":"콩자반","emoji":"🫘","category":"밑반찬·김치","caloriesPer100g":180,"carbsPer100g":20,"proteinPer100g":14,"fatPer100g":5,"commonServingG":50,"commonServingLabel":"1인분"},
+  {"id":"eomuk_bokkeum","name":"어묵볶음","emoji":"🍢","category":"밑반찬·김치","caloriesPer100g":196,"carbsPer100g":24.3,"proteinPer100g":8.4,"fatPer100g":7.3,"commonServingG":50,"commonServingLabel":"1인분"},
+  {"id":"gyeranmari","name":"계란말이","emoji":"🥚","category":"밑반찬·김치","caloriesPer100g":218,"carbsPer100g":6.4,"proteinPer100g":12.5,"fatPer100g":14.8,"commonServingG":100,"commonServingLabel":"1인분"},
+  {"id":"huinjuk","name":"흰죽","emoji":"🥣","category":"죽","caloriesPer100g":72,"carbsPer100g":16.3,"proteinPer100g":1.5,"fatPer100g":0.1,"commonServingG":400,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"jeonbokjuk","name":"전복죽","emoji":"🥣","category":"죽","caloriesPer100g":134,"carbsPer100g":26.6,"proteinPer100g":3.6,"fatPer100g":1.7,"commonServingG":270,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"yachaejuk","name":"야채죽","emoji":"🥣","category":"죽","caloriesPer100g":145,"carbsPer100g":28.1,"proteinPer100g":4.2,"fatPer100g":1.9,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"danhobakjuk","name":"단호박죽","emoji":"🥣","category":"죽","caloriesPer100g":142,"carbsPer100g":30.3,"proteinPer100g":2.9,"fatPer100g":1.04,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"modum_sushi","name":"초밥(모둠)","emoji":"🍣","category":"일식","caloriesPer100g":154,"carbsPer100g":19.3,"proteinPer100g":9.6,"fatPer100g":4.3,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"modum_hoe","name":"회(모둠)","emoji":"🐟","category":"일식","caloriesPer100g":120,"carbsPer100g":1,"proteinPer100g":22,"fatPer100g":3,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gyudon","name":"규동","emoji":"🍚","category":"일식","caloriesPer100g":175,"carbsPer100g":23,"proteinPer100g":4,"fatPer100g":6.3,"commonServingG":350,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"katsudon","name":"가츠동","emoji":"🍚","category":"일식","caloriesPer100g":217,"carbsPer100g":24.4,"proteinPer100g":13.5,"fatPer100g":7.2,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"ramen_japanese","name":"라멘(일본식)","emoji":"🍜","category":"일식","caloriesPer100g":100,"carbsPer100g":11.3,"proteinPer100g":5,"fatPer100g":3.9,"commonServingG":500,"commonServingLabel":"1그릇","unitType":"count"},
+  {"id":"onigiri","name":"오니기리","emoji":"🍙","category":"일식","caloriesPer100g":170,"carbsPer100g":30,"proteinPer100g":4,"fatPer100g":3.5,"commonServingG":110,"commonServingLabel":"1개","unitType":"count"},
+  {"id":"takoyaki","name":"타코야키","emoji":"🐙","category":"일식","caloriesPer100g":141,"carbsPer100g":20,"proteinPer100g":6.8,"fatPer100g":4,"commonServingG":120,"commonServingLabel":"1인분(6개)","unitType":"count"},
+  {"id":"kkanpunggi","name":"깐풍기","emoji":"🍗","category":"중식","caloriesPer100g":230,"carbsPer100g":18.3,"proteinPer100g":12.6,"fatPer100g":11.8,"commonServingG":150,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"yurinji","name":"유린기","emoji":"🍗","category":"중식","caloriesPer100g":190,"carbsPer100g":15,"proteinPer100g":14,"fatPer100g":9,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"palbochae","name":"팔보채","emoji":"🦐","category":"중식","caloriesPer100g":110,"carbsPer100g":8,"proteinPer100g":9,"fatPer100g":5.5,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"yangjangpi","name":"양장피","emoji":"🥗","category":"중식","caloriesPer100g":286,"carbsPer100g":25,"proteinPer100g":14.3,"fatPer100g":14.3,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gochu_japchae","name":"고추잡채","emoji":"🫑","category":"중식","caloriesPer100g":160,"carbsPer100g":8,"proteinPer100g":12,"fatPer100g":9.5,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"mapo_tofu","name":"마파두부","emoji":"🌶️","category":"중식","caloriesPer100g":134,"carbsPer100g":5,"proteinPer100g":10.1,"fatPer100g":8.2,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"menbosha","name":"멘보샤","emoji":"🍤","category":"중식","caloriesPer100g":247,"carbsPer100g":15.4,"proteinPer100g":12.4,"fatPer100g":15.1,"commonServingG":90,"commonServingLabel":"3조각","unitType":"count"},
+  {"id":"dimsum","name":"딤섬(모둠)","emoji":"🥟","category":"중식","caloriesPer100g":200,"carbsPer100g":22,"proteinPer100g":9,"fatPer100g":8.5,"commonServingG":200,"commonServingLabel":"1인분(6개)","unitType":"count"},
+  {"id":"steak_sirloin","name":"스테이크(안심)","emoji":"🥩","category":"양식","caloriesPer100g":205,"carbsPer100g":0,"proteinPer100g":30.5,"fatPer100g":8.6,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"risotto","name":"리조또","emoji":"🍚","category":"양식","caloriesPer100g":140,"carbsPer100g":15.8,"proteinPer100g":4.2,"fatPer100g":6.7,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"cream_pasta","name":"크림파스타","emoji":"🍝","category":"양식","caloriesPer100g":275,"carbsPer100g":30.3,"proteinPer100g":9.4,"fatPer100g":12.9,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"tomato_pasta","name":"토마토파스타","emoji":"🍝","category":"양식","caloriesPer100g":116,"carbsPer100g":21.1,"proteinPer100g":3.9,"fatPer100g":1.7,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"omelette","name":"오믈렛","emoji":"🍳","category":"양식","caloriesPer100g":200,"carbsPer100g":3,"proteinPer100g":14,"fatPer100g":15,"commonServingG":150,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"caesar_salad","name":"시저샐러드","emoji":"🥗","category":"양식","caloriesPer100g":185,"carbsPer100g":9.3,"proteinPer100g":9.3,"fatPer100g":12.3,"commonServingG":230,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"green_salad","name":"그린샐러드","emoji":"🥗","category":"양식","caloriesPer100g":17,"carbsPer100g":3.2,"proteinPer100g":1.4,"fatPer100g":0.15,"commonServingG":150,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"hamburg_steak","name":"함박스테이크","emoji":"🍖","category":"양식","caloriesPer100g":175,"carbsPer100g":8,"proteinPer100g":14,"fatPer100g":10.5,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gratin","name":"그라탱","emoji":"🧀","category":"양식","caloriesPer100g":190,"carbsPer100g":15,"proteinPer100g":8,"fatPer100g":11,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"lasagna","name":"라자냐","emoji":"🍝","category":"양식","caloriesPer100g":168,"carbsPer100g":21.4,"proteinPer100g":13.4,"fatPer100g":3.3,"commonServingG":380,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"meatball_pasta","name":"미트볼파스타","emoji":"🍝","category":"양식","caloriesPer100g":165,"carbsPer100g":18,"proteinPer100g":9,"fatPer100g":6,"commonServingG":300,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"eggs_benedict","name":"에그베네딕트","emoji":"🍳","category":"양식","caloriesPer100g":220,"carbsPer100g":14,"proteinPer100g":10,"fatPer100g":14,"commonServingG":200,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"caprese_salad","name":"카프레제샐러드","emoji":"🍅","category":"양식","caloriesPer100g":128,"carbsPer100g":4.8,"proteinPer100g":8,"fatPer100g":8.5,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"cream_soup","name":"크림수프","emoji":"🍵","category":"양식","caloriesPer100g":90,"carbsPer100g":7,"proteinPer100g":2.5,"fatPer100g":6,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"pilaf","name":"필라프","emoji":"🍚","category":"양식","caloriesPer100g":155,"carbsPer100g":22,"proteinPer100g":4,"fatPer100g":5.5,"commonServingG":250,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"baguette","name":"바게트","emoji":"🥖","category":"빵·베이커리","caloriesPer100g":270,"carbsPer100g":56,"proteinPer100g":9,"fatPer100g":0.5,"commonServingG":40,"commonServingLabel":"1쪽"},
+  {"id":"ciabatta","name":"치아바타","emoji":"🍞","category":"빵·베이커리","caloriesPer100g":271,"carbsPer100g":50.9,"proteinPer100g":8.8,"fatPer100g":8.8,"commonServingG":57,"commonServingLabel":"1쪽"},
+  {"id":"bagel","name":"베이글","emoji":"🥯","category":"빵·베이커리","caloriesPer100g":275,"carbsPer100g":49,"proteinPer100g":10,"fatPer100g":0.8,"commonServingG":100,"commonServingLabel":"1개"},
+  {"id":"dinner_roll","name":"모닝빵","emoji":"🍞","category":"빵·베이커리","caloriesPer100g":316,"carbsPer100g":59,"proteinPer100g":9.1,"fatPer100g":4.9,"commonServingG":35,"commonServingLabel":"1개"},
+  {"id":"pizza_bread","name":"피자빵","emoji":"🍕","category":"빵·베이커리","caloriesPer100g":260,"carbsPer100g":35,"proteinPer100g":9,"fatPer100g":9,"commonServingG":80,"commonServingLabel":"1개"},
+  {"id":"strawberry_smoothie","name":"딸기스무디","emoji":"🍓","category":"음료","caloriesPer100g":87,"carbsPer100g":16.4,"proteinPer100g":0.9,"fatPer100g":2,"commonServingG":300,"commonServingLabel":"1잔"},
+  {"id":"grapefruit_ade","name":"자몽에이드","emoji":"🍊","category":"음료","caloriesPer100g":45,"carbsPer100g":11,"proteinPer100g":0.1,"fatPer100g":0,"commonServingG":350,"commonServingLabel":"1잔"},
+  {"id":"beer","name":"맥주","emoji":"🍺","category":"음료","caloriesPer100g":43,"carbsPer100g":3.6,"proteinPer100g":0.5,"fatPer100g":0,"commonServingG":355,"commonServingLabel":"1캔"},
+  {"id":"makgeolli","name":"막걸리","emoji":"🍶","category":"음료","caloriesPer100g":46,"carbsPer100g":6,"proteinPer100g":1.5,"fatPer100g":0,"commonServingG":300,"commonServingLabel":"1병"},
+  {"id":"sports_drink","name":"이온음료","emoji":"🥤","category":"음료","caloriesPer100g":24,"carbsPer100g":6,"proteinPer100g":0,"fatPer100g":0,"commonServingG":500,"commonServingLabel":"1병"},
+  {"id":"iced_tea","name":"아이스티","emoji":"🧊","category":"음료","caloriesPer100g":25,"carbsPer100g":6.2,"proteinPer100g":0,"fatPer100g":0,"commonServingG":300,"commonServingLabel":"1잔"},
+  {"id":"ice_americano","name":"아이스아메리카노","emoji":"🧊","category":"음료","caloriesPer100g":2,"carbsPer100g":0.3,"proteinPer100g":0.1,"fatPer100g":0,"commonServingG":500,"commonServingLabel":"1잔"},
+  {"id":"walnut","name":"호두","emoji":"🌰","category":"견과·건강식품","caloriesPer100g":655,"carbsPer100g":13.7,"proteinPer100g":15.2,"fatPer100g":65.2,"commonServingG":20,"commonServingLabel":"1줌"},
+  {"id":"peanut","name":"땅콩","emoji":"🥜","category":"견과·건강식품","caloriesPer100g":567,"carbsPer100g":16,"proteinPer100g":26,"fatPer100g":49,"commonServingG":20,"commonServingLabel":"1줌"},
+  {"id":"granola","name":"그래놀라","emoji":"🥣","category":"견과·건강식품","caloriesPer100g":471,"carbsPer100g":64,"proteinPer100g":10,"fatPer100g":17,"commonServingG":40,"commonServingLabel":"1회분"},
+  {"id":"protein_bar","name":"프로틴바","emoji":"💪","category":"견과·건강식품","caloriesPer100g":380,"carbsPer100g":40,"proteinPer100g":30,"fatPer100g":12,"commonServingG":60,"commonServingLabel":"1개"},
+  {"id":"eomuk_kkochi","name":"어묵꼬치","emoji":"🍢","category":"분식","caloriesPer100g":90,"carbsPer100g":8,"proteinPer100g":5,"fatPer100g":4,"commonServingG":100,"commonServingLabel":"1인분","unitType":"count"},
+  {"id":"gunmandu","name":"군만두","emoji":"🥟","category":"분식","caloriesPer100g":230,"carbsPer100g":27,"proteinPer100g":5,"fatPer100g":11.3,"commonServingG":150,"commonServingLabel":"1인분","unitType":"count"}
+]
+
+
+===== calorie-tracker/index.html =====
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>칼로리 트래커</title>
+  <link rel="stylesheet" href="style.css?v=4" />
+</head>
+<body>
+  <main>
+    <!-- 인증 화면 -->
+    <section id="auth-view">
+      <h1>칼로리 트래커</h1>
+
+      <form id="login-form" class="auth-form">
+        <input id="login-email" type="email" placeholder="이메일" autocomplete="email" required />
+        <input id="login-password" type="password" placeholder="비밀번호" autocomplete="current-password" required />
+        <button type="submit">로그인</button>
+      </form>
+
+      <form id="signup-form" class="auth-form" hidden>
+        <input id="signup-email" type="email" placeholder="이메일" autocomplete="email" required />
+        <input id="signup-password" type="password" placeholder="비밀번호 (8자 이상, 대/소문자·숫자·특수문자 포함)" autocomplete="new-password" required minlength="8" />
+        <input id="signup-password-confirm" type="password" placeholder="비밀번호 확인" autocomplete="new-password" required minlength="8" />
+        <button type="submit">회원가입</button>
+      </form>
+
+      <p id="auth-message" class="auth-message" hidden></p>
+
+      <p class="auth-toggle">
+        <a href="#" id="show-signup">계정이 없으신가요? 회원가입</a>
+        <a href="#" id="show-login" hidden>이미 계정이 있으신가요? 로그인</a>
+      </p>
+    </section>
+
+    <!-- 트래커 화면 -->
+    <section id="tracker-view" hidden>
+      <header class="tracker-header">
+        <h1>칼로리 트래커</h1>
+        <div class="header-right">
+          <span id="user-email" class="user-email"></span>
+          <button id="logout-btn" type="button">로그아웃</button>
+        </div>
+      </header>
+      <p id="today-date" class="today-date"></p>
+
+      <div class="goal-bar">
+        <span id="goal-display" class="goal-display"></span>
+        <button id="edit-goal-btn" type="button" class="link-btn">목표 수정</button>
+        <button id="open-calendar-btn" type="button" class="link-btn">📅 캘린더</button>
+      </div>
+      <form id="goal-form" class="goal-form" hidden>
+        <input id="goal-input" type="number" min="1" step="1" placeholder="하루 목표 칼로리 (kcal)" />
+        <button type="submit">저장</button>
+        <button type="button" id="cancel-goal-btn" class="secondary-btn">취소</button>
+      </form>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <span class="summary-label">칼로리</span>
+          <span class="summary-value"><span id="sum-calories">0</span> <span class="summary-unit">kcal</span></span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">탄수화물</span>
+          <span class="summary-value"><span id="sum-carbs">0</span> <span class="summary-unit">g</span></span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">단백질</span>
+          <span class="summary-value"><span id="sum-protein">0</span> <span class="summary-unit">g</span></span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">지방</span>
+          <span class="summary-value"><span id="sum-fat">0</span> <span class="summary-unit">g</span></span>
+        </div>
+      </div>
+      <p id="goal-remaining" class="goal-remaining" hidden></p>
+
+      <div id="search-input-card" class="input-card">
+        <input id="food-search" type="text" placeholder="음식 이름 검색 (예: 닭가슴살)" autocomplete="off" />
+        <ul id="search-results" class="search-results"></ul>
+
+        <div id="selected-food" class="selected-food" hidden>
+          <p id="selected-food-name" class="selected-food-name"></p>
+          <p id="selected-food-base" class="selected-food-base"></p>
+          <label class="amount-label">
+            <span id="amount-label-text">섭취량</span>
+            <input id="amount-input" type="number" min="1" step="1" />
+            <span id="amount-unit-text">g</span>
+          </label>
+          <p id="preview" class="preview"></p>
+          <button id="add-btn" type="button" disabled>기록에 추가</button>
+        </div>
+
+        <p class="manual-toggle">
+          <a href="#" id="show-manual-entry">찾는 음식이 없나요? 직접 입력하기</a>
+        </p>
+      </div>
+
+      <form id="manual-form" class="input-card manual-form" hidden>
+        <p class="manual-form-title">음식 직접 입력</p>
+        <input id="manual-name" type="text" placeholder="음식 이름 (예: 엄마표 김밥)" required />
+        <input id="manual-calories" type="number" min="0" step="1" placeholder="칼로리 (kcal)" required />
+        <div class="manual-optional-row">
+          <input id="manual-carbs" type="number" min="0" step="0.1" placeholder="탄수화물 g (선택)" />
+          <input id="manual-protein" type="number" min="0" step="0.1" placeholder="단백질 g (선택)" />
+          <input id="manual-fat" type="number" min="0" step="0.1" placeholder="지방 g (선택)" />
+        </div>
+        <div class="manual-actions">
+          <button type="submit" id="manual-add-btn">기록에 추가</button>
+          <button type="button" id="manual-cancel-btn" class="secondary-btn">취소</button>
+        </div>
+      </form>
+
+      <div class="log-section">
+        <h2>오늘의 기록</h2>
+        <ul id="log-list" class="log-list"></ul>
+        <p id="log-empty" class="empty" hidden>오늘 기록된 음식이 없어요</p>
+      </div>
+
+      <p class="disclaimer">※ 영양성분은 일반적인 평균값 기준 추정치이며 실제와 다를 수 있습니다.</p>
+    </section>
+
+    <!-- 캘린더 화면 -->
+    <section id="calendar-view" hidden>
+      <header class="tracker-header">
+        <button id="back-to-tracker-btn" type="button" class="link-btn">← 트래커로</button>
+        <span id="calendar-goal-display" class="goal-display"></span>
+      </header>
+
+      <div class="calendar-nav">
+        <button id="prev-month-btn" type="button" class="secondary-btn">◀</button>
+        <span id="calendar-title" class="calendar-title"></span>
+        <button id="next-month-btn" type="button" class="secondary-btn">▶</button>
+      </div>
+
+      <div class="calendar-weekdays">
+        <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+      </div>
+      <div id="calendar-grid" class="calendar-grid"></div>
+
+      <div id="day-detail" class="day-detail" hidden>
+        <p id="day-detail-title" class="day-detail-title"></p>
+        <ul id="day-detail-list" class="log-list"></ul>
+        <p id="day-detail-empty" class="empty" hidden>이 날은 기록이 없어요</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Supabase JS 라이브러리 (CDN, 빌드 도구 불필요) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabaseClient.js?v=1"></script>
+  <script src="app.js?v=4"></script>
+</body>
+</html>
+
+
+===== calorie-tracker/scripts/new_foods_data.js =====
+// 2026-09-09 확장: 국밥/면류/한식일품/탕찌개/죽/일식/중식/양식/빵/음료/견과/분식
+// 각 항목: 1인분(또는 표준 단위) 총량 기준 자료를 100g당으로 환산.
+// countUnit: true면 unitType:"count" (그램 대신 "몇 인분/개"로 입력), false면 기존처럼 그램 입력.
+const NEW_FOODS = [
+  // ---- 국밥·덮밥 (count) ----
+  { id: "sundae_gukbap", name: "순대국밥", emoji: "🍲", category: "국밥·덮밥", countUnit: true, servingG: 600, servingLabel: "1그릇", cal: 61, carb: 8.6, protein: 4.6, fat: 0.9 },
+  { id: "dwaeji_gukbap", name: "돼지국밥", emoji: "🍲", category: "국밥·덮밥", countUnit: true, servingG: 600, servingLabel: "1그릇", cal: 74, carb: 5.6, protein: 6.5, fat: 2.9 },
+  { id: "beef_gukbap", name: "소고기국밥", emoji: "🍲", category: "국밥·덮밥", countUnit: true, servingG: 600, servingLabel: "1그릇", cal: 48, carb: 5.4, protein: 3.6, fat: 1.3 },
+  { id: "kongnamul_gukbap", name: "콩나물국밥", emoji: "🍲", category: "국밥·덮밥", countUnit: true, servingG: 600, servingLabel: "1그릇", cal: 74, carb: 11.1, protein: 3.7, fat: 1.7 },
+  { id: "bibimbap", name: "비빔밥", emoji: "🍚", category: "국밥·덮밥", countUnit: true, servingG: 450, servingLabel: "1인분", cal: 127, carb: 17.5, protein: 4.8, fat: 4.2 },
+  { id: "hoe_bibimbap", name: "회비빔밥", emoji: "🍚", category: "국밥·덮밥", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 147, carb: 25.8, protein: 7.2, fat: 1.7 },
+  { id: "japchae_bap", name: "잡채밥", emoji: "🍚", category: "국밥·덮밥", countUnit: true, servingG: 650, servingLabel: "1인분", cal: 136, carb: 18.7, protein: 4.1, fat: 5.0 },
+  { id: "omurice", name: "오므라이스", emoji: "🍳", category: "국밥·덮밥", countUnit: true, servingG: 400, servingLabel: "1인분", cal: 183, carb: 22.8, protein: 6.9, fat: 7.1 },
+  { id: "curry_rice", name: "카레라이스", emoji: "🍛", category: "국밥·덮밥", countUnit: true, servingG: 400, servingLabel: "1인분", cal: 121, carb: 18.1, protein: 4.5, fat: 3.4 },
+  { id: "egg_fried_rice", name: "계란볶음밥", emoji: "🍳", category: "국밥·덮밥", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 155, carb: 21.3, protein: 4.7, fat: 5.7 },
+
+  // ---- 면류 (count) ----
+  { id: "kalguksu", name: "칼국수", emoji: "🍜", category: "면류", countUnit: true, servingG: 600, servingLabel: "1인분", cal: 70, carb: 12.3, protein: 2.6, fat: 1.2 },
+  { id: "janchi_guksu", name: "잔치국수", emoji: "🍜", category: "면류", countUnit: true, servingG: 600, servingLabel: "1인분", cal: 55, carb: 9.6, protein: 2.1, fat: 0.9 },
+  { id: "kong_guksu", name: "콩국수", emoji: "🍜", category: "면류", countUnit: true, servingG: 600, servingLabel: "1인분", cal: 86, carb: 8.6, protein: 7.5, fat: 2.4 },
+  { id: "makguksu", name: "막국수", emoji: "🍜", category: "면류", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 182, carb: 31.9, protein: 6.8, fat: 3.0 },
+  { id: "rabokki", name: "라볶이", emoji: "🍜", category: "면류", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 203, carb: 30.5, protein: 6.1, fat: 6.3 },
+  { id: "jjolmyeon", name: "쫄면", emoji: "🍜", category: "면류", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 115, carb: 20.1, protein: 3.5, fat: 2.3 },
+  { id: "bibim_guksu", name: "비빔국수", emoji: "🍜", category: "면류", countUnit: true, servingG: 350, servingLabel: "1인분", cal: 121, carb: 21.2, protein: 3.6, fat: 2.4 },
+  { id: "bokkeum_udon", name: "볶음우동", emoji: "🍜", category: "면류", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 128, carb: 17.6, protein: 4.8, fat: 4.3 },
+  { id: "naeng_soba", name: "냉모밀(소바)", emoji: "🍜", category: "면류", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 112, carb: 20.6, protein: 3.2, fat: 1.9 },
+
+  // ---- 한식 일품요리 (count) ----
+  { id: "japchae", name: "잡채", emoji: "🍜", category: "한식일품", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 144, carb: 21.6, protein: 3.6, fat: 4.8 },
+  { id: "galbijjim", name: "갈비찜", emoji: "🍖", category: "한식일품", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 198, carb: 7.4, protein: 14.9, fat: 12.1 },
+  { id: "jjimdak", name: "찜닭", emoji: "🍗", category: "한식일품", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 143, carb: 12.5, protein: 10.7, fat: 5.6 },
+  { id: "dakgalbi", name: "닭갈비", emoji: "🍗", category: "한식일품", countUnit: true, servingG: 400, servingLabel: "1인분", cal: 98, carb: 6.1, protein: 7.4, fat: 4.9 },
+  { id: "bulgogi", name: "불고기", emoji: "🥩", category: "한식일품", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 220, carb: 8, protein: 22, fat: 11 },
+  { id: "ojingeo_bokkeum", name: "오징어볶음", emoji: "🦑", category: "한식일품", countUnit: true, servingG: 180, servingLabel: "1인분", cal: 175, carb: 10.9, protein: 13.1, fat: 8.8 },
+  { id: "gochujang_bulgogi", name: "고추장불고기", emoji: "🥩", category: "한식일품", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 230, carb: 9, protein: 21, fat: 12 },
+  { id: "dubu_jorim", name: "두부조림", emoji: "🍲", category: "한식일품", countUnit: true, servingG: 150, servingLabel: "1인분", cal: 95, carb: 3.5, protein: 8.5, fat: 5.2 },
+  { id: "gyeranjjim", name: "계란찜", emoji: "🥚", category: "한식일품", countUnit: true, servingG: 150, servingLabel: "1인분", cal: 119, carb: 1.5, protein: 10.4, fat: 7.9 },
+  { id: "gamja_jorim", name: "감자조림", emoji: "🥔", category: "한식일품", countUnit: true, servingG: 150, servingLabel: "1인분", cal: 115, carb: 22, protein: 2.2, fat: 1.5 },
+  { id: "myeolchi_bokkeum", name: "멸치볶음", emoji: "🐟", category: "한식일품", countUnit: true, servingG: 50, servingLabel: "1인분", cal: 138, carb: 6.9, protein: 15.5, fat: 5.4 },
+  { id: "jinmichae_bokkeum", name: "진미채볶음", emoji: "🦑", category: "한식일품", countUnit: true, servingG: 90, servingLabel: "1인분", cal: 289, carb: 18.1, protein: 21.7, fat: 14.4 },
+
+  // ---- 탕·찌개 (count) ----
+  { id: "gamjatang", name: "감자탕", emoji: "🍲", category: "탕·찌개", countUnit: true, servingG: 430, servingLabel: "1인분", cal: 60, carb: 3.3, protein: 6.7, fat: 2.3 },
+  { id: "maeuntang", name: "매운탕", emoji: "🐟", category: "탕·찌개", countUnit: true, servingG: 400, servingLabel: "1인분", cal: 53, carb: 2.7, protein: 6.6, fat: 1.8 },
+  { id: "altang", name: "알탕", emoji: "🐟", category: "탕·찌개", countUnit: true, servingG: 400, servingLabel: "1인분", cal: 94, carb: 2.4, protein: 10.6, fat: 4.7 },
+  { id: "cheonggukjang_jjigae", name: "청국장찌개", emoji: "🍲", category: "탕·찌개", countUnit: true, servingG: 480, servingLabel: "1인분", cal: 57, carb: 7.3, protein: 5.2, fat: 0.8 },
+  { id: "sogogi_muguk", name: "소고기무국", emoji: "🍲", category: "탕·찌개", countUnit: true, servingG: 400, servingLabel: "1인분", cal: 27, carb: 1.4, protein: 3.4, fat: 0.9 },
+  { id: "bugeoguk", name: "북엇국", emoji: "🐟", category: "탕·찌개", countUnit: true, servingG: 400, servingLabel: "1인분", cal: 35, carb: 2, protein: 4.5, fat: 1 },
+  { id: "gyeranguk", name: "계란국", emoji: "🥚", category: "탕·찌개", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 40, carb: 2, protein: 3.5, fat: 2 },
+  { id: "tteokguk", name: "떡국", emoji: "🍲", category: "탕·찌개", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 115, carb: 20.1, protein: 5.8, fat: 1.3 },
+
+  // ---- 밑반찬·김치 (weight — 그램 정밀 기록이 자연스러운 카테고리) ----
+  { id: "baechu_kimchi", name: "배추김치", emoji: "🥬", category: "밑반찬·김치", countUnit: false, servingG: 50, servingLabel: "1인분", cal: 30, carb: 5.2, protein: 1.6, fat: 0.2 },
+  { id: "kkakdugi", name: "깍두기", emoji: "🥬", category: "밑반찬·김치", countUnit: false, servingG: 50, servingLabel: "1인분", cal: 28, carb: 5.5, protein: 1.1, fat: 0.1 },
+  { id: "yeolmu_kimchi", name: "열무김치", emoji: "🥬", category: "밑반찬·김치", countUnit: false, servingG: 50, servingLabel: "1인분", cal: 26, carb: 4.8, protein: 1.3, fat: 0.2 },
+  { id: "doraji_muchim", name: "도라지무침", emoji: "🥗", category: "밑반찬·김치", countUnit: false, servingG: 50, servingLabel: "1인분", cal: 65, carb: 11, protein: 1.8, fat: 1.5 },
+  { id: "kongjaban", name: "콩자반", emoji: "🫘", category: "밑반찬·김치", countUnit: false, servingG: 50, servingLabel: "1인분", cal: 180, carb: 20, protein: 14, fat: 5 },
+  { id: "eomuk_bokkeum", name: "어묵볶음", emoji: "🍢", category: "밑반찬·김치", countUnit: false, servingG: 50, servingLabel: "1인분", cal: 155, carb: 12, protein: 8, fat: 8 },
+  { id: "gyeranmari", name: "계란말이", emoji: "🥚", category: "밑반찬·김치", countUnit: false, servingG: 100, servingLabel: "1인분", cal: 218, carb: 6.4, protein: 12.5, fat: 14.8 },
+
+  // ---- 죽 (count) ----
+  { id: "huinjuk", name: "흰죽", emoji: "🥣", category: "죽", countUnit: true, servingG: 400, servingLabel: "1인분", cal: 54, carb: 12.2, protein: 1.1, fat: 0.1 },
+  { id: "jeonbokjuk", name: "전복죽", emoji: "🥣", category: "죽", countUnit: true, servingG: 270, servingLabel: "1인분", cal: 56, carb: 11.1, protein: 1.5, fat: 0.7 },
+  { id: "yachaejuk", name: "야채죽", emoji: "🥣", category: "죽", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 62, carb: 12, protein: 1.8, fat: 0.8 },
+  { id: "danhobakjuk", name: "단호박죽", emoji: "🥣", category: "죽", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 68, carb: 14.5, protein: 1.4, fat: 0.5 },
+
+  // ---- 일식 (count) ----
+  { id: "modum_sushi", name: "초밥(모둠)", emoji: "🍣", category: "일식", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 154, carb: 19.3, protein: 9.6, fat: 4.3 },
+  { id: "modum_hoe", name: "회(모둠)", emoji: "🐟", category: "일식", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 120, carb: 1, protein: 22, fat: 3 },
+  { id: "gyudon", name: "규동", emoji: "🍚", category: "일식", countUnit: true, servingG: 350, servingLabel: "1인분", cal: 150, carb: 19.7, protein: 3.4, fat: 5.4 },
+  { id: "katsudon", name: "가츠동", emoji: "🍚", category: "일식", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 217, carb: 24.4, protein: 13.5, fat: 7.2 },
+  { id: "ramen_japanese", name: "라멘(일본식)", emoji: "🍜", category: "일식", countUnit: true, servingG: 500, servingLabel: "1그릇", cal: 100, carb: 11.3, protein: 5.0, fat: 3.9 },
+  { id: "onigiri", name: "오니기리", emoji: "🍙", category: "일식", countUnit: true, servingG: 110, servingLabel: "1개", cal: 170, carb: 30, protein: 4, fat: 3.5 },
+  { id: "takoyaki", name: "타코야키", emoji: "🐙", category: "일식", countUnit: true, servingG: 120, servingLabel: "1인분(6개)", cal: 210, carb: 28, protein: 7, fat: 7.5 },
+
+  // ---- 중식 (count) ----
+  { id: "kkanpunggi", name: "깐풍기", emoji: "🍗", category: "중식", countUnit: true, servingG: 150, servingLabel: "1인분", cal: 230, carb: 18.3, protein: 12.6, fat: 11.8 },
+  { id: "yurinji", name: "유린기", emoji: "🍗", category: "중식", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 190, carb: 15, protein: 14, fat: 9 },
+  { id: "palbochae", name: "팔보채", emoji: "🦐", category: "중식", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 110, carb: 8, protein: 9, fat: 5.5 },
+  { id: "yangjangpi", name: "양장피", emoji: "🥗", category: "중식", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 286, carb: 25, protein: 14.3, fat: 14.3 },
+  { id: "gochu_japchae", name: "고추잡채", emoji: "🫑", category: "중식", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 160, carb: 8, protein: 12, fat: 9.5 },
+  { id: "mapo_tofu", name: "마파두부", emoji: "🌶️", category: "중식", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 134, carb: 5.0, protein: 10.1, fat: 8.2 },
+  { id: "menbosha", name: "멘보샤", emoji: "🍤", category: "중식", countUnit: true, servingG: 90, servingLabel: "3조각", cal: 247, carb: 15.4, protein: 12.4, fat: 15.1 },
+  { id: "dimsum", name: "딤섬(모둠)", emoji: "🥟", category: "중식", countUnit: true, servingG: 200, servingLabel: "1인분(6개)", cal: 200, carb: 22, protein: 9, fat: 8.5 },
+
+  // ---- 양식 (count) ----
+  { id: "steak_sirloin", name: "스테이크(안심)", emoji: "🥩", category: "양식", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 220, carb: 1, protein: 27, fat: 12 },
+  { id: "risotto", name: "리조또", emoji: "🍚", category: "양식", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 140, carb: 15.8, protein: 4.2, fat: 6.7 },
+  { id: "cream_pasta", name: "크림파스타", emoji: "🍝", category: "양식", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 217, carb: 19, protein: 8.1, fat: 12.1 },
+  { id: "tomato_pasta", name: "토마토파스타", emoji: "🍝", category: "양식", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 143, carb: 19.7, protein: 5.4, fat: 4.8 },
+  { id: "omelette", name: "오믈렛", emoji: "🍳", category: "양식", countUnit: true, servingG: 150, servingLabel: "1인분", cal: 200, carb: 3, protein: 14, fat: 15 },
+  { id: "caesar_salad", name: "시저샐러드", emoji: "🥗", category: "양식", countUnit: true, servingG: 230, servingLabel: "1인분", cal: 185, carb: 9.3, protein: 9.3, fat: 12.3 },
+  { id: "green_salad", name: "그린샐러드", emoji: "🥗", category: "양식", countUnit: true, servingG: 150, servingLabel: "1인분", cal: 45, carb: 5, protein: 1.5, fat: 2 },
+  { id: "hamburg_steak", name: "함박스테이크", emoji: "🍖", category: "양식", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 175, carb: 8, protein: 14, fat: 10.5 },
+  { id: "gratin", name: "그라탱", emoji: "🧀", category: "양식", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 190, carb: 15, protein: 8, fat: 11 },
+  { id: "lasagna", name: "라자냐", emoji: "🍝", category: "양식", countUnit: true, servingG: 380, servingLabel: "1인분", cal: 168, carb: 21.4, protein: 13.4, fat: 3.3 },
+  { id: "meatball_pasta", name: "미트볼파스타", emoji: "🍝", category: "양식", countUnit: true, servingG: 300, servingLabel: "1인분", cal: 165, carb: 18, protein: 9, fat: 6 },
+  { id: "eggs_benedict", name: "에그베네딕트", emoji: "🍳", category: "양식", countUnit: true, servingG: 200, servingLabel: "1인분", cal: 220, carb: 14, protein: 10, fat: 14 },
+  { id: "caprese_salad", name: "카프레제샐러드", emoji: "🍅", category: "양식", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 128, carb: 4.8, protein: 8.0, fat: 8.5 },
+  { id: "cream_soup", name: "크림수프", emoji: "🍵", category: "양식", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 90, carb: 7, protein: 2.5, fat: 6 },
+  { id: "pilaf", name: "필라프", emoji: "🍚", category: "양식", countUnit: true, servingG: 250, servingLabel: "1인분", cal: 155, carb: 22, protein: 4, fat: 5.5 },
+
+  // ---- 빵·베이커리 (weight — 기존 식빵·토스트와 동일 컨벤션) ----
+  { id: "baguette", name: "바게트", emoji: "🥖", category: "빵·베이커리", countUnit: false, servingG: 40, servingLabel: "1쪽", cal: 270, carb: 56, protein: 9, fat: 0.5 },
+  { id: "ciabatta", name: "치아바타", emoji: "🍞", category: "빵·베이커리", countUnit: false, servingG: 57, servingLabel: "1쪽", cal: 271, carb: 50.9, protein: 8.8, fat: 8.8 },
+  { id: "bagel", name: "베이글", emoji: "🥯", category: "빵·베이커리", countUnit: false, servingG: 100, servingLabel: "1개", cal: 275, carb: 49, protein: 10, fat: 0.8 },
+  { id: "dinner_roll", name: "모닝빵", emoji: "🍞", category: "빵·베이커리", countUnit: false, servingG: 35, servingLabel: "1개", cal: 280, carb: 50, protein: 9, fat: 5 },
+  { id: "pizza_bread", name: "피자빵", emoji: "🍕", category: "빵·베이커리", countUnit: false, servingG: 80, servingLabel: "1개", cal: 260, carb: 35, protein: 9, fat: 9 },
+
+  // ---- 음료 (weight — 기존 유제품·음료와 동일 컨벤션) ----
+  { id: "strawberry_smoothie", name: "딸기스무디", emoji: "🍓", category: "음료", countUnit: false, servingG: 300, servingLabel: "1잔", cal: 40, carb: 9, protein: 0.8, fat: 0.3 },
+  { id: "grapefruit_ade", name: "자몽에이드", emoji: "🍊", category: "음료", countUnit: false, servingG: 350, servingLabel: "1잔", cal: 45, carb: 11, protein: 0.1, fat: 0 },
+  { id: "beer", name: "맥주", emoji: "🍺", category: "음료", countUnit: false, servingG: 355, servingLabel: "1캔", cal: 43, carb: 3.6, protein: 0.5, fat: 0 },
+  { id: "makgeolli", name: "막걸리", emoji: "🍶", category: "음료", countUnit: false, servingG: 300, servingLabel: "1병", cal: 46, carb: 6, protein: 1.5, fat: 0 },
+  { id: "sports_drink", name: "이온음료", emoji: "🥤", category: "음료", countUnit: false, servingG: 500, servingLabel: "1병", cal: 24, carb: 6, protein: 0, fat: 0 },
+  { id: "iced_tea", name: "아이스티", emoji: "🧊", category: "음료", countUnit: false, servingG: 300, servingLabel: "1잔", cal: 25, carb: 6.2, protein: 0, fat: 0 },
+  { id: "ice_americano", name: "아이스아메리카노", emoji: "🧊", category: "음료", countUnit: false, servingG: 500, servingLabel: "1잔", cal: 2, carb: 0.3, protein: 0.1, fat: 0 },
+
+  // ---- 견과·건강식품 (weight) ----
+  { id: "walnut", name: "호두", emoji: "🌰", category: "견과·건강식품", countUnit: false, servingG: 20, servingLabel: "1줌", cal: 688, carb: 7.9, protein: 15.5, fat: 72 },
+  { id: "peanut", name: "땅콩", emoji: "🥜", category: "견과·건강식품", countUnit: false, servingG: 20, servingLabel: "1줌", cal: 567, carb: 16, protein: 26, fat: 49 },
+  { id: "granola", name: "그래놀라", emoji: "🥣", category: "견과·건강식품", countUnit: false, servingG: 40, servingLabel: "1회분", cal: 471, carb: 64, protein: 10, fat: 17 },
+  { id: "protein_bar", name: "프로틴바", emoji: "💪", category: "견과·건강식품", countUnit: false, servingG: 60, servingLabel: "1개", cal: 380, carb: 40, protein: 30, fat: 12 },
+
+  // ---- 분식 (count) ----
+  { id: "eomuk_kkochi", name: "어묵꼬치", emoji: "🍢", category: "분식", countUnit: true, servingG: 100, servingLabel: "1인분", cal: 140, carb: 12, protein: 9, fat: 7 },
+  { id: "gunmandu", name: "군만두", emoji: "🥟", category: "분식", countUnit: true, servingG: 150, servingLabel: "1인분", cal: 130, carb: 11.4, protein: 6.5, fat: 6.5 },
+];
+
+module.exports = NEW_FOODS;
+
+
+===== calorie-tracker/scripts/round6_corrections.js =====
+// Round 6 — 신규 98개 중 나머지 90개 검증 결과 반영 (2026-09-09)
+// 각 항목: [기존값] → [수정값], 근거는 DATA_ACCURACY.md Round 6 참고
+const CORRECTIONS = {
+  hoe_bibimbap:        { carb: 22.9, protein: 6.4, fat: 3.4 }, // cal 147 유지, 육회비빔밥 300g 자료 매칭
+  omurice:             { carb: 28.1, protein: 5.4, fat: 5.4 }, // cal 183 유지, 730kcal 1인분 자료의 직접 macro 채택
+  egg_fried_rice:      { cal: 225, carb: 24.2, protein: 6.6, fat: 11.3 }, // 260g/584.71kcal 구체 자료
+  rabokki:             { cal: 202, carb: 41, protein: 5, fat: 2 }, // 200g/405kcal 자료의 직접 macro 채택
+  bibim_guksu:         { cal: 103, carb: 20.5, protein: 3, fat: 1 }, // 500g/512kcal 자료
+  galbijjim:           { cal: 298, carb: 7.7, protein: 17.3, fat: 21.8 }, // 100g당 직접 명시 자료
+  dakgalbi:            { cal: 182, carb: 12, protein: 17, fat: 7 }, // 100g당 126~182kcal, 단백질 15~20g 범위 자료
+  myeolchi_bokkeum:    { cal: 235, carb: 12, protein: 18.5, fat: 10.3 }, // 100g당 220~250kcal 자료
+  jinmichae_bokkeum:   { cal: 278, carb: 22.5, protein: 12.2, fat: 17.6 }, // 100g당 직접 명시 자료
+  maeuntang:           { cal: 71, carb: 2.1, protein: 11.4, fat: 1.8 }, // 300g 자료 환산
+  cheonggukjang_jjigae:{ cal: 47, carb: 1.9, protein: 5.0, fat: 1.9 }, // 200g 자료 환산
+  yeolmu_kimchi:       { cal: 32, carb: 5.0, protein: 2.4, fat: 0.3 }, // 100g당 32kcal 자료
+  doraji_muchim:       { cal: 93, carb: 16.7, protein: 2.8, fat: 2.8 }, // 93g 자료 환산
+  eomuk_bokkeum:       { cal: 196, carb: 24.3, protein: 8.4, fat: 7.3 }, // 140g/275kcal 자료 환산
+  huinjuk:             { cal: 72, carb: 16.3, protein: 1.5, fat: 0.1 }, // 100g당 72kcal 자료
+  jeonbokjuk:          { cal: 134, carb: 26.6, protein: 3.6, fat: 1.7 }, // 100g당 134kcal 자료 (죽류 일괄 상향)
+  yachaejuk:           { cal: 145, carb: 28.1, protein: 4.2, fat: 1.9 }, // 100g당 145kcal 자료
+  danhobakjuk:         { cal: 142, carb: 30.3, protein: 2.9, fat: 1.04 }, // 100g당(호박죽) 142kcal 자료
+  takoyaki:            { cal: 141, carb: 20, protein: 6.8, fat: 4 }, // 100g당 141kcal 자료
+  cream_pasta:         { cal: 275, carb: 30.3, protein: 9.4, fat: 12.9 }, // 100g당 직접 명시 자료
+  tomato_pasta:        { cal: 116, carb: 21.1, protein: 3.9, fat: 1.7 }, // 100g당 직접 명시 자료
+  dinner_roll:         { cal: 316, carb: 59, protein: 9.1, fat: 4.9 }, // 100g당 316kcal 자료
+  strawberry_smoothie: { cal: 87, carb: 16.4, protein: 0.9, fat: 2.0 }, // 100g당 86.6kcal + 비율 자료
+  walnut:              { cal: 655, carb: 13.7, protein: 15.2, fat: 65.2 }, // USDA/한국 영양DB 인용 자료
+  eomuk_kkochi:        { cal: 90, carb: 8, protein: 5, fat: 4 }, // 100g당 직접 명시 자료
+  gunmandu:            { cal: 230, carb: 27, protein: 5, fat: 11.3 }, // 브랜드 제품(곰곰) 100g 표기
+};
+
+module.exports = CORRECTIONS;
+
+
+===== calorie-tracker/style.css =====
+[hidden] {
+  display: none !important;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background: #f4f5f7;
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px;
+  color: #1d2939;
+}
+
+main {
+  width: 100%;
+  max-width: 560px;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0 0 16px;
+}
+
+h2 {
+  font-size: 15px;
+  margin: 0 0 10px;
+  color: #344054;
+}
+
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #4f46e5;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #4338ca;
+}
+
+button:disabled {
+  background: #c7cad1;
+  cursor: not-allowed;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* 인증 화면 */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.auth-message {
+  font-size: 13px;
+  color: #d92d20;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
+
+.auth-toggle {
+  font-size: 13px;
+  text-align: center;
+}
+
+.auth-toggle a {
+  color: #4f46e5;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.auth-toggle a:hover {
+  text-decoration: underline;
+}
+
+/* 트래커 화면 */
+.tracker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #667085;
+  word-break: break-all;
+}
+
+.today-date {
+  font-size: 12px;
+  color: #98a2b3;
+  margin: 0 0 16px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: #f4f5f7;
+  border-radius: 8px;
+  padding: 10px 4px;
+}
+
+.summary-label {
+  font-size: 11px;
+  color: #667085;
+}
+
+.summary-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1d2939;
+}
+
+.summary-unit {
+  font-size: 10px;
+  font-weight: 400;
+  color: #98a2b3;
+}
+
+.goal-remaining {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4338ca;
+  background: #eef0ff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: -10px 0 16px;
+  text-align: center;
+}
+
+.goal-remaining.goal-over {
+  color: #b54708;
+  background: #fef3c7;
+}
+
+.input-card {
+  border: 1px solid #eaecf0;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.search-results {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.search-results li {
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.search-results li:hover {
+  background: #eef0ff;
+}
+
+.search-results .result-meta {
+  color: #98a2b3;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.search-empty {
+  color: #98a2b3;
+  font-size: 12px;
+  padding: 8px 2px;
+}
+
+.manual-toggle {
+  font-size: 12px;
+  text-align: center;
+  margin: 10px 0 0;
+}
+
+.manual-toggle a {
+  color: #4f46e5;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.manual-toggle a:hover {
+  text-decoration: underline;
+}
+
+.manual-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.manual-form-title {
+  font-weight: 600;
+  font-size: 13px;
+  margin: 0 0 2px;
+  color: #344054;
+}
+
+.manual-optional-row {
+  display: flex;
+  gap: 8px;
+}
+
+.manual-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.selected-food {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #eaecf0;
+}
+
+.selected-food-name {
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.selected-food-base {
+  font-size: 12px;
+  color: #98a2b3;
+  margin: 0 0 10px;
+}
+
+.amount-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.amount-label input {
+  width: 90px;
+}
+
+.preview {
+  font-size: 13px;
+  color: #4338ca;
+  margin: 0 0 10px;
+}
+
+.log-section {
+  margin-bottom: 16px;
+}
+
+.log-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.log-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #eaecf0;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.log-item .log-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.log-item .log-food {
+  font-weight: 600;
+  display: block;
+}
+
+.log-item .log-amount {
+  font-size: 11px;
+  color: #98a2b3;
+}
+
+.log-item .log-nutrition {
+  font-size: 11px;
+  color: #667085;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.log-item .log-calories {
+  font-weight: 600;
+  color: #1d2939;
+}
+
+.log-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.edit-btn,
+.delete-btn {
+  background: transparent;
+  color: #98a2b3;
+  padding: 2px 6px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.edit-btn:hover {
+  background: #eef0ff;
+  color: #4338ca;
+}
+
+.delete-btn:hover {
+  background: #fee4e2;
+  color: #d92d20;
+}
+
+/* 오늘 기록 인라인 수정 */
+.log-item-editing {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.log-item-editing .log-name {
+  flex: none;
+}
+
+.edit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-row input {
+  width: 90px;
+}
+
+.edit-preview {
+  font-size: 12px;
+  color: #4338ca;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-actions button {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.empty {
+  color: #c0c6d0;
+  font-size: 12px;
+  text-align: center;
+  padding: 12px 0;
+}
+
+.disclaimer {
+  font-size: 11px;
+  color: #98a2b3;
+  text-align: center;
+  margin: 0;
+}
+
+/* 링크형/보조 버튼 */
+.link-btn {
+  background: transparent;
+  color: #4f46e5;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.link-btn:hover {
+  background: #eef0ff;
+}
+
+.secondary-btn {
+  background: #f4f5f7;
+  color: #344054;
+}
+
+.secondary-btn:hover {
+  background: #eaecf0;
+}
+
+/* 목표 칼로리 */
+.goal-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  flex-wrap: wrap;
+}
+
+.goal-display {
+  font-size: 12px;
+  color: #667085;
+  font-weight: 600;
+}
+
+.goal-form {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.goal-form input {
+  flex: 1;
+}
+
+/* 캘린더 화면 */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 16px 0 12px;
+}
+
+.calendar-nav button {
+  padding: 6px 12px;
+}
+
+.calendar-title {
+  font-size: 15px;
+  font-weight: 600;
+  min-width: 100px;
+  text-align: center;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 11px;
+  color: #98a2b3;
+  margin-bottom: 6px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.day-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 8px;
+  font-size: 11px;
+  background: #f9fafb;
+  cursor: default;
+}
+
+.day-cell.day-empty-slot {
+  background: transparent;
+}
+
+.day-cell.day-has-log {
+  cursor: pointer;
+  background: #f4f5f7;
+}
+
+.day-cell.day-has-log:hover {
+  background: #eaecf0;
+}
+
+.day-cell .day-number {
+  font-weight: 600;
+  color: #344054;
+}
+
+.day-cell .day-calories {
+  font-size: 10px;
+  color: #667085;
+}
+
+.day-cell.day-today {
+  box-shadow: inset 0 0 0 2px #4f46e5;
+}
+
+.day-cell.day-over {
+  background: #fef3c7;
+}
+
+.day-cell.day-over .day-number,
+.day-cell.day-over .day-calories {
+  color: #92400e;
+}
+
+.day-cell.day-over:hover {
+  background: #fde68a;
+}
+
+.day-detail {
+  border-top: 1px solid #eaecf0;
+  padding-top: 14px;
+}
+
+.day-detail-title {
+  font-weight: 600;
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: 18px;
+  }
+
+  .summary-value {
+    font-size: 13px;
+  }
+
+  .day-cell {
+    font-size: 9px;
+  }
+
+  .day-cell .day-calories {
+    font-size: 8px;
+  }
+}
+
+
+===== calorie-tracker/supabase/setup.sql =====
+-- 칼로리 트래커 MVP — Supabase 초기 설정
+-- Supabase 대시보드 > SQL Editor 에서 전체 내용을 붙여넣고 실행하세요.
+
+-- 1. 기록(logs) 테이블 생성
+create table if not exists logs (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  food_id text not null,
+  food_name text not null,
+  amount_g numeric not null check (amount_g > 0),
+  calories numeric not null check (calories >= 0),
+  carbs numeric not null check (carbs >= 0),
+  protein numeric not null check (protein >= 0),
+  fat numeric not null check (fat >= 0),
+  log_date date not null default current_date,
+  created_at timestamptz not null default now()
+);
+
+-- 2. 조회 성능을 위한 인덱스 (user_id + log_date 조합으로 자주 조회함)
+create index if not exists logs_user_date_idx on logs (user_id, log_date);
+
+-- 3. Row Level Security 활성화 — 반드시 켜야 함 (끄면 모든 사용자의 기록이 서로 노출됨)
+alter table logs enable row level security;
+
+-- 4. 정책: 본인 기록만 조회 가능
+create policy "select own logs"
+  on logs for select
+  using (auth.uid() = user_id);
+
+-- 5. 정책: 본인 명의로만 기록 추가 가능
+create policy "insert own logs"
+  on logs for insert
+  with check (auth.uid() = user_id);
+
+-- 6. 정책: 본인 기록만 삭제 가능
+create policy "delete own logs"
+  on logs for delete
+  using (auth.uid() = user_id);
+
+-- 6-1. 정책: 본인 기록만 수정 가능 (오늘 기록의 섭취량 수정 기능, TECH_SPEC.md 3.4/5.13)
+--      delete 정책과 동일하게 "본인 것인지"만 DB에서 강제하고, "오늘 기록만" 제한은
+--      UI에서 처리한다 (과거 기록 화면엔 수정/삭제 버튼 자체가 없음, delete 정책과 동일한 설계).
+create policy "update own logs"
+  on logs for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+-- 7. 마이그레이션: 이미 위 create table로 logs를 만들어둔 프로젝트라면
+--    아래를 추가로 한 번 실행해 음수/조작된 값이 저장되지 않도록 제약을 걸어주세요.
+--    (RLS는 "누구 것인지"만 보장할 뿐 "값이 정상적인지"는 막지 않기 때문에 필요합니다.)
+do $$
+begin
+  alter table logs add constraint logs_calories_nonneg check (calories >= 0);
+exception
+  when duplicate_object then null;
+end $$;
+
+do $$
+begin
+  alter table logs add constraint logs_carbs_nonneg check (carbs >= 0);
+exception
+  when duplicate_object then null;
+end $$;
+
+do $$
+begin
+  alter table logs add constraint logs_protein_nonneg check (protein >= 0);
+exception
+  when duplicate_object then null;
+end $$;
+
+do $$
+begin
+  alter table logs add constraint logs_fat_nonneg check (fat >= 0);
+exception
+  when duplicate_object then null;
+end $$;
+
+-- 8. 마이그레이션: 이미 배포된 프로젝트에 "본인 기록 수정" 정책이 없다면 추가.
+--    (오늘 기록의 섭취량을 삭제 후 재입력이 아니라 바로 수정할 수 있게 하는 기능용)
+do $$
+begin
+  create policy "update own logs"
+    on logs for update
+    using (auth.uid() = user_id)
+    with check (auth.uid() = user_id);
+exception
+  when duplicate_object then null;
+end $$;
+
+
+===== finance-rag-chatbot/.github/workflows/deploy.yml =====
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+        working-directory: app
+      - run: npm run build
+        working-directory: app
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

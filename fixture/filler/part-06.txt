@@ -1,0 +1,2285 @@
+
+
+===== Saju_Tarot/frontend/src/components/form/TarotFan.tsx =====
+/**
+ * 타로 부채꼴 — 손님이 번호로 세 장을 고른다 (PRD §8.6.1).
+ *
+ * 화면 문구는 PRD 에서 확정한 것을 그대로 쓴다. 여기서 새로 지어내지 않는다.
+ *
+ * ⚠️ 회전 부호 함정 — 회전축(`transform-origin`)이 카드 **위**에 있으므로
+ *    각도가 **양수일 때 왼쪽**으로 간다. 축이 아래에 있을 때와 반대다.
+ *    그래서 1번에 가장 큰 양수 각도를 준다. 부호를 뒤집으면 78번이 왼쪽에 온다
+ *    (시안에서 실제로 뒤집혀 나왔다).
+ */
+import { useState } from 'react'
+
+import { lattice, Rosette } from '../CardBack'
+import { FAN_SIZE, SPREAD } from '../../schemas/reading'
+
+/** 카드 사이 각도. 넓을수록 부채가 벌어진다 */
+const STEP_DEG = 1.24
+/** 회전축이 카드 위쪽 몇 px 에 있는가 — 클수록 호가 완만해지고 부채가 넓어진다 */
+const PIVOT_PX = 228
+const CARD_H = 152
+const CARD_W = 18
+
+type Props = {
+  /** 고른 번호. 아직 안 고른 자리는 null */
+  picks: (number | null)[]
+  onChange: (picks: (number | null)[]) => void
+  error?: string
+}
+
+export default function TarotFan({ picks, onChange, error }: Props) {
+  /**
+   * 막은 이유를 손님에게 말해 준다. 조용히 무시하면 왜 입력이 안 되는지 모른다
+   * (실제로 그렇게 만들었다가 시험에서 걸렸다).
+   */
+  const [warn, setWarn] = useState<string | null>(null)
+  const chosen = picks.filter((p): p is number => p !== null)
+  /** 지금 고르는 중인 자리 — 앞에서부터 처음 빈 자리다 */
+  const activeIndex = picks.findIndex((p) => p === null)
+
+  function setPick(index: number, raw: string) {
+    const next = [...picks]
+    if (raw.trim() === '') {
+      next[index] = null
+      setWarn(null)
+    } else {
+      const digits = raw.replace(/[^0-9]/g, '')
+      if (digits === '') return
+      const n = Number(digits)
+      if (n < 1 || n > FAN_SIZE) {
+        setWarn(`1부터 ${FAN_SIZE}까지 중에서 골라 주세요.`)
+        return
+      }
+      // 중복은 받지 않는다 — 같은 자리를 두 번 고르면 3장 스프레드가 성립하지 않는다
+      if (picks.some((p, i) => i !== index && p === n)) {
+        setWarn('이미 고른 번호입니다. 다른 번호를 골라 주세요.')
+        return
+      }
+      next[index] = n
+      setWarn(null)
+    }
+    onChange(next)
+  }
+
+  return (
+    <div data-field="tarot_picks" className="space-y-4">
+      {/* ── 경계 — 여기서 타로 구역이 시작된다 (PRD §8.6.1) ────── */}
+      <div className="border-t border-paper-300 pt-7 dark:border-ink-700">
+        <p className="font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+          카드 3장을 뽑습니다
+        </p>
+        {/*
+          문장마다 줄을 바꾼다 — 한 덩이로 흐르면 화면 폭에 따라 끊기는 자리가
+          달라져서, 읽는 사람이 매번 다른 모양을 본다.
+        */}
+        <div className="mt-2 space-y-1 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+          <p>카드는 보이지 않게 섞여 있습니다.</p>
+          <p>왼쪽 끝이 1번, 오른쪽 끝이 {FAN_SIZE}번입니다. 번호로 세 장을 고르세요.</p>
+        </div>
+      </div>
+
+      {/* ── 부채꼴 ─────────────────────────────────────────── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-ink-700 to-ink-800 px-2 pb-3 pt-4">
+        <div className="starfield absolute inset-0 opacity-30" aria-hidden="true" />
+        <div
+          className="relative mx-auto"
+          style={{ height: CARD_H + 60 }}
+          role="img"
+          aria-label={`타로카드 ${FAN_SIZE}장이 뒷면으로 부채꼴로 깔려 있습니다. 왼쪽이 1번, 오른쪽이 ${FAN_SIZE}번입니다.`}
+        >
+          {Array.from({ length: FAN_SIZE }, (_, k) => {
+            const n = k + 1
+            const on = chosen.includes(n)
+            // 고른 카드 자리가 벌어진다 — 부채에서 한 장을 뽑으면 그 자리가 벌어진다
+            const part = chosen.reduce((acc, p) => acc + (n > p ? 0.5 : n < p ? -0.5 : 0), 0)
+            const deg = (FAN_SIZE + 1) / 2 - n
+            return (
+              <div
+                key={n}
+                aria-hidden="true"
+                className={
+                  'absolute left-1/2 top-0 flex items-end justify-center rounded-b pb-1.5 text-[10px] font-semibold ' +
+                  (on
+                    ? 'border border-gold-300 text-gold-100 z-10'
+                    : 'border border-gold-400/55 text-transparent')
+                }
+                style={{
+                  width: CARD_W,
+                  height: CARD_H,
+                  marginLeft: -CARD_W / 2,
+                  transformOrigin: `50% -${PIVOT_PX}px`,
+                  transform: `rotate(${(deg * STEP_DEG - part).toFixed(2)}deg)${on ? ' translateY(26px)' : ''}`,
+                  // 팔레트에 ink-500 이 없다. 판(ink-700)보다 확실히 밝아야
+                  // 카드 하나하나가 보이므로 그 사이 값을 직접 준다
+                  backgroundColor: on ? '#7d88cf' : '#5b66a8',
+                  ...lattice(6, on ? 0.55 : 0.34),
+                }}
+              >
+                {on ? n : ''}
+              </div>
+            )
+          })}
+
+          {/* 양 끝 번호 — 카드 **바깥**, 그러나 호 위에 (PRD §8.6.1) */}
+          {[1, FAN_SIZE].map((n) => (
+            <div
+              key={`edge-${n}`}
+              aria-hidden="true"
+              className="pointer-events-none absolute left-1/2 top-0 flex items-end justify-center text-[13px] font-semibold text-gold-200"
+              style={{
+                width: 26,
+                height: CARD_H + 26,
+                marginLeft: -13,
+                transformOrigin: `50% -${PIVOT_PX}px`,
+                transform: `rotate(${(((FAN_SIZE + 1) / 2 - n) * STEP_DEG).toFixed(2)}deg)`,
+              }}
+            >
+              {n}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 뽑힌 세 자리 — 카드 비율 그대로 (PRD §8.6.1) ─────────── */}
+      <div className="grid grid-cols-3 gap-3">
+        {SPREAD.map((slot, i) => {
+          const filled = picks[i] !== null
+          const active = i === activeIndex
+          return (
+            <div key={slot.key}>
+              <label
+                htmlFor={`pick-${i}`}
+                className={
+                  'block text-center text-xs ' +
+                  (active
+                    ? 'font-semibold text-gold-700 dark:text-gold-300'
+                    : 'text-ink-600 dark:text-ink-300')
+                }
+              >
+                {slot.label}
+              </label>
+              <div
+                className={
+                  'relative mt-1.5 flex flex-col items-center justify-end overflow-hidden rounded-lg pb-2.5 ' +
+                  (filled
+                    ? 'border border-gold-400 bg-ink-600'
+                    : active
+                      ? 'border-2 border-dashed border-gold-500/70 bg-paper-100 dark:bg-ink-800'
+                      : 'border border-dashed border-paper-300 bg-paper-100 dark:border-ink-700 dark:bg-ink-800')
+                }
+                style={{ aspectRatio: '1 / 1.72', ...(filled ? lattice(9, 0.4) : {}) }}
+              >
+                {filled && (
+                  <>
+                    {/* 이중 테두리 — 옛 카드 뒷면의 안쪽 선 */}
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-1.5 rounded border border-gold-400/60"
+                    />
+                    <Rosette className="pointer-events-none absolute inset-x-0 top-[16%] mx-auto size-[34%] text-gold-300/80" />
+                  </>
+                )}
+                <input
+                  id={`pick-${i}`}
+                  inputMode="numeric"
+                  autoComplete="off"
+                  value={picks[i] ?? ''}
+                  placeholder={`1~${FAN_SIZE}`}
+                  onChange={(e) => setPick(i, e.target.value)}
+                  aria-label={`${slot.label} — 카드 번호 입력`}
+                  /*
+                    숫자를 **넣는 칸**으로 보여야 한다. 무늬 위에 글자만 얹으면
+                    누를 곳인지 알 수 없다 — 흰 바탕·테두리·커서를 갖춘 칸으로 둔다.
+                  */
+                  className={
+                    'relative w-[74%] rounded-md border-2 bg-white py-1.5 text-center text-lg font-bold ' +
+                    'text-ink-900 caret-gold-600 shadow-inner outline-none transition-colors ' +
+                    'placeholder:text-sm placeholder:font-normal placeholder:text-ink-400 ' +
+                    'focus:border-gold-500 focus:ring-2 focus:ring-gold-400/40 ' +
+                    (filled ? 'border-gold-500' : 'border-paper-300')
+                  }
+                />
+                <span
+                  className={
+                    'relative mt-1 text-[11px] ' +
+                    (filled ? 'text-gold-200' : 'text-ink-400 dark:text-ink-300')
+                  }
+                >
+                  번호 입력
+                </span>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* 지금 몇 번째 자리를 고르는 중인지 — 다 고른 뒤에 순서가 정해지면 안 된다 */}
+      {activeIndex >= 0 && (
+        <p className="text-sm text-ink-600 dark:text-ink-300">
+          <span className="font-semibold text-ink-900 dark:text-paper-100">
+            {SPREAD[activeIndex].label}
+          </span>
+          {' — '}
+          {activeIndex === SPREAD.length - 1 ? '마지막' : activeIndex === 0 ? '첫 번째' : '두 번째'}{' '}
+          카드를 고르세요
+        </p>
+      )}
+
+      {(warn ?? error) && (
+        <p role="status" className="text-sm text-red-600 dark:text-red-400">
+          {warn ?? error}
+        </p>
+      )}
+    </div>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/components/report/ElementBar.tsx =====
+/**
+ * 오행 분포 (PRD §6.3 ③).
+ * 색 외에 수치도 함께 표기한다 — 색만으로 정보를 전달하지 않는다 (PRD §13 접근성).
+ */
+import { ELEMENTS, type Reading } from '../../schemas/reading'
+
+const META: Record<string, { hanja: string; color: string; label: string }> = {
+  목: { hanja: '木', color: 'bg-emerald-500', label: '나무' },
+  화: { hanja: '火', color: 'bg-rose-500', label: '불' },
+  토: { hanja: '土', color: 'bg-amber-600', label: '흙' },
+  금: { hanja: '金', color: 'bg-slate-400', label: '쇠' },
+  수: { hanja: '水', color: 'bg-sky-600', label: '물' },
+}
+
+export default function ElementBar({ elements }: { elements: Reading['elements'] }) {
+  const total = ELEMENTS.reduce((sum, k) => sum + elements[k], 0) || 1
+
+  return (
+    <div className="space-y-3">
+      {ELEMENTS.map((k) => {
+        const count = elements[k]
+        const pct = Math.round((count / total) * 100)
+        const m = META[k]
+        return (
+          <div key={k} className="flex items-center gap-3">
+            <div className="w-16 shrink-0 text-sm">
+              <span className="font-display font-bold text-ink-900 dark:text-paper-100">
+                {m.hanja} {k}
+              </span>
+            </div>
+            <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-paper-200 dark:bg-ink-800">
+              <div
+                className={`h-full rounded-full ${m.color} transition-[width] duration-700`}
+                style={{ width: `${Math.max(pct, count > 0 ? 4 : 0)}%` }}
+              />
+            </div>
+            <div className="w-16 shrink-0 text-right text-xs tabular-nums text-ink-500 dark:text-ink-300">
+              {count}개 · {pct}%
+            </div>
+          </div>
+        )
+      })}
+
+      {elements.verdict.length > 0 && (
+        <p className="pt-1 text-sm text-ink-600 dark:text-ink-300">
+          {elements.verdict.map((v, i) => (
+            <span key={v}>
+              {i > 0 && ' · '}
+              <strong className="font-semibold text-ink-900 dark:text-paper-100">{v}</strong>
+            </span>
+          ))}
+        </p>
+      )}
+    </div>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/components/report/PillarGrid.tsx =====
+/**
+ * 원국 4주 (PRD §6.3 ②).
+ * 검증자(선배 역술인)를 위해 항상 노출한다 — 무엇을 근거로 읽었는지 보여야 한다.
+ * 전통 표기 순서대로 시주 → 일주 → 월주 → 연주로 배치한다.
+ */
+import type { Reading } from '../../schemas/reading'
+
+const LABELS = [
+  { key: 'hour', label: '시주', sub: '태어난 시간' },
+  { key: 'day', label: '일주', sub: '나 자신' },
+  { key: 'month', label: '월주', sub: '자라온 환경' },
+  { key: 'year', label: '연주', sub: '뿌리' },
+] as const
+
+export default function PillarGrid({ pillars }: { pillars: Reading['pillars'] }) {
+  return (
+    <div className="grid grid-cols-4 gap-2 sm:gap-3">
+      {LABELS.map(({ key, label, sub }) => {
+        const p = pillars[key]
+        return (
+          <div
+            key={key}
+            className="rounded-xl border border-paper-200 bg-white px-2 py-4 text-center dark:border-ink-800 dark:bg-ink-900/60"
+          >
+            <div className="text-xs font-medium text-ink-400 dark:text-ink-300">{label}</div>
+            {p ? (
+              <>
+                <div className="mt-2 font-display text-2xl font-bold leading-tight text-ink-900 dark:text-paper-100">
+                  {p.gan}
+                  <br />
+                  {p.ji}
+                </div>
+                <div className="mt-2 text-xs text-ink-500 dark:text-ink-300">{p.ko}</div>
+              </>
+            ) : (
+              <div className="mt-2 flex h-[4.5rem] flex-col items-center justify-center text-xs leading-relaxed text-ink-300 dark:text-ink-400">
+                시간
+                <br />
+                미상
+              </div>
+            )}
+            <div className="mt-2 hidden text-[11px] text-ink-300 sm:block dark:text-ink-400">
+              {sub}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/components/report/TarotCard.tsx =====
+/**
+ * 타로 카드 한 장 (PRD §6.3 ④).
+ *
+ * 이미지는 라이더-웨이트 1909년판 **퍼블릭 도메인** 스캔본이다 (PRD §18.1 Q5).
+ * `backend/tools/fetch_cards.py` 로 위키미디어 공용에서 받아 public/cards/ 에 둔다.
+ * 이미지가 없으면 문양 자리표시자로 떨어진다 — 화면이 깨지지 않게.
+ *
+ * 역방향은 이미지만 180도 돌린다. 설명 글자는 돌리지 않는다.
+ */
+import { useEffect, useState } from 'react'
+import CardBack from '../CardBack'
+import type { Reading } from '../../schemas/reading'
+
+type Card = Reading['tarot'][number]
+
+/** 'Eight of Pentacles' → 'eight-of-pentacles' (파일명 규칙은 fetch_cards.py 와 같다) */
+function slug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+export default function TarotCard({ card, index = 0 }: { card: Card; index?: number }) {
+  const [imageFailed, setImageFailed] = useState(false)
+  /**
+   * 엎어진 채로 나타나서 뒤집힌다 (PRD §8.6.1).
+   *
+   * 손님이 부채꼴에서 고른 것은 **뒷면**이었다. 결과 화면이 앞면부터 보여주면
+   * 뽑는 행위와 결과가 끊긴다. 고른 순서대로 한 장씩 뒤집어 이어 준다.
+   */
+  const [flipped, setFlipped] = useState(false)
+  useEffect(() => {
+    // 움직임을 줄여 달라고 설정한 사람에게는 곧바로 앞면을 보여준다
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setFlipped(true)
+      return
+    }
+    const t = setTimeout(() => setFlipped(true), 200 + index * 260)
+    return () => clearTimeout(t)
+  }, [index])
+
+  return (
+    <figure className="flex flex-col items-center gap-3">
+      <div className="relative aspect-[2/3] w-full [perspective:1000px]">
+        <div
+          className={
+            'relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] ' +
+            (flipped ? '[transform:rotateY(180deg)]' : '')
+          }
+        >
+          <div className="absolute inset-0 [backface-visibility:hidden]">
+            <CardBack pick={card.pick ?? undefined} />
+          </div>
+          <div
+            className={[
+              'absolute inset-0 overflow-hidden rounded-xl border shadow-md [backface-visibility:hidden] [transform:rotateY(180deg)]',
+              card.reversed ? 'border-plum-400/50' : 'border-gold-500/40',
+            ].join(' ')}
+          >
+        {imageFailed ? (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-ink-800 to-ink-950 text-gold-300">
+            <div className="starfield absolute inset-0 opacity-60" aria-hidden="true" />
+            <span aria-hidden="true" className="relative font-display text-3xl">
+              ✦
+            </span>
+          </div>
+        ) : (
+          <img
+            src={`/cards/${slug(card.card)}.jpg`}
+            alt={`${card.card_ko} ${card.reversed ? '역방향' : '정방향'}`}
+            loading="lazy"
+            onError={() => setImageFailed(true)}
+            className={[
+              'h-full w-full object-cover transition-transform',
+              card.reversed ? 'rotate-180' : '',
+            ].join(' ')}
+          />
+        )}
+            {card.reversed && (
+              <span className="absolute right-1.5 top-1.5 rounded-md bg-plum-500/90 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                역
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <figcaption className="text-center">
+        <div className="text-xs font-medium text-gold-600 dark:text-gold-400">
+          {card.pick != null && <span className="font-bold">{card.pick}번 · </span>}
+          {card.position_ko}
+        </div>
+        <div className="mt-0.5 font-display text-sm font-bold text-ink-900 dark:text-paper-100">
+          {card.card_ko}
+        </div>
+        <div className="mt-0.5 text-xs text-ink-400 dark:text-ink-300">
+          {card.reversed ? '역방향' : '정방향'}
+        </div>
+        <div className="mt-1.5 text-xs leading-relaxed text-ink-500 dark:text-ink-300">
+          {card.keywords.join(' · ')}
+        </div>
+      </figcaption>
+    </figure>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/components/ui.tsx =====
+/**
+ * 폼·화면 공통 조각 (PRD §5.3 컴포넌트).
+ * 디자인을 한 번 바꿀 때 한 곳만 고치기 위해 여기 모았다.
+ */
+import type { ReactNode } from 'react'
+
+export function Field({
+  label,
+  required,
+  hint,
+  error,
+  htmlFor,
+  children,
+}: {
+  label: string
+  required?: boolean
+  hint?: ReactNode
+  error?: string
+  htmlFor?: string
+  children: ReactNode
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-baseline justify-between gap-3">
+        <label
+          htmlFor={htmlFor}
+          className="text-sm font-semibold text-ink-800 dark:text-paper-200"
+        >
+          {label}
+          {required && <span className="ml-1 text-gold-600 dark:text-gold-400">*</span>}
+        </label>
+        {hint && (
+          <span className="text-xs text-ink-400 dark:text-ink-300">{hint}</span>
+        )}
+      </div>
+      {children}
+      {error && (
+        <p role="alert" className="text-xs font-medium text-rose-600 dark:text-rose-400">
+          {error}
+        </p>
+      )}
+    </div>
+  )
+}
+
+export function Segmented<T extends string>({
+  options,
+  value,
+  onChange,
+  ariaLabel,
+}: {
+  options: readonly { value: T; label: string; sub?: string }[]
+  value: T | undefined
+  onChange: (v: T) => void
+  ariaLabel: string
+}) {
+  return (
+    <div
+      role="radiogroup"
+      aria-label={ariaLabel}
+      className="grid gap-1.5 rounded-xl bg-paper-100 p-1.5 dark:bg-ink-900"
+      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0,1fr))` }}
+    >
+      {options.map((o) => {
+        const active = value === o.value
+        return (
+          <button
+            key={o.value}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onChange(o.value)}
+            className={[
+              'rounded-lg px-3 py-2.5 text-sm transition-all',
+              active
+                ? 'bg-white font-semibold text-ink-900 shadow-sm ring-1 ring-gold-300 dark:bg-ink-700 dark:text-paper-50 dark:ring-gold-600'
+                : 'text-ink-600 hover:bg-white/60 dark:text-ink-300 dark:hover:bg-ink-800/60',
+            ].join(' ')}
+          >
+            {o.label}
+            {o.sub && <span className="ml-1 text-xs opacity-60">{o.sub}</span>}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+export function Chip({
+  label,
+  sub,
+  active,
+  onClick,
+}: {
+  label: string
+  /** 손님이 실제로 묻는 말 — 주제 이름만으로는 뭘 고르는지 감이 안 온다 */
+  sub?: string
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={[
+        'rounded-xl border px-4 py-3 text-left transition-all',
+        active
+          ? 'border-gold-500 bg-gold-500/10 text-gold-700 dark:border-gold-400 dark:bg-gold-400/10 dark:text-gold-300'
+          : 'border-paper-300 text-ink-500 hover:border-ink-300 dark:border-ink-700 dark:text-ink-300',
+      ].join(' ')}
+    >
+      <span className="flex items-center gap-1.5 text-sm font-semibold">
+        <span aria-hidden="true" className={active ? '' : 'opacity-25'}>
+          ✓
+        </span>
+        {label}
+      </span>
+      {sub && (
+        <span className="mt-1 block text-xs leading-snug opacity-70">&ldquo;{sub}&rdquo;</span>
+      )}
+    </button>
+  )
+}
+
+export function Select({
+  id,
+  value,
+  onChange,
+  children,
+  ariaLabel,
+}: {
+  id?: string
+  value: string
+  onChange: (v: string) => void
+  children: ReactNode
+  ariaLabel?: string
+}) {
+  return (
+    <select
+      id={id}
+      aria-label={ariaLabel}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full appearance-none rounded-xl border border-paper-300 bg-white px-3 py-2.5 text-sm text-ink-900 transition-colors hover:border-ink-300 dark:border-ink-700 dark:bg-ink-900 dark:text-paper-100"
+    >
+      {children}
+    </select>
+  )
+}
+
+export function TextInput({
+  id,
+  value,
+  onChange,
+  placeholder,
+  maxLength,
+  invalid,
+}: {
+  id: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  maxLength?: number
+  invalid?: boolean
+}) {
+  return (
+    <input
+      id={id}
+      type="text"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      maxLength={maxLength}
+      aria-invalid={invalid || undefined}
+      className={[
+        'w-full rounded-xl border bg-white px-4 py-3 text-base text-ink-900 placeholder:text-ink-300 transition-colors dark:bg-ink-900 dark:text-paper-100',
+        invalid
+          ? 'border-rose-400'
+          : 'border-paper-300 hover:border-ink-300 dark:border-ink-700',
+      ].join(' ')}
+    />
+  )
+}
+
+export function Checkbox({
+  id,
+  checked,
+  onChange,
+  children,
+}: {
+  id: string
+  checked: boolean
+  onChange: (v: boolean) => void
+  children: ReactNode
+}) {
+  return (
+    <label
+      htmlFor={id}
+      className="flex cursor-pointer items-start gap-3 text-sm text-ink-600 dark:text-ink-300"
+    >
+      <input
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="mt-0.5 size-4 shrink-0 accent-gold-500"
+      />
+      <span>{children}</span>
+    </label>
+  )
+}
+
+export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <div
+      className={[
+        'rounded-2xl border border-paper-200 bg-white/90 shadow-[0_1px_2px_rgba(16,22,50,0.04),0_12px_32px_-12px_rgba(16,22,50,0.12)] backdrop-blur-sm dark:border-ink-800 dark:bg-ink-900/70',
+        className,
+      ].join(' ')}
+    >
+      {children}
+    </div>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/hooks/useCalendar.ts =====
+/**
+ * 달력 상태 훅 (PRD §5.3 — 상태는 hooks/, 통신은 api/, 표시는 components/).
+ *
+ * 폼이 필요한 것 세 가지를 한 곳에서 준다.
+ *  ① 선택한 달의 일수(음력은 29/30이 달마다 다르다)
+ *  ② 그 달에 윤달이 있는지 (체크박스 노출 조건)
+ *  ③ 반대쪽 달력으로 바꾼 날짜 (보조 텍스트)
+ */
+import { useQuery } from '@tanstack/react-query'
+import { convertDate, fetchLunarYear } from '../api/calendar'
+
+const DAY = 1000 * 60 * 60 * 24
+
+/** 음력 연도 정보 — 연도별로 바뀌지 않는 값이라 오래 캐시한다 */
+export function useLunarYear(year: number, enabled: boolean) {
+  return useQuery({
+    queryKey: ['lunar-year', year],
+    queryFn: () => fetchLunarYear(year),
+    enabled,
+    staleTime: DAY,
+    gcTime: DAY,
+    retry: 1,
+  })
+}
+
+/** 선택한 날짜를 반대쪽 달력으로 변환 */
+export function useConvertedDate(
+  calendarType: 'solar' | 'lunar',
+  date: string,
+  isLeapMonth: boolean,
+  enabled = true,
+) {
+  return useQuery({
+    queryKey: ['convert', calendarType, date, isLeapMonth],
+    queryFn: () => convertDate({ calendar_type: calendarType, date, is_leap_month: isLeapMonth }),
+    enabled,
+    staleTime: DAY,
+    retry: 0, // 없는 날짜(422)는 재시도해도 같다
+  })
+}
+
+
+===== Saju_Tarot/frontend/src/index.css =====
+@import "tailwindcss";
+
+/* ── 디자인 토큰 ─────────────────────────────────────────────
+   사주·타로라는 주제에 맞춰 '밤하늘과 금박' 두 축으로 잡았다.
+   라이트는 한지 느낌의 아이보리, 다크는 남색 밤하늘.
+   색만으로 정보를 전달하지 않는다 (PRD §13 접근성).
+─────────────────────────────────────────────────────────── */
+@theme {
+  --color-ink-950: #0a0e1c;
+  --color-ink-900: #101632;
+  --color-ink-800: #1a2145;
+  --color-ink-700: #262f5c;
+  --color-ink-600: #3a4478;
+  --color-ink-400: #7b83ad;
+  --color-ink-300: #a8aecb;
+
+  --color-paper-50: #fdfbf6;
+  --color-paper-100: #f7f2e8;
+  --color-paper-200: #ece4d5;
+  --color-paper-300: #d9cdb6;
+
+  --color-gold-600: #a8842c;
+  --color-gold-500: #c9a227;
+  --color-gold-400: #dfbb56;
+  --color-gold-300: #ecd591;
+
+  --color-plum-500: #6d4a7a;
+  --color-plum-400: #8c63a0;
+
+  --font-display: "Gowun Batang", "Nanum Myeongjo", "Batang", serif;
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: var(--color-paper-50);
+  color: var(--color-ink-900);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--color-ink-950);
+    color: var(--color-paper-100);
+  }
+}
+
+/* 밤하늘 — 아주 옅은 별빛. 장식이므로 대비에 영향을 주지 않는 세기로만 */
+.starfield {
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(236, 213, 145, 0.55) 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 12%, rgba(236, 213, 145, 0.4) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 34% 62%, rgba(236, 213, 145, 0.35) 50%, transparent 51%),
+    radial-gradient(1px 1px at 62% 78%, rgba(236, 213, 145, 0.45) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 54%, rgba(236, 213, 145, 0.3) 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 88%, rgba(236, 213, 145, 0.3) 50%, transparent 51%);
+}
+
+/* 포커스 링 — 키보드 탐색이 항상 보이게 (PRD §13) */
+:where(button, a, input, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-gold-500);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* 히어로 비주얼 — 아주 느린 회전. 장식이므로 존재감이 세면 안 된다 */
+@keyframes mystic-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.mystic-spin {
+  transform-origin: center;
+  animation: mystic-rotate 180s linear infinite;
+}
+
+.mystic-spin-reverse {
+  transform-origin: center;
+  animation: mystic-rotate 240s linear infinite reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mystic-spin,
+  .mystic-spin-reverse {
+    animation: none;
+  }
+}
+
+
+===== Saju_Tarot/frontend/src/lib/calendar.ts =====
+/**
+ * 달력 유틸 — 폼 UX 용 (PRD §6.1 필드 3·4·5·6).
+ *
+ * 음↔양 변환과 음력 월 정보는 3단계에서 **백엔드로 옮겼다**
+ * (`api/calendar.ts` + `hooks/useCalendar.ts`).
+ * 여기 남은 것은 서버가 필요 없는 순수 표시용 값뿐이다.
+ */
+
+/** 12지시 — 2시간 단위 (PRD §8.2) */
+export const JIJI_HOURS = [
+  { ji: '자시', label: '자시 (23:00~00:59)', time: '23:30' },
+  { ji: '축시', label: '축시 (01:00~02:59)', time: '01:30' },
+  { ji: '인시', label: '인시 (03:00~04:59)', time: '03:30' },
+  { ji: '묘시', label: '묘시 (05:00~06:59)', time: '05:30' },
+  { ji: '진시', label: '진시 (07:00~08:59)', time: '07:30' },
+  { ji: '사시', label: '사시 (09:00~10:59)', time: '09:30' },
+  { ji: '오시', label: '오시 (11:00~12:59)', time: '11:30' },
+  { ji: '미시', label: '미시 (13:00~14:59)', time: '13:30' },
+  { ji: '신시', label: '신시 (15:00~16:59)', time: '15:30' },
+  { ji: '유시', label: '유시 (17:00~18:59)', time: '17:30' },
+  { ji: '술시', label: '술시 (19:00~20:59)', time: '19:30' },
+  { ji: '해시', label: '해시 (21:00~22:59)', time: '21:30' },
+] as const
+
+export function formatDateKo(date: string, type: 'solar' | 'lunar'): string {
+  const [y, m, d] = date.split('-')
+  const suffix = type === 'solar' ? '양' : '음'
+  return `${y}.${m}.${d}(${suffix})`
+}
+
+export const YEARS = Array.from(
+  { length: new Date().getFullYear() - 1900 + 1 },
+  (_, i) => new Date().getFullYear() - i,
+)
+
+
+===== Saju_Tarot/frontend/src/lib/korean.ts =====
+/**
+ * 조사 처리 — "동의을(를)" 같은 어색한 표기를 없애기 위한 유틸.
+ * 한글 음절의 종성(받침) 유무로 조사를 고른다.
+ */
+
+function hasFinalConsonant(word: string): boolean {
+  const last = word.trim().at(-1)
+  if (!last) return false
+  const code = last.charCodeAt(0)
+  // 한글 음절 영역이 아니면(영문·숫자 등) 받침 없음으로 취급
+  if (code < 0xac00 || code > 0xd7a3) return false
+  return (code - 0xac00) % 28 !== 0
+}
+
+/** 을 / 를 */
+export function eulReul(word: string): string {
+  return hasFinalConsonant(word) ? '을' : '를'
+}
+
+/** 이 / 가 */
+export function iGa(word: string): string {
+  return hasFinalConsonant(word) ? '이' : '가'
+}
+
+/** 은 / 는 */
+export function eunNeun(word: string): string {
+  return hasFinalConsonant(word) ? '은' : '는'
+}
+
+
+===== Saju_Tarot/frontend/src/lib/store.ts =====
+/**
+ * 목업 단계용 임시 저장소 (PRD §3 v0.1 — "저장 없음, 브라우저 세션만").
+ *
+ * 7단계에서 Supabase 저장이 붙으면 이 파일은 사라지고
+ * `GET /readings/{id}` 호출로 대체된다.
+ * sessionStorage 를 쓰는 이유: 새로고침을 견디되 탭을 닫으면 남지 않게.
+ */
+import { readingSchema, type Reading } from '../schemas/reading'
+
+const KEY = 'saju:readings'
+const NAME_KEY = 'saju:names'
+
+/**
+ * 이름은 **브라우저에만** 둔다 (PRD §12.14).
+ *
+ * 서버는 이름을 암호화해 저장하고 응답에 담지 않는다. 그래서 화면에 이름을
+ * 보이려고 응답에 넣으면, 주소만 아는 사람도 남의 이름을 보게 된다
+ * (`GET /readings/{id}` 는 인증이 없다). 공유 링크에도 딸려 나간다.
+ * 리포트를 만든 당사자의 브라우저에만 두면 그 두 경우가 모두 막힌다.
+ * 탭을 닫으면 사라진다 — 그게 맞다.
+ */
+export function saveName(id: string, name: string): void {
+  try {
+    const all = JSON.parse(sessionStorage.getItem(NAME_KEY) ?? '{}')
+    all[id] = name
+    sessionStorage.setItem(NAME_KEY, JSON.stringify(all))
+  } catch {
+    /* 시크릿 창 등 */
+  }
+}
+
+export function getName(id: string): string | null {
+  try {
+    const v = JSON.parse(sessionStorage.getItem(NAME_KEY) ?? '{}')[id]
+    return typeof v === 'string' && v ? v : null
+  } catch {
+    return null
+  }
+}
+
+function load(): Record<string, unknown> {
+  try {
+    return JSON.parse(sessionStorage.getItem(KEY) ?? '{}')
+  } catch {
+    return {}
+  }
+}
+
+export function saveReading(reading: Reading): void {
+  try {
+    const all = load()
+    all[reading.id] = reading
+    sessionStorage.setItem(KEY, JSON.stringify(all))
+  } catch {
+    // 시크릿 창 등에서 저장이 막힐 수 있다 — 실패해도 화면은 동작해야 한다
+  }
+}
+
+export function getReading(id: string): Reading | null {
+  const raw = load()[id]
+  if (!raw) return null
+  const parsed = readingSchema.safeParse(raw)
+  return parsed.success ? parsed.data : null
+}
+
+
+===== Saju_Tarot/frontend/src/main.tsx =====
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import App from './App'
+import './index.css'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: 1, refetchOnWindowFocus: false },
+  },
+})
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </StrictMode>,
+)
+
+
+===== Saju_Tarot/frontend/src/pages/HomePage.tsx =====
+/**
+ * 초기화면 — 랜딩 + 입력 폼 (PRD §6.1).
+ *
+ * 첫 화면에서 세 가지를 분명히 한다.
+ *  ① 무엇을 받는지(이번 달 흐름 + 조언 3줄)
+ *  ② 무엇을 입력해야 하는지(3분)
+ *  ③ 내 정보가 어떻게 다뤄지는지(90일 후 삭제)
+ */
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import BirthForm from '../components/form/BirthForm'
+import MysticVisual from '../components/MysticVisual'
+import { createReading, getHealth, usingMock } from '../api/readings'
+import { saveReading, saveName } from '../lib/store'
+import type { ReadingRequest } from '../schemas/reading'
+
+export default function HomePage() {
+  const navigate = useNavigate()
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [slow, setSlow] = useState(false)
+
+  // 콜드 스타트 예열 — 첫 방문자가 1분 기다리는 일을 줄인다 (PRD §13)
+  useEffect(() => {
+    if (!usingMock) void getHealth()
+  }, [])
+
+  async function handleSubmit(input: ReadingRequest) {
+    setSubmitting(true)
+    setError(null)
+    // 계산만 하는 호출이라 0.3초면 끝난다(v3.0). 이보다 오래 걸리는 이유는
+    // 서버가 자고 있었던 것뿐이라, 그때만 안내를 띄운다.
+    const slowTimer = setTimeout(() => setSlow(true), 6_000)
+    try {
+      const reading = await createReading(input)
+      saveReading(reading)
+      saveName(reading.id, input.name)   // 서버로는 안 간다 (store.ts 주석 참고)
+      navigate(`/result/${reading.id}`)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요.')
+    } finally {
+      clearTimeout(slowTimer)
+      setSlow(false)
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-paper-50 dark:bg-ink-950">
+      {/* ── 헤더 ─────────────────────────────────────────── */}
+      <header className="sticky top-0 z-20 border-b border-paper-200/80 bg-paper-50/85 backdrop-blur-md dark:border-ink-800/80 dark:bg-ink-950/85">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3.5">
+          <div className="flex items-center gap-2.5">
+            <span aria-hidden="true" className="text-lg">☾</span>
+            <span className="font-display font-bold tracking-tight text-ink-900 dark:text-paper-100">
+              <span className="text-lg text-gold-600 sm:text-xl dark:text-gold-400">세권사주타로에서</span>{' '}
+              <span className="text-sm font-semibold sm:text-base">
+                당신의 운세, 사주와 타로로 정확하게 집어드립니다
+              </span>
+            </span>
+          </div>
+          <a
+            href="#form"
+            className="rounded-full border border-paper-300 px-4 py-1.5 text-sm text-ink-600 transition-colors hover:border-gold-500 hover:text-gold-700 dark:border-ink-700 dark:text-ink-300 dark:hover:border-gold-400 dark:hover:text-gold-300"
+          >
+            바로 보기
+          </a>
+        </div>
+      </header>
+
+      {/* ── 히어로 ───────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-ink-900 via-ink-900 to-ink-950 text-paper-100">
+        <div className="starfield absolute inset-0 opacity-70" aria-hidden="true" />
+        <div
+          className="absolute -top-32 left-1/2 size-[28rem] -translate-x-1/2 rounded-full bg-gold-500/12 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto grid max-w-5xl items-center gap-10 px-5 py-16 sm:py-24 lg:grid-cols-[1.05fr_1fr] lg:gap-8">
+          <div>
+          <p className="rise mb-5 inline-flex items-center gap-2 rounded-full border border-gold-400/30 bg-gold-400/8 px-3.5 py-1.5 text-xs text-gold-300">
+            <span aria-hidden="true">✦</span>
+            사주팔자 · 타로 · 오행을 한 번에
+          </p>
+          <h1 className="rise font-display font-bold tracking-tight">
+            <span className="block text-2xl text-gold-400 sm:text-4xl">세권사주타로에서</span>
+            <span className="mt-2 block text-3xl leading-[1.3] sm:text-[2.75rem] sm:leading-[1.25]">
+              당신의 운세,
+              <br />
+              사주와 타로로
+              <br />
+              정확하게 집어드립니다
+            </span>
+          </h1>
+          <p className="rise mt-6 max-w-xl text-base leading-relaxed text-ink-300 sm:text-lg">
+            이름과 태어난 장소, 시간만 알려주시면 사주팔자와 타로를 함께 읽어
+            <strong className="font-semibold text-paper-100"> 이번 달 흐름 세 줄</strong>과
+            <strong className="font-semibold text-paper-100"> 재회운·상대방속마음·연애·재물·대인관계 조언</strong>을
+            한 장으로 정리해 드립니다.
+          </p>
+
+          <div className="rise mt-9 flex flex-wrap items-center gap-3">
+            <a
+              href="#form"
+              className="rounded-2xl bg-gold-500 px-10 py-5 text-xl font-bold tracking-tight text-ink-950 shadow-xl shadow-gold-500/30 transition-transform hover:-translate-y-0.5 hover:bg-gold-400 sm:px-12 sm:text-2xl"
+            >
+              시작하기
+            </a>
+            <span className="text-sm text-ink-400">3분 · 회원가입 없이</span>
+          </div>
+          </div>
+
+          {/* 동양의 사주 + 서양의 타로 */}
+          <div className="rise order-first lg:order-none">
+            <MysticVisual />
+          </div>
+
+        </div>
+
+        {/* 신뢰 요소 */}
+        <div className="relative mx-auto max-w-5xl px-5 pb-16 sm:pb-20">
+          <dl className="grid gap-4 border-t border-ink-800 pt-8 sm:grid-cols-3">
+            {[
+              { t: '만세력 기준 계산', d: '절기와 진태양시까지 보정해 원국을 세웁니다' },
+              { t: '90일 뒤 자동 삭제', d: '생년월일은 리포트 생성에만 쓰고 지웁니다' },
+              { t: '상담 참고용', d: '의료·법률·투자 판단의 근거로 쓰지 않습니다' },
+            ].map((f) => (
+              <div key={f.t}>
+                <dt className="text-sm font-semibold text-gold-300">{f.t}</dt>
+                <dd className="mt-1.5 text-sm leading-relaxed text-ink-400">{f.d}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* ── 무엇을 받나 ──────────────────────────────────── */}
+      <section className="mx-auto max-w-5xl px-5 py-16">
+        <h2 className="font-display text-2xl font-bold text-ink-900 dark:text-paper-100">
+          이런 리포트를 받게 됩니다
+        </h2>
+        <ol className="mt-8 grid gap-5 sm:grid-cols-3">
+          {[
+            {
+              n: '01',
+              t: '사주 원국과 오행',
+              d: '연·월·일·시 네 기둥과 목화토금수 분포를 함께 보여드립니다. 무엇을 근거로 읽었는지 감추지 않습니다.',
+            },
+            {
+              n: '02',
+              t: '타로 세 장',
+              d: '지금 놓인 자리·지금 할 수 있는 것·이대로 가면. 세 장을 모든 주제의 공통 근거로 읽습니다.',
+            },
+            {
+              n: '03',
+              t: '이번 달 흐름과 조언',
+              d: '길게 늘이지 않습니다. 흐름 세 줄과 고르신 주제마다 조언 한 줄씩으로 정리합니다.',
+            },
+          ].map((s) => (
+            <li
+              key={s.n}
+              className="rounded-2xl border border-paper-200 bg-white/70 p-6 dark:border-ink-800 dark:bg-ink-900/50"
+            >
+              <span className="font-display text-sm font-bold text-gold-600 dark:text-gold-400">
+                {s.n}
+              </span>
+              <h3 className="mt-2.5 font-semibold text-ink-900 dark:text-paper-100">{s.t}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-500 dark:text-ink-300">{s.d}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ── 입력 폼 ──────────────────────────────────────── */}
+      <section id="form" className="mx-auto max-w-2xl scroll-mt-20 px-5 pb-20">
+        <div className="mb-7 text-center">
+          <h2 className="font-display text-2xl font-bold text-ink-900 dark:text-paper-100">
+            태어난 정보를 알려주세요
+          </h2>
+          <p className="mt-2.5 text-sm text-ink-500 dark:text-ink-300">
+            시간을 모르셔도 괜찮습니다. 그 경우 시주를 빼고 계산합니다.
+          </p>
+        </div>
+
+        {error && (
+          <div
+            role="alert"
+            className="mb-5 rounded-xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300"
+          >
+            {error}
+          </div>
+        )}
+        {slow && submitting && (
+          <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+            서버가 깨어나는 중입니다. 쉬고 있던 서버는 깨어나는 데 1분쯤 걸립니다 — 고장이
+            아닙니다. 사주 계산 자체는 1초도 걸리지 않습니다.
+          </div>
+        )}
+
+        <BirthForm onSubmit={handleSubmit} submitting={submitting} />
+      </section>
+
+      {/* ── 푸터 ─────────────────────────────────────────── */}
+      <footer className="border-t border-paper-200 bg-paper-100/60 dark:border-ink-800 dark:bg-ink-900/40">
+        <div className="mx-auto max-w-5xl space-y-3 px-5 py-10 text-xs leading-relaxed text-ink-400 dark:text-ink-300">
+          <p className="font-display text-sm font-bold text-ink-600 dark:text-paper-200">사주한장</p>
+          <p>
+            이 서비스가 만드는 리포트는 <strong>상담 참고용</strong>이며, 의료·법률·투자 판단의
+            근거가 아닙니다. 중요한 결정은 해당 분야 전문가와 상의하세요.
+          </p>
+          <p>
+            입력하신 이름·생년월일·시간은 리포트 생성에만 쓰이고 90일 뒤 자동 삭제됩니다. 언제든 직접
+            삭제할 수 있습니다.
+          </p>
+          {usingMock && (
+            <p className="inline-block rounded-md bg-plum-500/12 px-2.5 py-1 font-medium text-plum-500 dark:text-plum-400">
+              개발 중 · 지금은 목업 데이터로 동작합니다 (PRD §7)
+            </p>
+          )}
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/pages/ResultPage.tsx =====
+/**
+ * 리포트 화면 (PRD §6.3 — 9블록 구성).
+ * LLM 해석이 없어도(report === null) 계산 결과는 보여준다 — 부분 성공 (PRD §11.3).
+ */
+import { useEffect, useRef, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { createShareLink, fetchReading, fetchShared, generateReport } from '../api/readings'
+import { TOPIC_META } from '../schemas/reading'
+import type { Reading, Topic } from '../schemas/reading'
+import ElementBar from '../components/report/ElementBar'
+import PillarGrid from '../components/report/PillarGrid'
+import TarotCard from '../components/report/TarotCard'
+import { Card } from '../components/ui'
+import { getReading, saveReading, getName } from '../lib/store'
+
+/**
+ * 풀이를 기다리는 동안 보여주는 자리 (v3.0).
+ *
+ * 스피너만 돌리지 않는다. 계산은 이미 끝나 위에 다 나와 있으므로,
+ * "무엇이 끝났고 무엇이 남았는지"를 말해 주는 편이 덜 불안하다.
+ * 예상 시간을 함께 적어 손님이 새로고침하지 않게 한다 — 새로고침하면
+ * 결과를 못 보고 요금만 나간다.
+ */
+function WritingNotice() {
+  return (
+    <div className="mt-4 rounded-xl border border-paper-200 bg-paper-100/70 px-4 py-4 dark:border-ink-800 dark:bg-ink-900/50">
+      <ul className="space-y-1.5 text-sm">
+        <li className="text-ink-500 dark:text-ink-300">
+          <span aria-hidden="true" className="text-gold-600 dark:text-gold-400">✓</span> 만세력·오행 계산 완료
+        </li>
+        <li className="text-ink-500 dark:text-ink-300">
+          <span aria-hidden="true" className="text-gold-600 dark:text-gold-400">✓</span> 타로 3장 뽑기 완료
+        </li>
+        <li className="flex items-center gap-2 font-medium text-ink-800 dark:text-paper-100">
+          <span
+            aria-hidden="true"
+            className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-gold-500 border-t-transparent motion-reduce:animate-none"
+          />
+          풀이를 쓰는 중입니다…
+        </li>
+      </ul>
+      <p className="mt-3 text-xs text-ink-400 dark:text-ink-300">
+        보통 <strong>10~20초</strong>쯤 걸립니다. 이 화면을 닫거나 새로고침하지 마세요.
+      </p>
+      <p className="sr-only" role="status" aria-live="polite">
+        풀이 문장을 만드는 중입니다. 잠시만 기다려 주세요.
+      </p>
+    </div>
+  )
+}
+
+export default function ResultPage({ mode = 'own' }: { mode?: 'own' | 'shared' }) {
+  const { id = '', token = '' } = useParams()
+  // 세션에 남아 있으면 그걸 쓰고, 없으면 서버에서 불러온다(새로고침·링크 재방문)
+  const [reading, setReading] = useState<Reading | null>(
+    mode === 'own' ? getReading(id) : null,
+  )
+  const [loading, setLoading] = useState(reading === null)
+  const [shareUrl, setShareUrl] = useState<string | null>(null)
+  const [sharing, setSharing] = useState(false)
+  const [copied, setCopied] = useState(false)
+  // 이름은 서버가 주지 않는다. 만든 사람의 브라우저에만 있고, 없으면 안 보인다.
+  const name = mode === 'own' ? getName(id) : null
+
+  // 풀이 문장은 계산과 따로 온다 (v3.0). 계산은 0.3초, 풀이는 14초.
+  const [writing, setWriting] = useState(false)
+  const [writeError, setWriteError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (reading) return
+    const load = mode === 'shared' ? fetchShared(token) : fetchReading(id)
+    load
+      .then(setReading)
+      .catch(() => setReading(null))
+      .finally(() => setLoading(false))
+  }, [id, token, mode, reading])
+
+  // 계산만 있고 풀이가 없으면 이어서 받아온다.
+  // 공유 링크(shared)는 남의 리포트라 만들지 않는다 — 요금이 나가면 안 된다.
+  //
+  // 요청 여부를 state 가 아니라 **ref** 로 기억한다. state 를 쓰면
+  // setWriting(true) 가 이 effect 를 다시 돌리고, 그때 첫 실행의 정리 함수가
+  // 취소 플래그를 세워 버려서 **응답이 와도 화면에 쓰지 못한다**(실제로 겪었다.
+  // 서버는 200 을 줬는데 화면은 계속 "쓰는 중"이었다).
+  const requestedFor = useRef<string | null>(null)
+
+  useEffect(() => {
+    if (mode !== 'own' || !reading || reading.report) return
+    if (requestedFor.current === reading.id) return
+    requestedFor.current = reading.id
+
+    setWriting(true)
+    setWriteError(null)
+    generateReport(reading.id)
+      .then((full) => {
+        setReading(full)
+        saveReading(full)
+      })
+      .catch((e) => {
+        setWriteError(e instanceof Error ? e.message : '풀이를 만들지 못했습니다.')
+      })
+      .finally(() => setWriting(false))
+  }, [mode, reading])
+
+  // 풀이를 만드는 중에 창을 닫으려 하면 붙잡는다.
+  // 여기서 나가면 손님은 결과를 못 보는데 요금은 이미 나간 뒤다.
+  useEffect(() => {
+    if (!writing) return
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault()
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [writing])
+
+  async function handleShare() {
+    setSharing(true)
+    try {
+      const url = await createShareLink(reading!.id)
+      setShareUrl(url)
+      await navigator.clipboard?.writeText(url).then(
+        () => setCopied(true),
+        () => setCopied(false),
+      )
+    } catch {
+      setShareUrl(null)
+    } finally {
+      setSharing(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center text-sm text-ink-400">
+        리포트를 불러오는 중…
+      </main>
+    )
+  }
+
+  if (!reading) {
+    return (
+      <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-5 px-6 text-center">
+        <p className="font-display text-xl font-bold text-ink-900 dark:text-paper-100">
+          리포트를 찾을 수 없습니다
+        </p>
+        <p className="text-sm leading-relaxed text-ink-500 dark:text-ink-300">
+          링크가 만료되었거나 없는 리포트입니다.
+          <br />
+          보관 기간(90일)이 지나면 자동으로 삭제됩니다.
+        </p>
+        <Link
+          to="/"
+          className="rounded-xl bg-ink-900 px-6 py-3 text-sm font-semibold text-paper-50 dark:bg-gold-500 dark:text-ink-950"
+        >
+          처음으로
+        </Link>
+      </main>
+    )
+  }
+
+  const { input_echo: echo, pillars, elements, tarot, report, period, interpretation } = reading
+
+  return (
+    <div className="min-h-screen bg-paper-50 pb-20 dark:bg-ink-950">
+      {/* ① 헤더 */}
+      <header className="border-b border-paper-200 bg-gradient-to-b from-ink-900 to-ink-950 dark:border-ink-800">
+        <div className="starfield mx-auto max-w-2xl px-5 py-10">
+          <h1 className="font-display text-2xl font-bold text-paper-50">
+            이번 달 흐름 리포트
+          </h1>
+          <p className="mt-2 text-sm font-medium text-gold-300">{period.label}</p>
+          {/* 공유 링크에는 생년월일시도 이름도 오지 않는다 (PRD §12.14).
+              이름은 서버가 주지 않는다 — 만든 사람의 브라우저에만 있다. */}
+          {echo.solar_datetime ? (
+            <p className="mt-1 text-sm text-ink-300">
+              {name && <span className="font-semibold text-paper-100">{name}</span>}
+              {name && ' · '}
+              양력 {echo.solar_datetime.slice(0, 10)}
+              {pillars.hour ? ` ${echo.solar_datetime.slice(11, 16)}` : ' (시간 미상)'}
+              {/* 손님이 어느 쪽으로 넣었든 둘 다 보여준다 */}
+              {echo.lunar_date && (
+                <>
+                  <span className="mx-1.5 text-ink-500">·</span>
+                  음력 {echo.lunar_date}
+                  {echo.is_leap_month && ' (윤달)'}
+                </>
+              )}
+              {' 기준'}
+            </p>
+          ) : (
+            <p className="mt-1 text-sm text-ink-400">세권사주타로</p>
+          )}
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-2xl space-y-5 px-5 py-8">
+        {/* 풀이를 기다리는 중에는 띄우지 않는다 — 아래 사주 풀이 칸이 진행 상황을
+            보여주고 있고, 여기까지 경고를 띄우면 뭔가 잘못된 것처럼 보인다.
+            정말로 만들지 못한 경우(생성 실패·옛 리포트)에만 알린다. */}
+        {report === null && !writing && (
+          <div
+            role="alert"
+            className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200"
+          >
+            해석 문장이 아직 없습니다. 아래 계산 결과(원국·오행·타로)는 실제 값입니다.
+          </div>
+        )}
+
+        {/* 사주 풀이 — 평생 값이라 이번 달 흐름보다 앞에 둔다 (PRD §8.7) */}
+        <Card className="p-6 sm:p-7">
+          <h2 className="font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+            사주 풀이
+          </h2>
+          <p className="mt-1.5 text-xs text-ink-400 dark:text-ink-300">
+            타고난 결 — 달마다 바뀌지 않습니다
+          </p>
+
+          <div className="mt-4 rounded-xl bg-paper-100/70 px-4 py-3 dark:bg-ink-900/60">
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <span className="text-xs text-ink-400 dark:text-ink-300">일간(나)</span>
+              <span className="font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+                {interpretation.day_master_ko} ({interpretation.day_master_gan})
+              </span>
+              <span className="text-xs text-ink-500 dark:text-ink-300">
+                {interpretation.yin_yang}의 {interpretation.element} · {interpretation.day_master_image}
+              </span>
+            </div>
+            {interpretation.dominant.length > 0 && (
+              <p className="mt-2 text-xs text-ink-500 dark:text-ink-300">
+                가장 두드러진 십성:{' '}
+                <strong className="font-semibold text-ink-800 dark:text-paper-200">
+                  {interpretation.dominant.join(' · ')}
+                </strong>
+              </p>
+            )}
+          </div>
+
+          {report ? (
+            <ol className="mt-4 space-y-3">
+              {report.saju_reading.map((line, i) => (
+                <li key={i} className="flex gap-3 text-[15px] leading-relaxed">
+                  <span className="font-display font-bold text-gold-600 dark:text-gold-400">
+                    {i + 1}
+                  </span>
+                  <span className="text-ink-700 dark:text-paper-200">{line}</span>
+                </li>
+              ))}
+            </ol>
+          ) : writing ? (
+            <WritingNotice />
+          ) : writeError ? (
+            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3.5 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+              <p>{writeError}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  requestedFor.current = null
+                  setWriteError(null)
+                  setReading((r) => (r ? { ...r } : r))
+                }}
+                className="mt-2 rounded-lg border border-amber-300 px-3 py-1.5 text-xs font-semibold hover:bg-amber-100 dark:border-amber-800 dark:hover:bg-amber-900/40"
+              >
+                다시 시도
+              </button>
+              <p className="mt-2 text-xs opacity-80">위 계산 값은 이미 확정된 실제 값입니다.</p>
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-ink-400 dark:text-ink-300">
+              풀이 문장은 아직 없습니다. 위 계산 값은 실제 값입니다.
+            </p>
+          )}
+
+          {/* 십성 분포 */}
+          {Object.keys(interpretation.shishen).length > 0 && (
+            <div className="mt-5 flex flex-wrap gap-1.5">
+              {Object.entries(interpretation.shishen)
+                .sort((a, b) => b[1] - a[1])
+                .map(([name, count]) => (
+                  <span
+                    key={name}
+                    className="rounded-md bg-paper-200/70 px-2 py-1 text-xs text-ink-600 dark:bg-ink-800 dark:text-ink-300"
+                  >
+                    {name} {count}
+                  </span>
+                ))}
+            </div>
+          )}
+        </Card>
+
+        {/*
+          ⑤ 이번 달 흐름 — **사주 풀이 바로 다음**이다.
+          이 글은 세운·월운을 근거로 쓴다(§8.5) — 타로가 아니라 **사주**다.
+          그래서 사주끼리 묶었다: 사주 풀이 → 이번 달 흐름 → 원국 → 오행 → 계산 기준.
+          그 뒤가 타로 쪽이다: 주제별 조언(타로 비중이 크다) → 뽑힌 카드.
+        */}
+        {report && (
+          <Card className="p-6 sm:p-7">
+            <h2 className="font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+              이번 달 흐름
+            </h2>
+            <ol className="mt-4 space-y-3">
+              {report.monthly_flow.map((line, i) => (
+                <li key={i} className="flex gap-3 text-[15px] leading-relaxed">
+                  <span className="font-display font-bold text-gold-600 dark:text-gold-400">
+                    {i + 1}
+                  </span>
+                  <span className="text-ink-700 dark:text-paper-200">{line}</span>
+                </li>
+              ))}
+            </ol>
+            {report.keywords.length > 0 && (
+              <div className="mt-5 flex flex-wrap gap-2">
+                {report.keywords.map((k) => (
+                  <span
+                    key={k}
+                    className="rounded-full bg-gold-500/12 px-3 py-1 text-xs font-medium text-gold-700 dark:text-gold-300"
+                  >
+                    #{k}
+                  </span>
+                ))}
+              </div>
+            )}
+          </Card>
+        )}
+
+        {/* ② 원국 4주 */}
+        <Card className="p-6 sm:p-7">
+          <h2 className="font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+            사주 원국
+          </h2>
+          <p className="mt-1.5 text-xs text-ink-400 dark:text-ink-300">
+            무엇을 근거로 읽었는지 함께 보여드립니다
+          </p>
+          <div className="mt-5">
+            <PillarGrid pillars={pillars} />
+          </div>
+        </Card>
+
+        {/* ③ 오행 */}
+        <Card className="p-6 sm:p-7">
+          <h2 className="font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+            오행 분포
+          </h2>
+          <div className="mt-5">
+            <ElementBar elements={elements} />
+          </div>
+        </Card>
+
+        {/* ⑦ 계산 기준 — 어떤 기준을 썼는지 밝힌다 (PRD §18.1 Q6) */}
+        <details className="rounded-2xl border border-paper-200 bg-white/60 px-6 py-4 text-sm dark:border-ink-800 dark:bg-ink-900/40">
+          <summary className="cursor-pointer font-medium text-ink-600 dark:text-ink-300">
+            계산 기준 보기
+          </summary>
+          <dl className="mt-4 space-y-2 text-xs text-ink-500 dark:text-ink-400">
+            <div className="flex justify-between gap-4">
+              <dt>기준 시각</dt>
+              {/* 시간 미상일 때 12:00 을 그대로 보이면 오해를 부른다 (PRD §8.3) */}
+              <dd className="tabular-nums">
+                {pillars.hour
+                  ? echo.solar_datetime
+                  : `${echo.solar_datetime.slice(0, 10)} (시간 미상)`}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt>진태양시 보정</dt>
+              <dd className="tabular-nums">{echo.true_solar_correction_min}분</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt>서머타임</dt>
+              <dd>{echo.dst_applied ? '적용' : '미적용'}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt>표준자오선</dt>
+              <dd className="tabular-nums">동경 {echo.standard_meridian}°</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt>자시 기준</dt>
+              <dd>{echo.midnight_rule}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt>이번 달 기운</dt>
+              <dd>
+                세운 {period.year_ko}년 · 월운 {period.month_ko}월
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt>엔진 버전</dt>
+              <dd>{reading.engine_version}</dd>
+            </div>
+            {reading.report_model && (
+              <div className="flex justify-between gap-4">
+                <dt>문장 생성</dt>
+                <dd>{reading.report_model}</dd>
+              </div>
+            )}
+          </dl>
+        </details>
+
+        {/*
+          해석 구역이 여기서 시작한다.
+          위쪽은 사주만으로 쓴 것(원국·세운·월운)과 그 근거이고,
+          아래쪽은 **사주와 타로를 함께** 본 것이다 — 조언은 주제마다 비중이 다르고
+          (PRD §3.4), 뽑힌 카드가 그 타로 쪽 근거다.
+          비중을 숫자로 밝히지 않으면 "재물 조언에는 왜 카드 얘기가 적지?" 하게 된다.
+        */}
+        <div className="pt-1">
+          <h2 className="font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+            해석 (사주 + 타로)
+          </h2>
+          <p className="mt-1.5 text-xs leading-relaxed text-ink-400 dark:text-ink-300">
+            주제에 따라 비중이 다릅니다 ·{' '}
+            {(reading.topics as Topic[])
+              .filter((t) => TOPIC_META[t])
+              .map((t) => `${t} 사주 ${TOPIC_META[t].saju} : 타로 ${TOPIC_META[t].tarot}`)
+              .join(' · ')}
+          </p>
+        </div>
+
+        {/* ⑥ 카테고리 조언 */}
+        {report && (
+          <Card className="divide-y divide-paper-200 dark:divide-ink-800">
+            {Object.entries(report.advice).map(([topic, text]) => (
+              <div key={topic} className="p-6 sm:px-7">
+                <h3 className="font-display text-base font-bold text-ink-900 dark:text-paper-100">
+                  {topic}
+                </h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-ink-600 dark:text-ink-300">
+                  {text}
+                </p>
+              </div>
+            ))}
+          </Card>
+        )}
+
+        {/* ④ 타로 */}
+        <Card className="p-6 sm:p-7">
+          <h2 className="font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+            뽑힌 카드
+          </h2>
+          <p className="mt-1.5 text-xs text-ink-400 dark:text-ink-300">
+            세 장을 다섯 주제의 공통 근거로 읽습니다 · 직접 고르신 번호로 뽑았습니다
+          </p>
+          {/* 퍼블릭 도메인 이미지 출처 표기 (PRD §18.1 Q5) */}
+          <p className="mt-1 text-[11px] text-ink-300 dark:text-ink-400">
+            카드 그림: 라이더-웨이트 타로(1909, Pamela Colman Smith) · 퍼블릭 도메인
+          </p>
+          {/* 3장 고정 스프레드 (PRD §8.6) */}
+          <div className="mt-5 grid grid-cols-3 gap-4">
+            {tarot.map((c, i) => (
+              <TarotCard key={c.position} card={c} index={i} />
+            ))}
+          </div>
+        </Card>
+
+
+        {/* 공유 — 본인 리포트에서만 (PRD §12.3) */}
+        {mode === 'own' && (
+          <Card className="p-6 sm:p-7">
+            <h2 className="font-display text-lg font-bold text-ink-900 dark:text-paper-100">
+              손님에게 보내기
+            </h2>
+            <p className="mt-1.5 text-xs text-ink-400 dark:text-ink-300">
+              읽기 전용 링크입니다. 생년월일·시간은 링크에 담기지 않습니다.
+            </p>
+            {shareUrl && (
+              <div className="mt-4 space-y-2">
+                <code className="block break-all rounded-lg bg-paper-100 px-3 py-2 text-xs text-ink-700 dark:bg-ink-900 dark:text-paper-200">
+                  {shareUrl}
+                </code>
+                <p className="text-xs text-ink-400 dark:text-ink-300">
+                  {copied ? '복사했습니다. 그대로 붙여넣으시면 됩니다.' : '위 주소를 복사해 보내세요.'}
+                </p>
+              </div>
+            )}
+
+            {/* 두 단추는 항상 보인다. 공유 링크를 만든 뒤에도
+                "다시 시작하기"가 사라지면 손님이 나갈 길을 잃는다. */}
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              {!shareUrl && (
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  disabled={sharing}
+                  className="rounded-xl bg-ink-900 px-5 py-3 text-sm font-semibold text-paper-50 disabled:opacity-60 dark:bg-gold-500 dark:text-ink-950"
+                >
+                  {sharing ? '만드는 중…' : '공유 링크 만들기'}
+                </button>
+              )}
+              <Link
+                to="/"
+                className="rounded-xl border border-paper-300 px-5 py-3 text-sm font-semibold text-ink-700 hover:bg-paper-100 dark:border-ink-700 dark:text-paper-200 dark:hover:bg-ink-900"
+              >
+                다시 시작하기
+              </Link>
+            </div>
+          </Card>
+        )}
+
+        {/* ⑧ 면책 */}
+        <p className="px-1 text-xs leading-relaxed text-ink-400 dark:text-ink-400">
+          {report?.disclaimer ??
+            '이 리포트는 상담 참고용이며 의료·법률·투자 판단의 근거가 아닙니다.'}
+          {reading.draft_before_tone_learning && ' · 문체 학습 전 초안입니다.'}
+        </p>
+      </main>
+    </div>
+  )
+}
+
+
+===== Saju_Tarot/frontend/src/schemas/reading.ts =====
+/**
+ * API 계약 단일 출처 (PRD §5.4, §10).
+ *
+ * 3단계에서 백엔드가 붙으면 FastAPI 의 OpenAPI 로부터 타입을 자동 생성해
+ * 이 파일과 일치하는지 CI 에서 검사한다. 지금은 이 파일이 계약이다.
+ * 폼 검증과 목업 데이터가 모두 이 스키마를 쓴다.
+ */
+import { z } from 'zod'
+
+export const GENDERS = ['남', '여'] as const
+export const CALENDAR_TYPES = ['solar', 'lunar'] as const
+
+/**
+ * 상담 주제 5분류 (PRD §3.4, v2.13).
+ * 기존 3분류(연애·직업·재물)를 실제로 들어오는 질문에 맞춰 다시 나눴다.
+ * 주제마다 사주와 타로의 판단 비중이 다르다 — TOPIC_META 참고.
+ */
+export const TOPICS = ['재회운', '상대방속마음', '연애', '재물', '대인관계'] as const
+export const ELEMENTS = ['목', '화', '토', '금', '수'] as const
+
+export type Topic = (typeof TOPICS)[number]
+
+/** 주제별 메타 — 화면 안내와 LLM 프롬프트가 같은 값을 쓴다 (PRD §3.4) */
+export const TOPIC_META: Record<
+  Topic,
+  { question: string; saju: number; tarot: number; caveat?: string }
+> = {
+  재회운: {
+    question: '그 사람과 다시 만날 수 있을까요',
+    saju: 3,
+    tarot: 7,
+    caveat: '시점을 단정하지 않고 조건으로 읽습니다',
+  },
+  상대방속마음: {
+    question: '그 사람 마음이 어떤 건가요',
+    saju: 1,
+    tarot: 9,
+    caveat: '상대의 생년월일 없이 카드 흐름으로 읽은 것입니다',
+  },
+  연애: { question: '새로운 인연이 들어올까요', saju: 5, tarot: 5 },
+  재물: { question: '돈은 언제 풀릴까요', saju: 7, tarot: 3 },
+  대인관계: { question: '사람들과 계속 부딪히는데요', saju: 6, tarot: 4 },
+}
+
+export const MAX_TOPICS = TOPICS.length
+
+/**
+ * 타로 3장 고정 스프레드 (PRD §8.6).
+ * 주제 수(1~5)와 무관하게 항상 3장이다. 이 3장이 모든 주제의 공통 근거가 된다.
+ * 주제당 1장씩 뽑지 않는 이유: 5장이 되면 리포트가 길어지고 카드별 해석이 서로 어긋난다.
+ */
+export const SPREAD = [
+  { key: '현재', label: '지금 놓인 자리', reads: '현재 상황·기운의 상태' },
+  { key: '조언', label: '지금 할 수 있는 것', reads: '움직일 수 있는 지점' },
+  { key: '방향', label: '이대로 가면', reads: '흐름의 방향(확정된 결과가 아니다)' },
+] as const
+
+export const SPREAD_POSITIONS = ['현재', '조언', '방향'] as const
+
+/**
+ * 화면에 부채꼴로 깔리는 카드 수 = 덱 전체 (PRD §8.6.1).
+ * 백엔드 `tarot_service.FAN_SIZE` 와 **같아야** 한다 — 다르면 손님이 고른 번호가
+ * 서버에서 400 으로 막힌다.
+ */
+export const FAN_SIZE = 78
+export type SpreadPosition = (typeof SPREAD_POSITIONS)[number]
+export type ElementName = (typeof ELEMENTS)[number]
+
+/**
+ * 출생지 — 진태양시 보정용 경도 (PRD §8.2, §6.1 필드 7).
+ *
+ * 17개 시·도 전체. 도(道)는 **도청 소재지 기준 근사값**이다.
+ * 같은 도 안에서도 동서로 벌어지면 몇 분 차이가 나지만, 시주는 2시간 단위로
+ * 갈리므로 도 단위면 충분하다. 필요해지면 시·군 단위로 늘리면 된다.
+ *
+ * ⚠️ 서버(`backend/app/routers/readings.py` BIRTH_PLACES)와 **이름이 정확히 같아야** 한다.
+ *    서버가 화이트리스트로 검증하므로 하나라도 다르면 400 이 난다.
+ */
+export const BIRTH_PLACES = [
+  { name: '서울', longitude: 126.978 },
+  { name: '경기(수원)', longitude: 127.01 },
+  { name: '인천', longitude: 126.705 },
+  { name: '강원(춘천)', longitude: 127.729 },
+  { name: '충북(청주)', longitude: 127.489 },
+  { name: '충남(홍성)', longitude: 126.661 },
+  { name: '세종', longitude: 127.289 },
+  { name: '대전', longitude: 127.385 },
+  { name: '전북(전주)', longitude: 127.148 },
+  { name: '전남(무안)', longitude: 126.463 },
+  { name: '광주', longitude: 126.851 },
+  { name: '경북(안동)', longitude: 128.729 },
+  { name: '대구', longitude: 128.601 },
+  { name: '경남(창원)', longitude: 128.682 },
+  { name: '부산', longitude: 129.075 },
+  { name: '울산', longitude: 129.311 },
+  { name: '제주', longitude: 126.531 },
+  { name: '해외·모름', longitude: 135.0 },
+] as const
+
+/** 표준자오선(동경 135°) 대비 진태양시 보정값(분). 1° = 4분 */
+export function correctionMinutes(longitude: number): number {
+  return Math.round((longitude - 135) * 4)
+}
+
+// ── 요청 (PRD §10.2) ─────────────────────────────────────────
+
+export const readingInputSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(1, '이름을 입력해 주세요.')
+      .max(20, '이름은 20자까지 입력할 수 있습니다.')
+      // 개행·제어문자 제거는 프롬프트 인젝션 대비 (PRD §12.18)
+      .refine((v) => !/[\r\n\t]/.test(v), '이름에 줄바꿈은 넣을 수 없습니다.'),
+    gender: z.enum(GENDERS, {
+      errorMap: () => ({ message: '성별을 선택해 주세요.' }),
+    }),
+    calendar_type: z.enum(CALENDAR_TYPES),
+    birth_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, '생년월일을 선택해 주세요.'),
+    is_leap_month: z.boolean(),
+    /** null = 시간 모름 (PRD §8.3) */
+    birth_time: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):[0-5]\d$/, '시각 형식이 올바르지 않습니다.')
+      .nullable(),
+    birth_place: z.string().min(1),
+    topics: z
+      .array(z.enum(TOPICS))
+      .min(1, '주제를 하나 이상 선택해 주세요.')
+      .max(MAX_TOPICS),
+    tarot_mode: z.enum(['auto', 'manual']),
+    /**
+     * 손님이 부채꼴에서 고른 자리 번호 3개 (PRD §8.6.1).
+     * 고른 **순서가 자리를 정한다** — 첫 번째가 ① 지금 놓인 자리다.
+     */
+    tarot_picks: z
+      .array(z.number().int().min(1, '1~78 중에서 골라 주세요.').max(FAN_SIZE, '1~78 중에서 골라 주세요.'))
+      .length(3, '카드는 세 장을 고릅니다.')
+      .refine((v) => new Set(v).size === v.length, '이미 고른 번호입니다. 다른 번호를 골라 주세요.')
+      .nullable(),
+    privacy_agreed: z
+      .boolean()
+      .refine((v) => v === true, '개인정보 수집·이용에 동의해 주세요.'),
+  })
+  .refine(
+    (v) => {
+      const [y] = v.birth_date.split('-').map(Number)
+      return y >= 1900 && y <= new Date().getFullYear()
+    },
+    { message: '1900년 이후 날짜만 지원합니다.', path: ['birth_date'] },
+  )
+  // 서버와 **같은 규칙을 여기서 다시** 본다 (PRD §12.2 프론트는 못 믿는다 — 그 반대도 참이다.
+  // 서버가 400 을 내기 전에 화면에서 잡아야 손님이 어디가 문제인지 안다)
+  .refine((v) => v.tarot_mode !== 'manual' || v.tarot_picks !== null, {
+    message: '카드 세 장을 골라 주세요.',
+    path: ['tarot_picks'],
+  })
+  .refine((v) => v.tarot_mode !== 'auto' || v.tarot_picks === null, {
+    message: '자동 뽑기에는 번호를 보내지 않습니다.',
+    path: ['tarot_picks'],
+  })
+
+export type ReadingInput = z.infer<typeof readingInputSchema>
+
+/** 서버로 보내는 형태 — 동의 여부는 별도 필드로 전달하지 않는다 */
+export type ReadingRequest = Omit<ReadingInput, 'privacy_agreed'>
+
+// ── 응답 (PRD §10.2) ─────────────────────────────────────────
+
+export const pillarSchema = z.object({
+  gan: z.string(),
+  ji: z.string(),
+  ko: z.string(),
+})
+
+export const readingSchema = z.object({
+  id: z.string(),
+  input_echo: z.object({
+    solar_datetime: z.string(),
+    lunar_date: z.string().optional(),
+    is_leap_month: z.boolean().optional(),
+    true_solar_correction_min: z.number(),
+    dst_applied: z.boolean(),
+    midnight_rule: z.string(),
+    standard_meridian: z.number(),
+  }),
+  pillars: z.object({
+    year: pillarSchema,
+    month: pillarSchema,
+    day: pillarSchema,
+    /** 시간 모름이면 null (PRD §8.3) */
+    hour: pillarSchema.nullable(),
+  }),
+  elements: z.object({
+    목: z.number(),
+    화: z.number(),
+    토: z.number(),
+    금: z.number(),
+    수: z.number(),
+    verdict: z.array(z.string()),
+  }),
+  /** 사주 풀이 재료 — 일간·십성 (PRD §8.7) */
+  interpretation: z.object({
+    day_master_ko: z.string(),
+    day_master_gan: z.string(),
+    day_master_image: z.string(),
+    element: z.string(),
+    yin_yang: z.string(),
+    shishen: z.record(z.string(), z.number()),
+    dominant: z.array(z.string()),
+  }),
+  /** 이번 달 기운 — 세운·월운. 원국과 달리 달마다 바뀐다 (PRD §8.5) */
+  period: z.object({
+    year_ko: z.string(),
+    month_ko: z.string(),
+    label: z.string(),
+  }),
+  /** 항상 3장 (PRD §8.6) */
+  tarot: z
+    .array(
+      z.object({
+        position: z.enum(SPREAD_POSITIONS),
+        position_ko: z.string(),
+        card: z.string(),
+        card_ko: z.string(),
+        reversed: z.boolean(),
+        keywords: z.array(z.string()),
+        /** 손님이 고른 자리 번호. auto 로 뽑았거나 v3.6 이전 저장분이면 null */
+        pick: z.number().int().nullable().optional(),
+      }),
+    )
+    .length(3),
+  /** LLM 실패 시 null — 계산 결과만 보여준다 (부분 성공, PRD §11.3) */
+  report: z
+    .object({
+      saju_reading: z.array(z.string()),
+      monthly_flow: z.array(z.string()),
+      advice: z.record(z.string(), z.string()),
+      keywords: z.array(z.string()),
+      disclaimer: z.string(),
+    })
+    .nullable(),
+  /** 상담 주제 — 풀이를 나중에 만들 때 서버가 쓴다 (v3.0) */
+  topics: z.array(z.string()).optional(),
+  /** 어떤 모델이 문장을 썼는지 — 리포트에 표기한다 (PRD §6.3 ⑦) */
+  report_model: z.string().nullable().optional(),
+  engine_version: z.string(),
+  /** 같은 링크가 항상 같은 카드를 내도록 저장한다 (PRD §8.6) */
+  tarot_seed: z.number().optional(),
+  /** 문체 학습(Q7) 전 초안임을 표시 (PRD §11.5) */
+  draft_before_tone_learning: z.boolean(),
+})
+
+export type Reading = z.infer<typeof readingSchema>
+
+// ── 에러 (PRD §10.6) ─────────────────────────────────────────
+
+export const apiErrorSchema = z.object({
+  error: z.object({
+    code: z.string(),
+    message: z.string(),
+    field: z.string().optional(),
+    trace_id: z.string().optional(),
+  }),
+})
+
+export type ApiError = z.infer<typeof apiErrorSchema>
+
+
+===== Saju_Tarot/frontend/vite.config.ts =====
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  server: {
+    port: 5173,
+  },
+})
+
+
+===== Saju_Tarot/render.yaml =====
+# 세권사주타로 — Render 배포 설정 (Blueprint)
+#
+# 쓰는 법: Render 대시보드 → New → Blueprint → 이 저장소 선택.
+#          sync: false 로 표시된 값은 Render 화면에서 직접 넣는다(저장소에 안 남는다).
+
+services:
+  - type: web
+    name: saju-tarot
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: singapore          # 한국에서 가장 가까운 지역
+    plan: free                 # 디스크가 필요하면 starter 이상으로 올린다 (아래 disk 주석 참고)
+    healthCheckPath: /api/v1/health
+    autoDeploy: true           # main 에 push 하면 자동 재배포
+
+    envVars:
+      - key: APP_ENV
+        value: production      # /docs 와 /openapi.json 을 닫는다
+
+      # 같은 서버가 화면까지 내보내므로 CORS 는 사실상 쓰이지 않는다.
+      # 그래도 와일드카드 금지 규칙(PRD §12.4)을 지켜 실제 주소를 적어 둔다.
+      # 배포 후 실제 도메인이 정해지면 이 값을 그것으로 바꾼다.
+      - key: ALLOWED_ORIGINS
+        value: https://saju-tarot.onrender.com
+
+      # ── 아래 셋은 Render 화면에서 직접 넣는다 ──────────────
+      # 문장 생성용 키. 없으면 서버는 뜨지만 계산 결과만 나온다.
+      - key: OPENAI_API_KEY
+        sync: false
+
+      # ★ 반드시 넣는다. 없으면 컨테이너가 재시작할 때마다 새 키가 생겨서
+      #   먼저 저장된 리포트를 영영 못 읽는다.
+      #   생성: python -c "import os,base64;print(base64.b64encode(os.urandom(32)).decode())"
+      - key: FIELD_ENCRYPTION_KEY
+        sync: false
+
+      # ★ 반드시 넣는다. 없으면 재시작마다 상담자 토큰이 바뀐다.
+      #   생성: python -c "import secrets;print(secrets.token_urlsafe(24))"
+      - key: ADMIN_TOKEN
+        sync: false
+
+      - key: DATA_RETENTION_DAYS
+        value: "90"
+      - key: ANON_RETENTION_DAYS
+        value: "7"
+
+      # 영구 디스크를 붙였을 때만 켠다. free 플랜에서는 넣지 말 것
+      # (디스크가 없는데 이 경로를 가리키면 부팅 후 저장에서 실패한다).
+      # - key: DB_PATH
+      #   value: /var/data/readings.db
+
+    # ── 리포트를 영구 보관하려면 (유료 플랜) ────────────────
+    # free 플랜에는 디스크가 없다. 재배포·재시작하면 SQLite 파일이 사라진다.
+    # 유료로 올린 뒤 아래 두 블록의 주석을 풀면 데이터가 남는다.
+    # disk:
+    #   name: saju-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
+
+
+===== calorie-tracker/.claude/launch.json =====
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "calorie_tracker",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["http-server", ".", "-p", "8322", "-c-1"],
+      "port": 8322
+    }
+  ]
+}
+
+
+===== calorie-tracker/DATA_ACCURACY.md =====
+# 음식 영양성분 데이터 검증 (2026-09-09)
+
+관련 문서: [README.md](README.md) · [MVP_SCOPE.md](MVP_SCOPE.md)
+
+`data/foods.json`의 164개 항목은 자체 조사로 작성된 데이터라, "표기된 칼로리가 실제로 정확한가"를 검증해달라는 요청에 따라 두 라운드에 걸쳐 확인했다. 이 문서는 **무엇을 어떻게 확인했고, 무엇은 확인하지 못했는지**를 그대로 기록한다.
+
+## Round 1 — 내부 정합성 검증 + 대표 항목 6개
+
+### 1단계: Atwater 계수 역산 (내부 정합성)
+
+칼로리는 탄수화물·단백질·지방으로부터 계산되는 값이다 (일반 Atwater 계수: 탄수화물 4kcal/g, 단백질 4kcal/g, 지방 9kcal/g). 164개 전체 항목에서 "표기 칼로리"와 "탄단지로 역산한 칼로리"를 비교했다.
+
+- 오차 5% 이내: 127개 (77.4%) · 오차 10% 이내: 145개 (88.4%) · 오차 20% 초과: 4개
+
+**증명하는 것**: 데이터가 무작위 숫자가 아니라 탄단지와 내적으로 정합적이라는 것.
+**증명하지 못하는 것**: 탄단지 수치 자체가 실제 그 음식과 일치하는지는 별개 문제. 식이섬유가 많은 채소류는 실제 공식 자료에서도 일반 Atwater 계수와 20% 안팎 차이가 자연스럽게 나므로, 이 오차 자체가 "틀렸다"는 증거는 아니다.
+
+### 2단계: 6개 대표 항목 외부 대조
+
+| 음식 | 결과 |
+|---|---|
+| 흰쌀밥 | USDA와 거의 일치 (130kcal) — 변경 없음 |
+| 닭가슴살(구이) | USDA 통용 범위(151~165kcal) 안 — 변경 없음 |
+| 시금치(데침) | USDA와 정확히 일치 (23kcal) — 변경 없음 |
+| 아메리카노 | 절대오차 0.4kcal 수준 — 변경 없음 |
+| 콩나물(데침) | 숙주나물과 혼동 방지 후 한국 자료 기준 27→34kcal 수정 |
+| 김(구운 김) | 출처마다 34~357kcal, 10배 편차 — 수정 보류 |
+
+---
+
+## Round 2 — 나머지 158개 전체 대조 (2026-09-09)
+
+### 시도했지만 접근하지 못한 것: 식약처 원본 API
+
+- 식약처 오픈API(`openapi.foodsafetykorea.go.kr`)를 직접 호출해봤다. **레시피 DB(COOKRCP01, 조리식품 1156건)는 테스트용 "sample" 키로 접근되지만, 원재료 100g당 영양성분DB(I0750/I2790)는 sample 키로 거부됨**(`ERROR-310`) — 정식 인증키가 필요하고, 이는 사용자가 data.go.kr/식의약데이터포털에 직접 가입·신청해야 한다(승인 2~3일, Claude가 대행 불가).
+- `various.foodsafetykorea.go.kr`, `data.go.kr`에 브라우저로 직접 접속도 이 환경에서 차단됨.
+- 따라서 이번 라운드도 Round 1과 마찬가지로 **2차 자료(웹 검색 결과에 인용된 식약처 K-FIND 상세페이지, USDA 데이터, nofat.kr·지니어트·필라이즈 등)를 통해 대조**했다. 검색 결과 중 일부는 `various.foodsafetykorea.go.kr/nutrient/.../detail.do?searchFoodCd=...` 형태의 실제 식약처 상세페이지 URL을 직접 인용하고 있어, Round 1보다는 원본에 가까운 근거를 확보한 항목도 있다.
+
+### 검증 범위 조정: 원재료 vs 조리식품
+
+158개 중 **원재료성 항목(주식·단백질·채소·과일·유제품, 총 64개)** 은 브랜드/레시피와 무관하게 비교적 하나의 공인된 값에 수렴하므로 개별 대조가 의미 있다. 반면 **조리식품/프랜차이즈/디저트/유행음식(총 94개)** 은 실제로 시도해보니 **브랜드·레시피에 따라 수 배까지 벌어지는 편차**가 확인됐다 (예: 무가당 그릭요거트 90~205kcal, 떡볶이 132~245kcal, 김밥 100g당 175~452kcal로 보는 자료마다 제각각). 이런 항목은애초에 "정확한 단일 값"이 존재하지 않으므로, 94개 전체를 하나씩 검색하는 대신 **대표 10개를 표본 대조**해 기존 값들이 정상적인 변동 범위 안에 있는지만 확인했다.
+
+### 원재료 64개 대조 결과
+
+| 상태 | 개수 | 비고 |
+|---|---|---|
+| 확인(일치) | 47 | 근거자료와 근접하거나 정확히 일치 |
+| **수정함** | 5 | 아래 표 참고 |
+| 불확실(근거 상충/부족, 미수정) | 6 | 아래 "불확실" 항목 참고 |
+| 자료 없음(미확인) | 6 | 오이, 토마토, 무생채, 사과, 포도, 오렌지, 콜라, 오렌지주스, 저지방우유 등 |
+
+**수정한 항목** (모두 [data/foods.json](data/foods.json)에 반영):
+
+| 음식 | 기존 값 | 수정 값 | 근거 |
+|---|---|---|---|
+| 현미밥 | 152kcal·탄32.3·단3·지1 | **172kcal·탄38.9·단3.1·지0.5** | 식약처 K-FIND 인용 자료 |
+| 감자 → 감자(삶은것) | 66kcal·탄15.7·단2·지0.1 | **86kcal·탄20·단1.9·지0.1** | 한국 자료 다수 일치(77~86kcal) |
+| 고구마 → 고구마(찐것) | 128kcal·탄31·단1.6·지0.3 | **163kcal·탄39.4·단1.1·지0.2** | 찐 고구마 기준 한국 자료 |
+| 돼지고기 삼겹살(구이) | 331kcal·단17.2·지29.1 | **484kcal·단22.7·지41.2** | "식약처 기준"으로 명시 인용된 자료 — 가장 근거가 확실한 수정 |
+| 애호박 | 17kcal·탄3.1·단1.2·지0.2 | **22kcal·탄5.1·단1.1·지0.1** | 한국 자료 |
+| 방울토마토 | 18kcal·탄3.9·단0.9·지0.2 | **25kcal·탄6.0·단1.0·지0.1** | 한국 자료 (상세 탄단지 포함) |
+
+**불확실(근거는 있으나 확정하지 못해 수정하지 않음)**:
+- 닭다리살(구이): 생것 기준(226kcal) 자료만 찾음, 조리 후 100g당 값을 특정하지 못함
+- 소고기 안심(구이): 자료상 166~176kcal로 기존 201kcal보다 낮으나, "1인분" 기준 자료라 100g 환산 신뢰도 낮음
+- 오징어(삶은것): 자료 105kcal vs 기존 92kcal, 차이가 크지 않아 판단 보류
+- 베이컨(구이): 기존 541kcal는 국제적으로 잘 알려진 "조리(바삭하게 구운) 베이컨" 표준치와 부합하지만, 이번 검색에서는 220~250kcal의 상반된 한국 자료도 나옴 — 제품(두꺼운 서양식 vs 얇은 한국식)에 따른 실제 차이일 가능성이 있어 미수정
+- 비엔나소시지: 자료 230kcal vs 기존 279kcal, 브랜드 편차 범위로 판단해 미수정
+- 느타리버섯(볶음): "볶음" 상태 자료(55kcal)가 기존(34kcal)보다 높지만 탄단지 명세가 없어 전체 행을 수정할 근거 부족
+
+**확인(일치) 47개 중 주요 항목**: 흰식빵(266→267), 통밀식빵(252~278 범위 내 246), 우동면(105→105 정확), 스파게티(158→158 정확), 오트밀(389→389 정확), 콘플레이크(357~362 범위 내 378), 계란흰자(52→52 정확), 두부(80→84 근접), 순두부(칼로리 47→47 정확), 돼지고기 목살(264→262 근접), 고등어구이(205→205 정확), 참치캔(국제표준과 일치, 상충 자료는 배제), 검은콩·렌틸콩(삶은 기준 국제표준과 일치 — 검색에 걸린 훨씬 높은 수치는 건조/볶은 상태였음을 확인), 상추·양배추·브로콜리·당근·파프리카(모두 근접~정확), 바나나·딸기·수박·참외·키위·블루베리(모두 근접~정확), 흰우유·플레인요거트·그릭요거트(브랜드 편차 90~205kcal 범위 안)·카페라떼·체다치즈(모두 근접~정확).
+
+### 조리식품/프랜차이즈 표본 대조 (10개)
+
+| 음식 | 발견된 자료 | 기존 값 | 판정 |
+|---|---|---|---|
+| 된장찌개 | 55kcal | 45kcal | 정상 변동 범위 |
+| 김치찌개 | 50kcal | 60kcal | 정상 변동 범위 |
+| 떡볶이 | 132~245kcal (브랜드별) | 165kcal | 범위 안 |
+| 후라이드치킨 | 336kcal | 275kcal | 정상 변동 범위 |
+| 양념치킨 | 276kcal | 290kcal | 근접 |
+| 짜장면 | 175kcal | 160kcal | 근접 |
+| 초코파이 | 428kcal | 405kcal | 근접 |
+| 치즈케이크 | 331kcal | 321kcal | 근접 |
+| 마라탕 | 90kcal | 90kcal | 정확 |
+| 탕후루 | ~100kcal(과일별 상이, 기준 단위 불명확) | 220kcal | 판단 보류 |
+
+10개 전부 기존 값이 "말이 안 되는 수준"은 아니었고, 오히려 이 표본 자체가 **조리식품은 브랜드·레시피에 따라 정상적으로 2배 가까이 벌어진다**는 걸 보여준다 (떡볶이 132~245kcal, 그릭요거트 90~205kcal). 이 카테고리는 애초에 "정답"이 하나가 아니다.
+
+### 검증하지 않은 나머지 84개
+
+국·찌개(8) · 배달·프랜차이즈(22) · 디저트(28) · 유행음식(19) — 표본 10개를 제외한 나머지는 이번 라운드에서 개별 대조하지 않았다. Round 1의 Atwater 검증은 통과했고(위 표본에서 확인했듯 이 카테고리는 애초에 편차가 커서 "통과"의 의미가 제한적), 표본 10개가 정상 범위였다는 정황 근거만 있을 뿐이다.
+
+---
+
+## Round 3 — 사용자가 직접 발견한 버그: 라면 (2026-09-09)
+
+Round 1·2는 "100g당 수치"만 검증했다. 그런데 실제 사용자는 100g당 수치가 아니라 **"1개/1인분을 먹었을 때 총 칼로리"** 로 음식을 인지한다 — 이 둘 사이의 변환 과정(=`commonServingG`)은 지금까지 한 번도 검증하지 않았다. 사용자가 "라면은 보통 500kcal인데 앱에는 백몇십으로 나온다"고 직접 지적해 이 사각지대가 드러났다.
+
+**원인**: `라면(면+스프)` 항목은 `commonServingG: 120, "1개"`(=포장 그대로의 판매 단위)로 라벨링되어 있었지만, 실제 `caloriesPer100g` 값은 "조리해서 물에 희석된 상태"를 기준으로 계산되어 있었다. 우동면·스파게티는 이름 자체가 "삶음"이고 라벨도 "1인분"(조리 후 그릇 기준)이라 서로 앞뒤가 맞았지만, 라면만 "조리 전 판매 단위 라벨" + "조리 후 수치"라는 조합이 뒤섞여 있었던 것.
+
+**검증**: 신라면 포장지 표기 영양성분(1봉지 120g = 500kcal · 탄79 · 단10 · 지16) — 법정 의무 표시 사항이라 이번에 확인한 자료 중 가장 신뢰도가 높다.
+
+**수정**: `caloriesPer100g` 145→417, `carbsPer100g` 20.5→65.8, `proteinPer100g` 3→8.3, `fatPer100g` 5→13.3 (100g당 값을 "조리 전 건면+스프" 기준으로 통일). 이름도 `라면(면+스프)` → `라면(건면+스프)`로 바꿔 기준을 명확히 함. `commonServingG`(120)는 그대로 → 1봉지 계산 시 정확히 500kcal로 나옴.
+
+**전수 재점검**: 같은 종류의 버그(포장/서빙 라벨과 100g당 수치의 조리 기준이 어긋나는 것)가 다른 항목에도 있는지, 164개 전체에 대해 `caloriesPer100g × commonServingG / 100`(=1회분 총 칼로리)을 계산해 상식적으로 말이 되는 범위인지 눈으로 훑었다. 라면 외에는 뚜렷하게 이상한 값을 발견하지 못했다 (예: 계란 후라이 1개 98kcal, 초코파이 1개 158kcal, 아몬드 한줌 120kcal, 참치캔 1캔 99kcal 등 — 모두 널리 알려진 상식과 부합). 다만 이는 "눈으로 훑어서 이상해 보이지 않았다" 수준의 검증이며, Round 1·2처럼 항목별로 외부 자료와 대조한 것은 아니다.
+
+**교훈**: Round 1·2에서 "100g당 값의 정확성"만 검증하고 "그 값에 실제 서빙량을 곱했을 때 결과가 상식과 맞는지"는 검증하지 않은 게 이 버그를 놓친 이유다. 향후 새 음식을 추가하거나 검증할 때는 100g당 수치뿐 아니라 **`commonServingLabel`이 가리키는 조리 상태(조리 전/후)와 `caloriesPer100g`의 조리 기준이 서로 일치하는지**를 함께 확인해야 한다.
+
+---
+
+## Round 4 — 164개 → 262개 확장 (2026-09-09)
+
+사용자 요청으로 국밥·면류·한식일품·탕찌개·죽·일식·중식·양식·빵·음료·견과·분식 12개 카테고리에 98개 항목을 새로 추가했다.
+
+### 방법론 — Round 1·2와 다른 점
+- **검증 수준이 다르다.** 기존 164개는 항목당 여러 자료를 대조하고 근거를 표에 남겼지만(Round 1·2), 신규 98개는 시간 관계상 **항목당 1~2회 검색으로 얻은 자료를 그대로 채택**했다. 즉 신규 98개는 최초 등록된 164개와 같은 "자체 조사 수준"이며, 아직 Round 1·2급 검증을 받지 못했다.
+- **1인분 총량 → 100g 환산 방식.** 대부분의 신규 항목은 "1인분/1그릇 몇 kcal"로 검색되지, 애초에 "100g당" 단위로 제공되지 않는다. 그래서 (검색으로 찾은 1인분 총 칼로리) ÷ (그 자료가 명시한 서빙 중량)으로 100g당 값을 역산했다. 서빙 중량이 자료마다 다르게 나온 경우(예: 잔치국수 250~600g) 가장 구체적으로 중량을 명시한 자료를 우선했다.
+- **탄단지 비율 추정.** 여러 자료가 총 칼로리는 주지만 탄수화물/단백질/지방 분해는 안 주는 경우가 많았다. 이 경우 비슷한 조리법(볶음·찜·국물 등)의 일반적인 탄단지 비율을 적용해 추정했고, Atwater 역산으로 자체 정합성만 확인했다(외부 자료로 탄단지까지 재검증한 건 아님).
+- **`unitType` 부여 기준**: 국밥·덮밥/면류/한식일품/탕·찌개/죽/일식/중식/양식/분식은 그램으로 재는 게 부자연스러운 "1인분" 요리라 `unitType: "count"`를 부여했다. 밑반찬·김치/빵·베이커리/음료/견과·건강식품은 기존 164개의 같은 성격 카테고리(무생채, 식빵, 우유, 견과류 등)와 동일하게 그램 입력을 유지했다.
+
+### 알려진 한계
+- **맥주·막걸리는 Atwater 역산이 크게 어긋난다** (맥주 +162%, 막걸리 +53%) — 정상이다. 술의 칼로리 상당 부분은 알코올(7kcal/g)에서 오는데, `foods.json` 스키마에는 탄수화물/단백질/지방 필드만 있고 알코올 필드가 없다. 표기된 칼로리 자체는 일반적으로 알려진 값과 부합하지만, 탄단지 분해값만으로는 그 칼로리를 재구성할 수 없다는 스키마상의 한계다.
+- **국밥류 4개(순대국밥·돼지국밥·소고기국밥·콩나물국밥)의 탄단지 비율**은 실제 자료가 아니라 "국물 요리는 탄수화물 몇 %, 단백질 몇 %" 식의 일반적 추정을 적용했다 — 칼로리 총량은 자료 기반이지만 탄단지 분해는 추정치다.
+- **1회 검색으로 대체 자료가 없어 그대로 채택한 항목**이 다수 있다 (예: 회(모둠), 스테이크(안심), 그린샐러드 등 — 자료가 부족해 유사 음식 기준으로 합리적 추정). 이런 항목은 Round 1·2의 "확인(일치)"이 아니라 "1차 추정"으로 분류해야 한다.
+
+## Round 5 — 신규 98개 중 표본 8개 검증 (2026-09-09)
+
+Round 4에서 "1차 추정" 수준이라고 밝힌 신규 98개 중 8개를 뽑아 Round 1·2와 같은 방식(USDA/한국 자료 대조)으로 검증했다. 순수 추정으로 채웠던 항목(스테이크, 그린샐러드)과 자료가 부실했던 국밥류, 자료가 엇갈렸던 규동을 우선 골랐다.
+
+| 음식 | 기존 값 | 대조 결과 | 조치 |
+|---|---|---|---|
+| 순대국밥 | 61kcal/100g | 출처마다 61~120kcal/100g으로 편차 큼 (300g/360kcal, 600g/365kcal, 900g/670kcal — 무게가 늘어도 칼로리가 비례하지 않아 서로 다른 레시피/기준이 섞여있음) | 근거 불충분 — 미수정 |
+| 돼지국밥 | 74kcal/100g | 새 자료(800g/509kcal→64kcal/100g)가 근접해 확인. 검색 중 나온 "336kcal/100g"은 국물 없이 고기만 계산한 이상치로 판단 | 미수정 |
+| 비빔밥 | 127kcal/100g | "80kcal/100g"이 여러 출처에 반복 인용되지만, 흰쌀밥 자체가 130kcal/100g인데 비빔밥(밥+고기+계란+참기름)이 이보다 낮을 수는 없어 물리적으로 비현실적 — 채택하지 않음 | 미수정 |
+| 마파두부 | 134kcal/100g | 브랜드 제품(다담) 135kcal/100g — 거의 정확히 일치 | 미수정 |
+| **규동** | 150kcal/100g | 두 독립 자료가 일관되게 175kcal/100g대(614kcal/350g, 699kcal/400g) | **175kcal로 수정** |
+| 라자냐 | 168kcal/100g | 새 자료(345kcal/100g)는 지방이 1.5g로 비정상적으로 낮아 완성된 요리가 아니라 건조 파스타 면 기준으로 판단해 배제 | 미수정 |
+| **스테이크(안심)** | 220kcal/100g (순수 추정치였음) | USDA 실측: 198~211kcal, 단백질30~30.7g, 지방8.3~8.9g | **205kcal·단백질30.5·지방8.6으로 수정** |
+| **그린샐러드** | 45kcal/100g (순수 추정치였음) | 드레싱 없는 야채샐러드 실측 16~17kcal/100g — 기존 추정치가 거의 3배 높았음 | **17kcal·탄3.2·단백질1.4·지방0.15로 수정** |
+
+**교훈**: Round 4에서 자료 없이 "합리적으로 추정"했던 두 항목(스테이크, 그린샐러드) 모두 실제 자료와 대조하니 틀렸다 — 하나는 실제보다 높게, 하나는 낮게 잡았다. 즉 "비슷한 음식 기준 추정"은 방향조차 예측하기 어렵다는 뜻이므로, Round 4 방식으로 채운 나머지 항목들도 검증 전까지는 신뢰도를 낮게 봐야 한다. 반대로 국밥류처럼 **자료 자체가 사방으로 벌어지는 음식**은 어설프게 하나를 골라 "수정"하는 것보다, 편차가 크다는 사실 자체를 기록하고 넘어가는 게 낫다는 것도 재확인했다.
+
+## Round 6 — 신규 98개 중 나머지 90개 전체 검증 (2026-09-09)
+
+Round 5의 표본 8개에 이어, 나머지 90개 전부를 같은 방식(항목별 웹 검색 → 100g 기준 자료와 대조)으로 확인했다. 스크립트로 일괄 반영한 원본 근거는 [scripts/round6_corrections.js](scripts/round6_corrections.js)에 남겨뒀다.
+
+### 결과 요약
+
+| 상태 | 개수 |
+|---|---|
+| **수정함** | 26 |
+| 확인(일치, 미수정) | 34 |
+| 자료 없음/근거 부족 (미수정) | 30 |
+
+### 눈에 띄는 패턴
+
+- **죽 카테고리 4개 전부 대폭 상향 수정** (흰죽 54→72, 전복죽 56→**134**, 야채죽 62→**145**, 단호박죽 68→**142**) — Round 4에서 죽을 "물 많이 넣은 묽은 음식"으로 가정해 전반적으로 과소평가했다. 실제로는 쌀+재료가 상당히 농축된 상태라 흰쌀밥(130kcal/100g)에 근접하거나 그 이상인 경우가 많았다.
+- **군만두 130→230kcal**: 브랜드 제품(냉동 군만두)의 100g 표기를 직접 찾아서 대조하니 77% 차이 — 튀김만두는 껍질+기름 흡수로 밀도가 높다는 걸 과소평가했었다.
+- **갈비찜 198→298, 닭갈비 98→182**: 둘 다 지방·단백질이 풍부한 육류 조림/볶음인데 Round 4에서 상당히 낮게 잡았었다. 갈비찜은 100g당 직접 명시된 자료(298kcal)를 찾아 확인했고, 닭갈비는 "100g당 단백질 15~20g" 범위 자료와 Atwater 역산으로 재구성했다.
+- **정확히 일치하거나 근접해서 확인만 하고 넘어간 항목**: 계란찜, 잡채, 찜닭, 카레라이스, 카프레제샐러드, 함박스테이크, 이온음료, 콩국수 등 34개.
+- **여전히 자료가 없거나 부족해 미수정으로 남은 30개**: 유린기·팔보채·양장피·고추잡채·리조또·오믈렛·그라탱·미트볼파스타·에그베네딕트·크림수프·필라프·회(모둠)·오니기리·깍두기·콩자반·계란말이·두부조림·감자조림·고추장불고기·불고기(근거 모호)·알탕·소고기무국·북엇국·계란국·떡국·막국수·쫄면·볶음우동·냉모밀 등. 이 항목들은 Round 4의 1차 추정이 그대로 남아있다.
+
+**전체 누적**: Round 5·6을 합쳐 신규 98개 **전부를 한 번씩 검증**했다 — 29개를 수정했고(Round 5의 3개 + Round 6의 26개), 39개는 기존 값이 실제 자료와 일치해 확인만 하고 넘어갔고, 30개는 검색을 시도했으나 자료가 없거나 부족해 Round 4의 1차 추정이 그대로 남아있다.
+
+---
+
+## 결론 및 한계 (종합)
+
+1. **164개 중 71개를 외부 자료와 직접 대조**했다 (원재료 64 + 조리식품 표본 10, 앞선 Round 1의 6개, Round 3의 라면 포함). 8개를 수정했고, 47개는 일치 확인, 6개는 근거 상충으로 보류, 나머지는 자료를 찾지 못했거나 애초에 개별 대조를 시도하지 않았다.
+2. **식약처 원본 API/사이트에는 결국 접근하지 못했다.** 모든 대조는 이를 인용하는 2차 자료 기반이며, 이는 원본보다 신뢰도가 한 단계 낮다.
+3. **조리식품·프랜차이즈·디저트류(94개)는 "정확한 단일 값"이라는 개념 자체가 성립하기 어렵다** — 표본 대조에서 같은 음식이 브랜드에 따라 최대 2배 가까이 벌어지는 걸 직접 확인했다. 이 카테고리의 신뢰도는 처음부터 "일반적인 평균값 추정치" 이상으로 올리기 어렵다.
+4. **신규 추가된 98개는 Round 5·6에서 전부 한 번씩 검증했다** — 29개를 수정했고(죽 카테고리 전체, 갈비찜·닭갈비·군만두 등 큰 폭 수정 포함), 39개는 일치 확인, 30개는 여전히 자료 부족으로 Round 4의 1차 추정이 남아있다. 다만 이번 검증도 항목당 1회 검색 수준이라 Round 1·2(원재료 64개)만큼 꼼꼼하지는 않다 — 특히 "확인(일치)" 처리한 39개도 복수 자료로 교차 검증한 건 아니다.
+5. 더 높은 확신이 필요하면: (a) 사용자가 data.go.kr/식의약데이터포털에서 정식 API 키를 발급받아 262개 전체를 자동 조회하거나, (b) 필요한 항목을 식약처 K-FIND([various.foodsafetykorea.go.kr/nutrient](https://various.foodsafetykorea.go.kr/nutrient/))에서 직접 하나씩 조회하는 것이 가장 확실하다.
